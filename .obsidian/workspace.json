@@ -185,11 +185,13 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false
+      "bases:新建数据库": false,
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "5c0a6dc96be4ba7d",
+  "active": "7a1cd9c067af2201",
   "lastOpenFiles": [
+    "test",
     "08-模板/概念笔记模板.md",
     "00-首页/数字后端知识地图.md",
     "08-模板/报错问题模板.md",
