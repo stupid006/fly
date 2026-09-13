@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00-首页/数字后端知识地图.md",
+                "file": "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "数字后端知识地图"
+              "title": "随笔"
             }
           }
         ]
@@ -99,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "欢迎.md",
+                "file": "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -174,8 +174,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -189,13 +188,18 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "7a1cd9c067af2201",
+  "active": "5c0a6dc96be4ba7d",
   "lastOpenFiles": [
+    "Pasted image 20260913163415.png",
+    "Pasted image 20260913163250.png",
+    "00-首页/数字后端知识地图.md",
+    "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔.md",
+    "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020",
+    "09-lecture",
+    "欢迎.md",
     "test",
     "08-模板/概念笔记模板.md",
-    "00-首页/数字后端知识地图.md",
     "08-模板/报错问题模板.md",
-    "欢迎.md",
     "08-模板/项目经验模板.md",
     "08-模板/FC-PT命令模板.md",
     "08-模板",
@@ -204,9 +208,6 @@
     "06-脚本/QoR",
     "06-脚本/Floorplan",
     "06-脚本",
-    "05-问题库/Timing问题",
-    "05-问题库/FC报错",
-    "05-问题库/DRC问题",
-    "05-问题库/Congestion问题"
+    "05-问题库/Timing问题"
   ]
 }
