@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔.md",
+                "file": "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔01.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "随笔"
+              "title": "随笔01"
             }
           }
         ]
@@ -99,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔.md",
+                "file": "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔01.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -188,26 +188,35 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "5c0a6dc96be4ba7d",
+  "active": "7a1cd9c067af2201",
   "lastOpenFiles": [
+    "附件/09-lecture/计算机与智能处理器体系结构/06-RAW数据冒险.png",
+    "附件/09-lecture/计算机与智能处理器体系结构/05-Single-Cycle与Iron-Law.png",
+    "附件/09-lecture/计算机与智能处理器体系结构/04-二输入神经元MAC汇编.png",
+    "附件/09-lecture/计算机与智能处理器体系结构/03-极简RISC指令集.png",
+    "附件/09-lecture/计算机与智能处理器体系结构/02-存储层次与访问路径.png",
+    "附件/09-lecture/计算机与智能处理器体系结构/01-冯诺依曼体系结构.png",
+    "附件/09-lecture/计算机与智能处理器体系结构",
+    "附件/09-lecture",
+    "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔01.md",
     "Pasted image 20260913163415.png",
     "Pasted image 20260913163250.png",
+    "08-模板/FC-PT命令模板.md",
+    "08-模板/概念笔记模板.md",
+    "08-模板/报错问题模板.md",
+    "08-模板/项目经验模板.md",
+    "附件/AI-Core-RISC-04-RAW数据冒险.png",
+    "附件/AI-Core-RISC-03-Single-Cycle与Iron-Law.png",
+    "附件/AI-Core-RISC-02-二输入神经元MAC汇编.png",
+    "附件",
     "00-首页/数字后端知识地图.md",
-    "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020/随笔.md",
     "09-lecture/复旦大学陈迟晓《计算机与智能处理器体系结构 AI-Core and RISC Architecture》Spring 2020",
     "09-lecture",
     "欢迎.md",
     "test",
-    "08-模板/概念笔记模板.md",
-    "08-模板/报错问题模板.md",
-    "08-模板/项目经验模板.md",
-    "08-模板/FC-PT命令模板.md",
     "08-模板",
     "07-项目经验",
     "06-脚本/Timing",
-    "06-脚本/QoR",
-    "06-脚本/Floorplan",
-    "06-脚本",
-    "05-问题库/Timing问题"
+    "06-脚本/QoR"
   ]
 }
