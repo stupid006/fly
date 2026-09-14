@@ -1,0 +1,43 @@
+/* Opt-in via cssclasses: [qor-wide-images]. Reading view and Live Preview. */
+.markdown-preview-view.qor-wide-images,
+.markdown-source-view.mod-cm6.qor-wide-images {
+  --file-line-width: 1200px;
+}
+
+/* Keep the Markdown image width, fit narrow panes, and preserve aspect ratio. */
+.markdown-preview-view.qor-wide-images .image-embed img,
+.markdown-source-view.mod-cm6.qor-wide-images .image-embed img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 16px auto;
+}
+
+/* Native-size report images: opt-in only for notes with qor-native-images. */
+.markdown-preview-view.qor-native-images,
+.markdown-source-view.mod-cm6.qor-native-images {
+  --file-line-width: 2400px;
+}
+
+.markdown-preview-view.qor-native-images .image-embed,
+.markdown-source-view.mod-cm6.qor-native-images .image-embed {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.markdown-source-view.mod-cm6.qor-native-images .image-embed .image-wrapper {
+  display: block;
+  width: max-content;
+  max-width: none;
+}
+
+.markdown-preview-view.qor-native-images .image-embed img,
+.markdown-source-view.mod-cm6.qor-native-images .image-embed img {
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  flex-shrink: 0;
+  margin: 16px 0;
+}
