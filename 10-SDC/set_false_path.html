@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>set_false_path 中文教程 · PrimeTime / Fusion Compiler</title>
+<style>
+:root{--ink:#182c3d;--muted:#536777;--line:#dce5e8;--paper:#fff;--bg:#f3f6f7;--teal:#087f83;--navy:#102d40;--orange:#b5691b;--mono:Consolas,'Cascadia Code','Courier New',monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.85 -apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif}a{color:var(--teal);text-underline-offset:4px}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #dfaa42;outline-offset:4px}.layout{max-width:1440px;margin:auto;display:grid;grid-template-columns:245px minmax(0,1fr);gap:42px;padding:34px 42px 80px}aside{position:sticky;top:30px;height:calc(100vh - 60px);overflow:auto;padding:14px 0}.brand{font-size:15px;font-weight:800;letter-spacing:2px;color:var(--navy)}.brand small{display:block;font-size:11px;font-weight:500;letter-spacing:1px;color:var(--muted)}.navtitle{margin:35px 0 12px;font-size:11px;letter-spacing:2px;color:var(--muted)}nav a{display:block;text-decoration:none;padding:8px 12px;margin:3px 0;border-left:2px solid transparent;border-radius:0 6px 6px 0;font-size:13px;color:#466070}nav a:hover,nav a.active{border-color:var(--teal);background:#e2eeef;color:#066e73}.asidefoot{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.print{background:white;border:1px solid #bccdd2;border-radius:7px;padding:7px 13px;color:var(--ink);font-size:13px}main{min-width:0}.hero{background:var(--navy);color:#fff;border-radius:18px;padding:48px 48px 35px;position:relative;overflow:hidden}.hero:after{content:'';position:absolute;width:260px;height:260px;border:1px solid #ffffff12;transform:rotate(30deg);right:-145px;top:-85px}.hero .eyebrow{color:#83d6d4}.eyebrow{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--teal);margin-bottom:10px}h1{font-size:44px;line-height:1.18;letter-spacing:-1px;margin:13px 0 20px}h1 code{font-size:.83em;color:#91e0d7;font-weight:600}.hero p{color:#cbdde5;max-width:640px;font-size:16px}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}.tags span{border:1px solid #ffffff2c;border-radius:30px;padding:3px 12px;font-size:11px;color:#d8e8ed}.herofoot{margin-top:32px;padding-top:20px;border-top:1px solid #ffffff20;display:flex;gap:26px;font-size:12px;color:#b4cdd7}.herofoot b{font-size:21px;color:#fff;margin-right:4px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0 34px}.summary>div{background:white;border:1px solid var(--line);border-radius:10px;padding:19px}.summary b{display:block;font-size:15px;margin-bottom:8px}.summary p{font-size:13px;line-height:1.7;margin:0;color:var(--muted)}section{background:var(--paper);border:1px solid var(--line);border-radius:13px;margin:24px 0;padding:34px 38px}h2{font-size:27px;line-height:1.4;margin:0 0 18px;letter-spacing:-.4px}h3{font-size:20px;line-height:1.5;margin:25px 0 12px}h4{font-size:14px;margin:0 0 7px}p{margin:12px 0}li{margin:7px 0}ul,ol{padding-left:23px}.lead{font-size:17px;color:var(--muted)}p code,li code,td code,h3 code,.callout code{font-family:var(--mono);font-size:.89em;background:#edf3f4;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}.callout{background:#edf8f7;border-left:4px solid var(--teal);padding:17px 20px;margin:23px 0;border-radius:0 8px 8px 0}.callout p{margin:5px 0}.warn{background:#fff7eb;border-color:#cd8b31}.small,.source,.note{font-size:13px;color:var(--muted)}.source{line-height:1.65}.source a{margin-right:5px}.flow{display:flex;align-items:center;gap:12px;justify-content:center;margin:23px 0;padding:25px 18px;background:#f1f6f7;border-radius:10px}.node{text-align:center;border:1px solid #bfd3d8;background:#fff;padding:13px 17px;border-radius:8px;flex:1;font-weight:700;font-size:14px}.node small{display:block;color:var(--muted);font-size:11px;font-weight:400}.arrow{color:var(--teal);font-size:23px}.node.cut{border:1px dashed #c38536;background:#fff8ed}.tablewrap{overflow:auto;margin:20px 0;border:1px solid var(--line);border-radius:9px}table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.7;min-width:580px}th{text-align:left;background:#edf4f5;color:#244757;padding:12px 14px;font-weight:700}td{padding:13px 14px;border-top:1px solid var(--line);vertical-align:top}tr:nth-child(even) td{background:#fbfcfc}.codebox{border:1px solid #203c4b;border-radius:9px;overflow:hidden;margin:18px 0;background:#102b3a}.codehead{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:#193746;color:#a4c7d5;font:11px/1.5 var(--mono);letter-spacing:.3px}.copy{color:#d9edf0;border:1px solid #4d6c7b;background:transparent;border-radius:4px;font:11px/1.5 'Microsoft YaHei',sans-serif;padding:3px 9px}pre{overflow:auto;margin:0;padding:19px 20px;line-height:1.8;tab-size:4;color:#e2edf3;font-size:13px}pre code{font-family:var(--mono);white-space:pre}.cmd{color:#83dace}.comment{color:#94b0bf}.example{border-top:1px solid var(--line);padding-top:24px;margin-top:27px}.exampletop{display:flex;align-items:center;gap:13px}.exampletop h3{margin:0}.num{display:inline-flex;align-items:center;justify-content:center;border-radius:7px;width:36px;height:36px;background:#e6f3f2;color:#087b7e;font:700 15px var(--mono);flex:none}.scope{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:16px 0}.scope>div{padding:16px;background:#fff6e9;border-radius:7px;font-size:13px}.scope>div+div{background:#edf7f4}.scope h4{color:#875017}.scope>div+div h4{color:#166c5a}.scope p{margin:0}.versus{display:grid;grid-template-columns:1fr 1fr;gap:15px}.versus>div{border:1px solid var(--line);border-radius:8px;padding:17px;min-width:0}.versus h4{font-size:15px}.versus .bad{border-top:3px solid #c27053}.versus .good{border-top:3px solid var(--teal)}.versus p{font-size:13px}.versus pre{font-size:12px;padding:12px}.checklist li::marker{color:var(--teal);font-weight:700}.badge{font-size:11px;background:#e7f1f3;padding:4px 8px;border-radius:4px}.formula{text-align:center;background:#edf5f5;color:#17565c;font:600 15px/1.8 var(--mono);padding:20px;border-radius:8px}.footer{text-align:center;color:var(--muted);font-size:12px;margin:35px 0 0}.status{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#123648;color:#fff;padding:9px 20px;border-radius:8px;display:none;font-size:13px;z-index:5}details{padding:15px 18px;background:#f3f7f8;border-radius:8px;margin:15px 0}summary{cursor:pointer;font-weight:650}details p{font-size:14px}.anchorlist{display:flex;flex-wrap:wrap;gap:7px;margin:20px 0}.anchorlist a{font-size:12px;padding:3px 9px;background:#eef5f5;border-radius:5px;text-decoration:none}
+@media(max-width:1100px){.layout{grid-template-columns:195px minmax(0,1fr);gap:23px;padding:24px}.hero{padding:35px}section{padding:28px}h1{font-size:37px}.scope,.versus{grid-template-columns:1fr}.summary{gap:9px}.summary>div{padding:14px}}
+@media(max-width:760px){.layout{display:block;padding:15px}aside{position:static;height:auto;padding:6px 2px 17px}.brand small,.navtitle,.asidefoot{display:none}nav{display:flex;overflow:auto;gap:5px;margin-top:12px;padding-bottom:3px}nav a{white-space:nowrap;padding:5px 9px;font-size:12px;border-left:0;border-bottom:2px solid transparent}nav a.active{border-bottom-color:var(--teal)}.hero{padding:28px 24px}h1{font-size:34px}.herofoot{gap:15px;flex-wrap:wrap}.summary{grid-template-columns:1fr}.summary>div{padding:14px 18px}.summary b{margin-bottom:3px}section{padding:24px 20px}h2{font-size:24px}.flow{gap:7px;padding:14px 10px}.node{padding:10px 7px;font-size:12px}.arrow{font-size:16px}pre{font-size:12px;padding:15px}.formula{font-size:12px}.exampletop h3{font-size:18px}}
+@media print{body{background:#fff;font-size:11pt}.layout{display:block;padding:0;max-width:none}aside,.copy,.status{display:none}.hero{background:#fff;color:#123648;border:1px solid #aebfc6;padding:20px}.hero h1 code,.hero .eyebrow,.hero p,.herofoot,.herofoot b,.tags span{color:#123648}.tags span{border-color:#b7c9d0}.herofoot{border-color:#b7c9d0}.hero:after{display:none}section{padding:20px 0;border:0;border-top:1px solid #bccbd0;border-radius:0;break-before:auto}h2,h3,.exampletop{break-after:avoid}.codebox,.scope,.flow,tr{break-inside:avoid}.codebox{background:#f5f7f8;border-color:#ccd6db}.codehead{background:#e7edf0;color:#234}.copy{display:none}pre{white-space:pre-wrap;color:#123;font-size:9pt}pre code{white-space:pre-wrap;overflow-wrap:anywhere}.cmd{color:#07585a}.comment{color:#465b68}.tablewrap{overflow:visible}table{min-width:0}a{color:#185764}details{display:block}.summary{margin-bottom:20px}.footer{font-size:9pt}}
+</style></head><body><div class="layout"><aside><div class="brand">STA FIELD GUIDE<small>数字后端 · 时序约束学习笔记</small></div><div class="navtitle">ON THIS PAGE / 目录</div><nav aria-label="章节目录">
+<a href="#essence">01　False path 的本质</a><a href="#report">02　与 report_timing 的关系</a><a href="#objects">03　路径与对象语义</a><a href="#examples">04　12 个 Tcl 实战示例</a><a href="#cdc">05　CDC 与模式选择</a><a href="#priority">06　优先级与覆盖</a><a href="#verify">07　验证与排查流程</a><a href="#mistakes">08　错误 vs 正确</a><a href="#cheatsheet">09　命令速查表</a><a href="#fc">10　FC 专用检查流程</a><a href="#references">11　参考与版本说明</a></nav><div class="asidefoot">先证明路径无需检查，<br>再写出最小匹配范围。<p><button class="print" onclick="window.print()">打印 / 保存为 PDF</button></p>单文件 · 无外部资源依赖</div></aside><main>
+<header class="hero"><div class="eyebrow">PRIMETIME + FUSION COMPILER / TIMING EXCEPTIONS</div><h1>把 false path<br>真正讲清楚。<br><code>set_false_path</code></h1><p>从“为什么不检查”，到“究竟匹配哪条路径”，再到“如何证明约束生效”。一份面向数字后端 / STA 初学到中级用户的中文教程。</p><div class="tags"><span>对象语义</span><span>跨时钟域</span><span>FUNC / TEST / SCAN</span><span>验证与排错</span></div><div class="herofoot"><span><b>12</b> 个独立示例</span><span><b>11</b> 个阅读章节</span><span>建议分两次阅读 · 随时查阅</span></div></header><div class="callout"><strong>适用范围：PT 与 FC 分开看</strong><p>本页沿用原 PrimeTime 教程的版式与 12 个示例，补充 Fusion Compiler 的对象规则、模式范围和报告方法。标为 <b>PrimeTime</b> 的报告脚本用于 PT；FC 请使用<a href="#fc">第 10 章</a>。两者共用许多 SDC 基本语义，但报告选项和应用设置并不相同。</p></div>
+<div class="summary"><div><b>约束改变检查范围</b><p>连接与延迟仍然存在；被放弃的是匹配路径的特定时序检查。</p></div><div><b>名称相似 ≠ 对象等价</b><p>clock 是时序对象，port / pin / cell 是不同层级的设计对象。</p></div><div><b>报告消失 ≠ 已验证</b><p>结合对象集合、例外报告与正反样本，确认没有漏切或误切。</p></div></div>
+
+<section id="essence"><div class="eyebrow">CHAPTER 01</div><h2>False path：声明哪些检查不适用</h2>
+<p><strong>False path（假路径）</strong>是设计中存在、但在指定分析条件下不应按常规时序要求检查的路径。<code>set_false_path</code> 是你向 STA 工具作出的声明；工具不会因为收到这条命令，就自动证明该声明符合电路功能。</p><div class="flow" role="img" aria-label="发射寄存器经组合逻辑到捕获寄存器，连接仍存在，匹配的时序检查被排除"><div class="node">发射寄存器<small>launch / CK → Q</small></div><span class="arrow">→</span><div class="node">组合逻辑<small>延迟仍存在</small></div><span class="arrow">→</span><div class="node cut">捕获寄存器<small>匹配检查：FALSE</small></div></div>
+<p>把一条本来要求“下一拍之前到达”的路径设为 false，并不会让它变快。它表示当前分析不再用该要求判定这条路径是否违例。默认不写 <code>-setup</code> / <code>-hold</code> 时，两类检查都被排除；只写其中一种则只影响相应类别。</p>
+<div class="callout"><strong>先问设计意图，再选命令</strong><p>功能上永远无法激活的组合路径、当前固定模式不使用的通路，以及没有固定相位关系的跨域传输，可能需要例外。普通同步路径只是延迟大、难收敛，并不能因此变成 false path。</p></div>
+<div class="tablewrap"><table><thead><tr><th>实际意图</th><th>考虑的建模方式</th><th>关键差别</th></tr></thead><tbody><tr><td>该路径的检查不适用</td><td><code>set_false_path</code></td><td>对匹配路径豁免检查。</td></tr><tr><td>功能允许数据在多拍后捕获</td><td><code>set_multicycle_path</code></td><td>仍有时序要求；setup 和 hold 的边沿关系都需要推导。</td></tr><tr><td>路径必须满足明确延迟预算</td><td><code>set_max_delay</code> / <code>set_min_delay</code></td><td>仍检查给定的最大 / 最小延迟。</td></tr><tr><td>当前场景控制位固定</td><td><code>set_case_analysis</code></td><td>传播已知逻辑值，选择实际可用通路。</td></tr><tr><td>某一 timing arc 不应参与分析</td><td><code>set_disable_timing</code></td><td>影响经过该弧的分析，不等同于特定起终点的例外。</td></tr></tbody></table></div>
+<p class="source">来源与版本边界见<a href="#references">第 11 章</a>；PT 与 FC 的报告方法分别见第 7、10 章。</p>
+<p class="small">“不再报 setup/hold 违例”也不意味着自动免除 max_transition、max_capacitance 等设计规则。异步 reset 还涉及 recovery/removal，不能把数据路径的解释机械套用到所有检查。</p>
+</section>
+<section id="report"><div class="eyebrow">CHAPTER 02</div><h2>设置以后，report_timing 还会报吗？</h2>
+<p><strong>在通常只报告受约束路径的设置下，完全被 false 覆盖的检查不会作为普通 setup/hold 路径报出。</strong>对一组精确起终点查询可能得到 <code>No paths.</code>；查询范围较宽时，也可能返回范围内其他仍有效的路径。</p>
+<div class="tablewrap"><table><thead><tr><th>你看到的现象</th><th>合理解释</th><th>下一步</th></tr></thead><tbody><tr><td>普通 max 报告没有原路径</td><td>可能被 false，也可能被 case analysis、禁用弧、时钟缺失或筛选条件排除。</td><td>检查例外和建模，不以“没报”作为唯一证据。</td></tr><tr><td>max 不报，min 仍报</td><td>可能只设置了 <code>-setup</code>。</td><td>核对 setup/hold 范围。</td></tr><tr><td>相同寄存器对仍然出现</td><td>可能换了 launch/capture clock、数据边沿、经过点或场景。</td><td>比较完整 path identity，而不只是寄存器名。</td></tr><tr><td>调试报告显示 false / unconstrained</td><td>可能启用了未约束路径搜索。</td><td>这是展示被排除的原因，并不代表恢复正常检查。</td></tr></tbody></table></div>
+<h3>PT 用 <code>-exceptions</code>；FC 本文版本用 <code>-exception</code></h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">report_timing</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_dst/D] -delay_type max \
+    -exceptions dominant</code></pre></div>
+<p><code>dominant</code> 显示影响当前已报路径的主导例外；<code>overridden</code> 显示被覆盖的例外；<code>all</code> 显示两者。这里说的是 <strong>PrimeTime</strong> 的完整拼写。<strong>Fusion Compiler T-2022.03-SP4</strong> 的 SYNTAX 与 ARGUMENTS 列出 <code>-exception dominant</code>，且该版只接受 <code>dominant</code>；不能把 PT 的 <code>-exceptions all</code> 直接用于 FC。FC 手册部分注释也出现复数拼写，本文按正式语法栏区分，实际版本再用 <code>man report_timing</code> 核对。</p>
+<div class="callout warn"><strong>不要把 dominant 当作“强制显示所有 false path”的开关。</strong><p>要调试被排除的路径，可尝试开启 <code>timing_report_unconstrained_paths</code>，再按真实起终点查询。它不保证枚举所有 false path；时钟组关系、无可遍历路径、case analysis 等仍可能使查询没有结果。完整步骤见第 7 章。</p></div>
+<p class="source">来源与版本边界见<a href="#references">第 11 章</a>；PT 与 FC 的报告方法分别见第 7、10 章。</p>
+</section>
+<section id="objects"><div class="eyebrow">CHAPTER 03</div><h2>-from / -to / -through：先定义集合，再匹配路径</h2>
+<div class="codebox"><div class="codehead"><span>语法示意 · 不是可执行脚本</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 常用骨架；尖括号是占位说明，不能原样执行</span>
+<span class="cmd">set_false_path</span> [-setup | -hold] [-rise | -fall] \
+    -from &lt;合法起点集合或时钟集合&gt; \
+    -through &lt;途经对象集合&gt; \
+    -to &lt;合法终点集合或时钟集合&gt;</code></pre></div>
+<p><code>-from</code>、<code>-through</code>、<code>-to</code> 可按意图省略，但至少指定有效的路径范围。<code>-rise/-fall</code> 限定终点数据转换；与 <code>-rise_from [get_clocks …]</code> 限定发射时钟边沿不同。默认不写 rise/fall 时，两种数据转换都包括。</p><div class="formula">匹配 = 起点条件 AND 途经条件 AND 终点条件 AND 检查/边沿条件</div><ul><li><strong>一个集合中的多个对象是 OR。</strong><code>-from {A B}</code> 表示从 A 或 B 出发，并不是必须同时从两处出发。</li><li><strong>重复的 through 是按顺序的 AND。</strong><code>-through X -through Y</code> 要求先经过 X 再经过 Y；一个 <code>-through {X Y}</code> 则表示经过 X 或 Y。</li><li><strong>省略一个条件，就不按该维度限制。</strong>只写 <code>-to</code> 可能覆盖所有到达该终点的合法路径；只写 <code>-through</code> 可能影响大量不同起终点。</li><li><strong>集合的笛卡尔积不等于真实路径。</strong>A/B 到 C/D 会尝试匹配四种组合，但只有实际存在、且满足其余条件的时序路径才会被约束。</li></ul>
+<h3>对象类型：先认清 port、pin、clock、cell，再看 net</h3><div class="tablewrap"><table><thead><tr><th>对象</th><th>获取示例</th><th>语义与适用位置</th></tr></thead><tbody><tr><td><strong>port</strong><br>当前设计边界端口</td><td><code>get_ports async_req</code></td><td>输入 port 常用作 <code>-from</code>；输出 port 常用作 <code>-to</code>。顶层看子模块接口通常是层级 pin，而不是顶层 port。</td></tr><tr><td><strong>pin</strong><br>实例引脚</td><td><code>get_pins u_src/CK</code><br><code>get_pins u_dst/D</code></td><td>普通边沿触发寄存器的数据时序路径，以发射 CK 为规范起点、捕获 D 为终点；组合逻辑引脚适合 <code>-through</code>。不是任意 pin 都能当合法起终点。</td></tr><tr><td><strong>clock</strong><br>时钟时序对象</td><td><code>get_clocks CLK_A</code></td><td><code>-from</code> 按 launch clock 匹配；<code>-to</code> 按 capture clock 匹配。还可涉及由 input/output delay 关联该时钟的 I/O，不只是内部寄存器。</td></tr><tr><td><strong>cell</strong><br>设计实例</td><td><code>get_cells u_src</code></td><td>对普通单时钟、单数据端的寄存器，可作为起点/终点的实例级写法。组合 cell 或层级模块不是“其内部全部寄存器”的通用简写；复杂单元应明确选择合法 pin。</td></tr><tr><td><strong>net</strong><br>连接网络</td><td><code>get_nets data_link</code></td><td>通常用于限定 <code>-through</code>，不能当作 clock 对象或任意合法起终点。FC 本文版本将 through net 解释为叶级驱动 pin；优先选明确 pin，避免重布线、缓冲插入后匹配范围变化。</td></tr></tbody></table></div><p class="small">FC 本文版本明确支持 through 的 pin / port / cell / net。其合法起点还包括 latch 的数据 pin、设置 input delay 的 pin；合法终点还包括设置 output delay 的 pin。不要把普通组合 pin、组合 cell 或 net 直接当成寄存器起终点。复杂对象的 PT 行为以本机 man 为准。</p>
+<p class="source">来源与版本边界见<a href="#references">第 11 章</a>；PT 与 FC 的报告方法分别见第 7、10 章。</p>
+<div class="callout warn"><strong>Q 是数据输出，不宜直接套成 set_false_path 的规范 -from。</strong><p>对于普通触发器，用 <code>-from [get_pins u_src/CK]</code> 或明确的寄存器 cell 表示发射起点。若要限定从 Q 出来的某支数据通路，使用 <code>-through [get_pins u_src/Q]</code> 并配合合适的起终点。不要从 <code>report_timing -from Q</code> 能否查到片段，推导例外必然具有相同语义。</p></div>
+<h3>集合非空，还要确认“选的是谁”</h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code>set src [<span class="cmd">get_pins</span> u_src/CK]
+set dst [<span class="cmd">get_pins</span> u_dst/D]
+puts &quot;src count = [<span class="cmd">sizeof_collection</span> $src]&quot;
+puts &quot;dst count = [<span class="cmd">sizeof_collection</span> $dst]&quot;
+puts &quot;src names = [<span class="cmd">get_object_name</span> $src]&quot;
+puts &quot;dst names = [<span class="cmd">get_object_name</span> $dst]&quot;
+if {[<span class="cmd">sizeof_collection</span> $src] != 1 || [<span class="cmd">sizeof_collection</span> $dst] != 1} {
+    error &quot;Expected exactly one source CK and one destination D&quot;
+}</code></pre></div>
+<p>“CK / D / Q”只是本教程的假定库引脚名。你的库可能使用 CP、CLK、QN 等名称，应从真实网表和报告获取。<code>-hierarchical</code>、通配符与 <code>current_instance</code> 会改变搜索范围；写总线名时用花括号保护 Tcl 方括号，例如 <code>[get_pins {u_bus/data_reg[3]/D}]</code>，并确认集合大小，避免 Tcl 替换或模式匹配造成意外。</p>
+</section>
+<section id="examples"><div class="eyebrow">CHAPTER 04</div><h2>12 个具体 Tcl 示例</h2>
+<p class="lead">每个示例独立成立。请勿把本章所有约束连续 source 到同一场景。</p>
+<div class="callout"><strong>统一假设</strong><p>设计已 link，时钟、I/O delay 和必要模式已正确建立；实例及引脚均存在，示意连线在网表中存在；除明确演示覆盖的示例外，没有其他重叠例外。文中“未被 false”仅表示未被当前命令覆盖，不保证它没有其他约束或一定出现在最坏路径报告里。</p></div><div class="anchorlist"><a href="#ex1">示例 01</a><a href="#ex2">示例 02</a><a href="#ex3">示例 03</a><a href="#ex4">示例 04</a><a href="#ex5">示例 05</a><a href="#ex6">示例 06</a><a href="#ex7">示例 07</a><a href="#ex8">示例 08</a><a href="#ex9">示例 09</a><a href="#ex10">示例 10</a><a href="#ex11">示例 11</a><a href="#ex12">示例 12</a></div>
+<article class="example" id="ex1"><div class="exampletop"><span class="num">01</span><h3>只豁免一组寄存器之间的传输</h3></div><p><strong>场景前提：</strong>规格证明 u_src 到 u_dst 的传输在本场景中不会被功能使用。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_dst/D]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>从 u_src/CK 发射、到 u_dst/D 的所有匹配数据通路，默认 setup 与 hold 都切。</p></div><div><h4>未被这条约束 false</h4><p>u_src → u_other；u_other → u_dst；u_dst → u_src。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>这不是“只切报告里那一条最差路线”；若同一起终点有多条组合分支，且未限定 through，这些匹配分支都在范围内。</p>
+</article>
+<article class="example" id="ex2"><div class="exampletop"><span class="num">02</span><h3>从异步输入 port 到同步器第一级</h3></div><p><strong>场景前提：</strong>async_req 是异步单比特电平，进入两级同步器；第一级 u_req_sync1 和第二级 u_req_sync2 均用 CLK_B。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_ports</span> async_req] \
+    -to [<span class="cmd">get_pins</span> u_req_sync1/D]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>async_req → u_req_sync1/D 的匹配路径。</p></div><div><h4>未被这条约束 false</h4><p>u_req_sync1 → u_req_sync2 的同域路径；async_req 到其他终点；其他输入到 sync1。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>必须保留第一级到第二级的时序检查，并落实同步器布局与可靠性要求。此命令不会创建同步器。</p>
+</article>
+<article class="example" id="ex3"><div class="exampletop"><span class="num">03</span><h3>跨时钟域：只切 A → B</h3></div><p><strong>场景前提：</strong>CLK_A 与 CLK_B 的该方向传输不采用固定边沿的同步时序检查。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_clocks</span> CLK_A] \
+    -to [<span class="cmd">get_clocks</span> CLK_B]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>由 CLK_A 发射、由 CLK_B 捕获的匹配路径；相关 I/O 若通过 delay 关联这些时钟，也可能被覆盖。</p></div><div><h4>未被这条约束 false</h4><p>CLK_B → CLK_A；CLK_A → CLK_A；CLK_B → CLK_B；CLK_A → CLK_C。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>注意单向性。CLK_A_DIV2 是另一个 clock 对象，不能只凭它派生自 CLK_A 就假定本命令覆盖它。</p>
+</article>
+<article class="example" id="ex4"><div class="exampletop"><span class="num">04</span><h3>跨时钟域：显式双向 false path</h3></div><p><strong>场景前提：</strong>两个时钟域之间的全部双向传输都采用独立审核过的 CDC 方案。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 第 1 条：A -&gt; B</span>
+<span class="cmd">set_false_path</span> -from [<span class="cmd">get_clocks</span> CLK_A] -to [<span class="cmd">get_clocks</span> CLK_B]
+<span class="comment"># 第 2 条：B -&gt; A</span>
+<span class="cmd">set_false_path</span> -from [<span class="cmd">get_clocks</span> CLK_B] -to [<span class="cmd">get_clocks</span> CLK_A]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>第一条只切 A → B；第二条补上 B → A。</p></div><div><h4>未被这条约束 false</h4><p>A → A、B → B；与未列出的 CLK_C 之间的传输。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>双向需要两条有方向的声明。把 A/B 同时放进 from 和 to 集合，会连同 A → A、B → B 一起切掉。</p>
+</article>
+<article class="example" id="ex5"><div class="exampletop"><span class="num">05</span><h3>用 clock groups 表达完整异步关系</h3></div><p><strong>场景前提：</strong>A 和 A_DIV2 同属一组；B 和 B_DIV2 同属另一组；两组整体异步，组间没有要保留的普通时序检查。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_clock_groups</span> -asynchronous -name ASYNC_AB \
+    -group [<span class="cmd">get_clocks</span> {CLK_A CLK_A_DIV2}] \
+    -group [<span class="cmd">get_clocks</span> {CLK_B CLK_B_DIV2}]
+<span class="cmd">report_clock</span> -groups</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>不是逐条 set_false_path；效果是两组之间所有方向的 launch/capture 时序关系被排除。</p></div><div><h4>未被这条约束 false</h4><p>组内 A ↔ A_DIV2、B ↔ B_DIV2 关系；两个已列组与未列 CLK_C 的关系不因这条两组命令自动排除。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>它与两条 false path 在 SI 建模和报告管理上并不完全等价。这里显式列出派生时钟；不要只定义一个 group，以免把它与所有其他时钟都隔离。</p>
+</article>
+<article class="example" id="ex6"><div class="exampletop"><span class="num">06</span><h3>只切经过某个 MUX 输入的支路</h3></div><p><strong>场景前提：</strong>u_mux/A1 支路在当前已证明的协议条件下不可被捕获；A0 支路仍需要检查。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -through [<span class="cmd">get_pins</span> u_mux/A1] \
+    -to [<span class="cmd">get_pins</span> u_dst/D]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>u_src → u_mux/A1 → u_dst，三个条件同时成立的通路。</p></div><div><h4>未被这条约束 false</h4><p>同一寄存器对经过 A0 的路线；其他源经 A1 到 u_dst；u_src 经 A1 到其他终点。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>若改写为只剩 -through u_mux/A1，则所有经过 A1 的合法起终点都可能被切。若是固定 select 模式，优先考虑示例 11 的 case analysis。</p>
+</article>
+<article class="example" id="ex7"><div class="exampletop"><span class="num">07</span><h3>两个 through：必须先 X 再 Y</h3></div><p><strong>场景前提：</strong>只有依次穿过 u_x/Z、u_y/A 的路线在本场景不可激活。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -through [<span class="cmd">get_pins</span> u_x/Z] \
+    -through [<span class="cmd">get_pins</span> u_y/A] \
+    -to [<span class="cmd">get_pins</span> u_dst/D]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>u_src → X → Y → u_dst。</p></div><div><h4>未被这条约束 false</h4><p>只经 X；只经 Y；先 Y 后 X；起点或终点不同。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>through 的书写顺序就是路径上的匹配顺序。即便两个对象都存在，网表中没有该顺序的连线，也不会凭空产生一条路径。</p>
+</article>
+<article class="example" id="ex8"><div class="exampletop"><span class="num">08</span><h3>一个 through 集合：X 或 Y</h3></div><p><strong>场景前提：</strong>从源到目的，经过 u_x/Z 或 u_y/Z 的路线均已证明不使用。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -through [<span class="cmd">get_pins</span> {u_x/Z u_y/Z}] \
+    -to [<span class="cmd">get_pins</span> u_dst/D]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>同一起终点之间，只经 X、只经 Y、同时经 X 和 Y 的路径，都满足这个 OR 条件。</p></div><div><h4>未被这条约束 false</h4><p>同一起终点但既不经过 X 也不经过 Y 的路线；其他起终点。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>与示例 7 不同：这里只有一个 through 条件，因此不要求两个点都经过，也不指定两者次序。</p>
+</article>
+<article class="example" id="ex9"><div class="exampletop"><span class="num">09</span><h3>只 false setup，保留 hold</h3></div><p><strong>场景前提：</strong>规格明确这条传输的 setup 检查不适用，但仍需验证 hold；此例仅演示检查类别。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -setup -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_dst/D]
+
+<span class="cmd">report_timing</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_dst/D] -delay_type min</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>所选路径的 setup / max 类检查。</p></div><div><h4>未被这条约束 false</h4><p>同一路径的 hold / min 类检查，以及所有范围外路径。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>第二条 report_timing 不修改约束；在其余条件完整时仍可报告 hold 路径。不能把 -setup 当作“setup 收不拢”的修复手段；-hold 同理。</p>
+</article>
+<article class="example" id="ex10"><div class="exampletop"><span class="num">10</span><h3>用 cell 表示普通寄存器起终点</h3></div><p><strong>场景前提：</strong>u_src、u_dst 都是普通单时钟、单数据端触发器，而不是层级模块或复杂宏。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_cells</span> u_src] \
+    -to [<span class="cmd">get_cells</span> u_dst]</code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>这两个寄存器实例对应的合法发射到捕获路径。</p></div><div><h4>未被这条约束 false</h4><p>其他源/目的寄存器对；反向 u_dst → u_src。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>该简单模型下可用于表达示例 1 的意图。对多位触发器、宏、多个时钟/数据端，不能假定选择一个 cell 就覆盖所有希望的内部路径，应用明确 pin 并验证。</p>
+</article>
+<article class="example" id="ex11"><div class="exampletop"><span class="num">11</span><h3>FUNC 模式：固定 select，或精确排除测试支路</h3></div><p><strong>场景前提：</strong>显式数据 MUX 满足 Y = test_mode ? A1 : A0；A0 接功能源，A1 接测试源。FUNC 场景中 test_mode 保持 0。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 方案 A：FUNC 场景采用真实模式值</span>
+<span class="cmd">set_case_analysis</span> 0 [<span class="cmd">get_ports</span> test_mode]
+<span class="cmd">update_timing</span>
+
+<span class="comment"># 方案 B：仅用于已证明 A1 支路不可用、又不能采用 A 的建模情形</span>
+<span class="comment"># 这是独立替代方案，不要求与 A 叠加</span>
+<span class="comment"># set_false_path -through [get_pins u_data_mux/A1] \</span>
+<span class="comment">#     -to [get_pins u_func_dst/D]</span></code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>方案 A 没有新增 false-path exception；常量传播会排除不可用的 A1 数据分支。若独立采用方案 B，则仅把经 A1 到 u_func_dst/D 的匹配路径 false。</p></div><div><h4>未被这条约束 false</h4><p>方案 A 下可用的 A0 功能路径；方案 B 下不经 A1 的路线、经 A1 到其他终点的路线。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>只写 -from test_mode 不会把 A1→Y 的测试数据路径全部切掉。设置控制位的值，和从控制位出发的路径例外，是两件事。</p>
+</article>
+<article class="example" id="ex12"><div class="exampletop"><span class="num">12</span><h3>SCAN shift 与 capture 必须分场景</h3></div><p><strong>场景前提：</strong>扫描触发器 SE=1 选择 SI 移位，SE=0 选择 D 功能输入；测试协议需要分别签核 shift 与 capture。</p>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 场景 1：SCAN_SHIFT，独立会话/场景</span>
+<span class="cmd">set_case_analysis</span> 1 [<span class="cmd">get_ports</span> scan_enable]
+<span class="comment"># 继续配置真实 scan clock、scan_in/out delay，并检查 shift setup/hold</span>
+
+<span class="comment"># 场景 2：SCAN_CAPTURE，另一个独立会话/场景</span>
+<span class="comment"># set_case_analysis 0 [get_ports scan_enable]</span>
+<span class="comment"># 按测试协议建立 capture / at-speed 时钟与有效数据检查</span>
+
+<span class="comment"># 只在 FUNC 场景，且 scan_in 确实完全不使用时的独立示例：</span>
+<span class="comment"># set_false_path -from [get_ports scan_in]</span></code></pre></div>
+<div class="scope"><div><h4>被 false 的路径</h4><p>两段模式建模本身都不新增 false-path exception。最后一行若在满足前提的 FUNC 场景启用，则切所有从 scan_in 发出的匹配路径。</p></div><div><h4>未被这条约束 false</h4><p>SHIFT 场景中的 scan chain 不应被 false；CAPTURE 场景中的有效功能路径也不应被 false。FUNC 中的那条 port 例外不会切内部 scan flop → scan flop 路径。</p></div></div>
+<p class="note"><strong>读法 / 验证重点：</strong>scan 时钟很慢仍可能有 hold 问题。不要把 FUNC 的 scan_in 例外加载进 SHIFT 场景；也不能把“test_mode=1”理解成“所有功能数据路径永远不用”。</p>
+</article>
+</section>
+<section id="cdc"><div class="eyebrow">CHAPTER 05</div><h2>CDC、mode 与 test：约束背后的电路前提</h2>
+<h3>同步器里，边界路径和同域路径分开看</h3><div class="flow" role="img" aria-label="A域寄存器到B域同步器第一级为异步边界，第一级到第二级是必须保留的B域时序路径"><div class="node">A 域源寄存器<small>CLK_A</small></div><span class="arrow">⇢</span><div class="node cut">B 域第一级<small>异步输入边界</small></div><span class="arrow">→</span><div class="node">B 域第二级<small>保留 B → B 检查</small></div></div>
+<p>异步时钟没有可依赖的固定边沿关系；把这类边界设为 false，并不会解决亚稳态、窄脉冲丢失、多位数据一致性或多个同步信号重汇合的问题。两级同步器适合某些单比特电平场景；总线、脉冲、握手、FIFO 必须采用各自正确的 CDC 结构与协议。</p><p class="source">来源与版本边界见<a href="#references">第 11 章</a>；PT 与 FC 的报告方法分别见第 7、10 章。</p>
+<ul><li><strong>不要仅凭名字或频率判异步。</strong>100 MHz 与 200 MHz 可能同源且相关；两个 100 MHz 独立振荡器也可能异步。先查 clock source、generated clock 与架构定义。</li><li><strong>保留 CDC 所需的物理预算。</strong>例如多位编码跨域可能对位间偏斜、传播延迟有要求。若仍需 max delay / skew 检查，不要先把整个域关系一刀切，再期待补一条命令自动恢复。</li><li><strong>全域 clock groups 适合完整的组间关系。</strong>若只获批豁免一个同步器入口，示例 2 或更精确的 clock→pin 约束更容易审计；同时也要检查遗漏的 crossing。</li><li><strong>SI 语义要保留。</strong><code>set_clock_groups -asynchronous</code> 不只是两条 false path 的写法简化，它还表达异步时钟关系并影响串扰分析的到达窗口；不能当作完全可互换的建模。</li></ul>
+<h3>三种命令怎样选择？</h3><div class="tablewrap"><table><thead><tr><th>命令</th><th>表达的设计事实</th><th>检查与范围</th></tr></thead><tbody><tr><td><code>set_false_path</code></td><td>某组指定路径的时序检查不适用。</td><td>可按方向、from/through/to、setup/hold 精确限定；默认两类都豁免。不会自动声明整个时钟域异步。</td></tr><tr><td><code>set_clock_groups -asynchronous</code></td><td>组与组之间没有固定相位关系。</td><td>常规写法排除组间双向时序检查，组内不受该分组关系影响；还传达 SI 的异步窗口语义。</td></tr><tr><td><code>set_multicycle_path</code></td><td>数据仍须正确到达，只是允许多拍后捕获。</td><td>保留有界的 required time；需推导 setup 与 hold 边沿，通常仍可在正常 timing 报告中看到。</td></tr></tbody></table></div>
+<p>FC 手册说明异步时钟在串扰分析中可能使用无限到达窗口；两条方向相反的 false path 不会自动建立这项异步关系。若仍需对部分 CDC 路径检查延迟，FC 本文版本支持 <code>set_clock_groups -asynchronous -allow_paths</code>：保留异步 SI 关系，并允许路径继续分析，再配合经过审核的局部约束。它不是在已有全切关系上随手追加的开关，重叠/重定义可能报错；应从一致的基线建立方案并检查本版帮助。</p>
+<h3>多周期示例：有意等待 3 拍，不等于 false path</h3><p>仅假设同一周期、同一相位的时钟，源与目的使能协议保证每 3 拍更新/捕获，目的不会在中间边沿采样。如下常见配对将 setup 放到第 3 拍，并把 hold 拉回原来的同边沿关系。</p><div class="codebox"><div class="codehead"><span>Tcl · PT / FC · 同频同相的特定前提</span><button class="copy" type="button">复制代码</button></div><pre><code># 独立示例；不要与同一路径的 false path 叠加
+set_multicycle_path 3 -setup -from [get_pins u_src/CK] -to [get_pins u_dst/D]
+set_multicycle_path 2 -hold  -from [get_pins u_src/CK] -to [get_pins u_dst/D]
+report_timing -from [get_pins u_src/CK] -to [get_pins u_dst/D] -delay_type max
+report_timing -from [get_pins u_src/CK] -to [get_pins u_dst/D] -delay_type min</code></pre></div><p class="small">“N / N−1”不是所有跨频、多相位或不同使能协议的通用公式。要结合 <code>-start/-end</code> 和实际边沿重新推导，再看 max/min 报告中的发射与捕获时间。真正异步的域不能用 multicycle 凑出一个同步关系。</p><h3>场景分开，证据跟着场景走</h3><div class="tablewrap"><table><thead><tr><th>场景</th><th>通常需建模</th><th>必须保留的检查</th></tr></thead><tbody><tr><td>FUNC</td><td>实际功能时钟；test_mode / scan_enable 的功能值。</td><td>所有可用功能数据路径。</td></tr><tr><td>SCAN_SHIFT</td><td>SE=1；真实移位时钟、scan I/O 约束。</td><td>SI 链的 setup/hold，尤其跨时钟/锁存器边界。</td></tr><tr><td>SCAN_CAPTURE</td><td>SE=0；按协议配置 launch/capture 脉冲。</td><td>有效功能或 at-speed 测试路径。</td></tr><tr><td>MBIST / 其他 TEST</td><td>对应控制位、测试时钟和宏接口模型。</td><td>该测试模式真正使用的控制与数据传输。</td></tr></tbody></table></div>
+<div class="callout warn"><strong>异步复位不是“随便全切”的特殊许可。</strong><p><code>set_false_path -from [get_ports rst_n]</code> 可能覆盖你本来需要观察的复位释放检查。先区分异步置位/复位与同步释放，确定 recovery/removal 的签核策略；有复位同步器，也要验证其输出到下游的释放行为。</p></div>
+</section>
+<section id="priority"><div class="eyebrow">CHAPTER 06</div><h2>Exception 优先级：按路径、按检查判断覆盖</h2>
+<p>同一条路径可能同时匹配多个例外。<strong>dominant</strong> 是最终影响该路径检查的例外；<strong>overridden</strong> 是匹配了但被覆盖的例外；<strong>ignored</strong> 还可能由非法起终点或不存在的路径造成，不全是优先级冲突。</p>
+<div class="callout"><strong>入门规则：同等对象范围发生类型冲突时</strong><p><code>set_false_path</code> → <code>set_max_delay / set_min_delay</code> → <code>set_multicycle_path</code>。setup 与 hold 分开看，max 与 min 并不是相互覆盖的一对。</p></div>
+<p>还要看<strong>对象与路径定义的具体程度</strong>。PrimeTime 文档描述了 pin/port 与 clock 的优先关系，同类型例外也有具体范围优先的规则。因而不能把上面的类型顺序扩展成“任何粒度的 false 都永远压过所有其他命令”，也不能相信“写在文件后面的一定赢”。</p>
+<p class="source">来源与版本边界见<a href="#references">第 11 章</a>；PT 与 FC 的报告方法分别见第 7、10 章。</p>
+<h3>一个有明确边界的覆盖实验</h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 假设 u_src/CK -&gt; u_dst/D 路径存在；数值采用当前时间单位</span>
+<span class="cmd">set_max_delay</span> 5.0 -from [<span class="cmd">get_pins</span> u_src/CK] -to [<span class="cmd">get_pins</span> u_dst/D]
+<span class="cmd">set_false_path</span>   -from [<span class="cmd">get_pins</span> u_src/CK] -to [<span class="cmd">get_pins</span> u_dst/D]
+
+<span class="cmd">report_exceptions</span>
+<span class="cmd">report_exceptions</span> -ignored</code></pre></div>
+<p>这里两条命令使用相同的明确 pin 范围，false-path 例外覆盖同一范围的 max-delay 要求。5.0 不再是该路径的有效最大延迟约束；其他未匹配路径不受这两条命令影响。把两行交换顺序，不能当作恢复 max-delay 的方法。</p>
+<h3>部分覆盖，不等于整条命令失效</h3><p>假设一条 max-delay 命令覆盖 S→D1 与 S→D2，而另一条 false-path 命令只覆盖同等对象层级的 S→D1：D1 分支被切，D2 分支仍可能使用 max-delay。看报告时必须读范围与 ignored 原因；不能看见一个 overridden 就删除整个原约束。</p>
+<div class="callout warn"><strong>set_clock_groups 要单独管理。</strong><p>它排除了组间时钟关系，并不是 <code>report_exceptions</code> 中的一条普通点到点例外。需要保留某些 crossing 检查时，应重新设计分组/例外范围，再验证实际报告。不要依赖一条局部约束“从已经隔离的时钟组里挖洞”。</p></div>
+</section>
+<section id="verify"><div class="eyebrow">CHAPTER 07</div><h2>PT 验证流程：检查豁免与保留的样本</h2><p class="badge">本章报告脚本用于 pt_shell；FC 对应步骤见第 10 章。</p>
+<p class="lead">下面采用示例 1 的路径作为检查对象。建议在独立调试会话中做前后对照，保留同一网表、同一场景和同一组选项。</p>
+<h3>步骤 1 · 留下一份加例外前的基线</h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 在目标 false path 尚未加载的独立基线会话执行</span>
+<span class="cmd">report_clock</span>
+<span class="cmd">check_timing</span>
+<span class="cmd">report_timing</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_dst/D] -delay_type max
+<span class="cmd">report_timing</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_dst/D] -delay_type min</code></pre></div>
+<p>记录 startpoint、endpoint、launch/capture clock、path type、数据边沿与实际经过点。若基线已经 <code>No paths.</code>，先排查时钟、I/O、对象与连通性；不要直接推断目标约束有效。</p>
+<h3>步骤 2 · 检查集合，再施加并查看例外</h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code>set src [<span class="cmd">get_pins</span> u_src/CK]
+set dst [<span class="cmd">get_pins</span> u_dst/D]
+if {[<span class="cmd">sizeof_collection</span> $src] != 1 || [<span class="cmd">sizeof_collection</span> $dst] != 1} {
+    error &quot;Check source and destination selection&quot;
+}
+puts [<span class="cmd">get_object_name</span> $src]
+puts [<span class="cmd">get_object_name</span> $dst]
+
+<span class="cmd">set_false_path</span> -from $src -to $dst
+<span class="cmd">update_timing</span>
+<span class="cmd">report_exceptions</span>
+<span class="cmd">report_exceptions</span> -ignored
+<span class="cmd">report_clock</span> -groups</code></pre></div>
+<ul><li><code>report_exceptions</code>：查看例外类型、from/through/to 范围、Setup/Hold 栏和 ignored 信息。它不是逐条列出所有实际路径的穷举报告。</li><li><code>report_exceptions -ignored</code>：补查完全被忽略的命令。按报告自己的 Reasons 图例解读；常见有无效起点、无效终点、无实际路径、被覆盖。</li><li><code>report_clock -groups</code>：查看时钟组。不能因为例外报告里没有条目，就认定时钟之间没有被隔离。</li></ul>
+<h3>步骤 3 · 对比普通 setup / hold 报告</h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">report_timing</span> -from $src -to $dst -delay_type max -exceptions dominant
+<span class="cmd">report_timing</span> -from $src -to $dst -delay_type min -exceptions dominant</code></pre></div>
+<p>在通常仅搜索受约束路径的设置下，精确范围的两类报告都应不再包含被完全 false 的检查。若只用了 <code>-setup</code>，则应特意检查 min 路径仍受约束。若返回别的路线，比较完整路径条件。</p>
+<h3>步骤 4 · 需要时，尝试显示未约束路径的原因</h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 临时保存并修改报告设置，结束后恢复</span>
+set saved_unconstrained [<span class="cmd">get_app_var</span> timing_report_unconstrained_paths]
+<span class="cmd">set_app_var</span> timing_report_unconstrained_paths true
+
+<span class="cmd">report_timing</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_dst/D] -delay_type max -exceptions all
+
+<span class="cmd">set_app_var</span> timing_report_unconstrained_paths $saved_unconstrained</code></pre></div>
+<p>如果此路径可被搜索和报告，可检查 false-path / unconstrained 原因；它不是一份恢复了有效 required time 的正常违例报告。若仍然没有路径，回查 clock groups、case analysis、disabled arc、对象合法性和筛选条件。必要时从同一基线重新加载除目标例外外的约束，而不是在签核会话盲目删除全部例外。</p>
+<h3>步骤 5 · 验证一个应该保留的“反样本”</h3>
+<div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># 假设 u_src -&gt; u_keep 是真实存在且需要签核的同步路径</span>
+<span class="cmd">report_timing</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_keep/D] -delay_type max -exceptions all
+<span class="cmd">report_timing</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -to [<span class="cmd">get_pins</span> u_keep/D] -delay_type min -exceptions all
+
+<span class="cmd">report_analysis_coverage</span></code></pre></div>
+<p>确认 u_keep 路径仍有合理时钟、required time 和 slack。对于 CDC，反样本还应包含同步器第一级到第二级；对于模式约束，应包含被选中的功能支路。<code>report_analysis_coverage</code> 用于辅助发现未测试检查，不能代替功能正确性证明。</p>
+<div class="tablewrap"><table><thead><tr><th>仍然看到“同一条”路径？按此顺序排查</th><th>具体检查</th></tr></thead><tbody><tr><td>1. 命令是否真加载到当前场景</td><td>日志是否报错；加载顺序与后续 reset/removal；当前 mode / scenario。</td></tr><tr><td>2. 对象是否准确匹配</td><td>集合数目、真实层级、clock 对象名、CP/CK/D 引脚名。</td></tr><tr><td>3. 路径身份是否相同</td><td>from/to/through、先后顺序、launch/capture clock、rise/fall。</td></tr><tr><td>4. 检查类别是否相同</td><td>setup/max 或 hold/min；是否仅豁免其中一种。</td></tr><tr><td>5. 是正常检查还是调试展示</td><td>报告是否 unconstrained；是否显示 false_path 原因。</td></tr><tr><td>6. 是否有覆盖或模型变化</td><td>dominant/overridden、clock groups、case analysis、disabled timing。</td></tr></tbody></table></div>
+<details><summary>进阶：追查约束来自哪个文件</summary><p>支持该功能的版本可在读取约束之前开启 <code>sdc_save_source_file_information</code>，并按本版帮助选择报告来源信息的选项。必须在加载前保存来源，事后打开不能补回此前未记录的信息。使用 <code>man report_exceptions</code> 和 <code>man report_timing</code> 核对，避免复制其他工具或版本的选项。</p></details>
+</section>
+<section id="mistakes"><div class="eyebrow">CHAPTER 08</div><h2>错误示例 vs 正确示例</h2>
+<p class="lead">这里的“正确”都以所列设计前提已经成立为条件。</p>
+<h3>① 想切时钟域，却选了时钟 port</h3><div class="versus"><div class="bad"><h4>错误示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_ports</span> dma_ep_clk]</code></pre></div><p>只是在指定端口对象，不等于选中由该时钟发射的全部数据路径。</p></div><div class="good"><h4>正确示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_clocks</span> DMA_CLK] \
+    -to [<span class="cmd">get_clocks</span> SYS_CLK]</code></pre></div><p>若真实意图是已批准的 DMA_CLK → SYS_CLK 豁免，应按实际时钟对象和方向声明。port 名和 clock 名可以不同。</p></div></div>
+<h3>② 想双向隔离，却把同域路径也切了</h3><div class="versus"><div class="bad"><h4>错误示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_clocks</span> {A B}] \
+    -to [<span class="cmd">get_clocks</span> {A B}]</code></pre></div><p>形成 A→A、A→B、B→A、B→B 四种组合。</p></div><div class="good"><h4>正确示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_clocks</span> A] -to [<span class="cmd">get_clocks</span> B]
+<span class="cmd">set_false_path</span> -from [<span class="cmd">get_clocks</span> B] -to [<span class="cmd">get_clocks</span> A]</code></pre></div><p>只切两个跨域方向。完整异步组关系也可采用经过审核的 clock groups。</p></div></div>
+<h3>③ 同步器两级一起豁免</h3><div class="versus"><div class="bad"><h4>错误示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -to [<span class="cmd">get_pins</span> {u_sync1/D u_sync2/D}]</code></pre></div><p>不仅范围覆盖所有源，还切掉了正常的 sync1→sync2 同域检查。</p></div><div class="good"><h4>正确示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_ports</span> async_in] \
+    -to [<span class="cmd">get_pins</span> u_sync1/D]</code></pre></div><p>仅针对已经确认的异步输入边界；继续检查 sync1→sync2。</p></div></div>
+<h3>④ 用 false path 表达固定测试模式</h3><div class="versus"><div class="bad"><h4>错误示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_ports</span> test_mode]</code></pre></div><p>它不把 test_mode 固定为 0，也不自动关闭所有测试数据分支。</p></div><div class="good"><h4>正确示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="comment"># FUNC 模式，规格要求该信号始终为 0</span>
+<span class="cmd">set_case_analysis</span> 0 [<span class="cmd">get_ports</span> test_mode]</code></pre></div><p>传播真实模式值，核查被选择的 MUX 输入。其他模式必须独立建模。</p></div></div>
+<h3>⑤ 想切某支路，却豁免整个终点</h3><div class="versus"><div class="bad"><h4>错误示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -to [<span class="cmd">get_pins</span> u_dst/D]</code></pre></div><p>来自所有合法源、所有分支到这个终点的路径都可能被切。</p></div><div class="good"><h4>正确示例</h4><div class="codebox"><div class="codehead"><span>Tcl · PrimeTime</span><button class="copy" type="button">复制代码</button></div><pre><code><span class="cmd">set_false_path</span> -from [<span class="cmd">get_pins</span> u_src/CK] \
+    -through [<span class="cmd">get_pins</span> u_mux/A1] \
+    -to [<span class="cmd">get_pins</span> u_dst/D]</code></pre></div><p>若只证明这组起终点的 A1 支路无效，就明确写出三个条件。</p></div></div>
+<h3>还有三种需要立即纠正的思路</h3><ul><li><strong>“报负 slack，所以切掉。”</strong>先核对时钟、I/O、模式与真实采样要求，再修设计或约束。不能用例外隐藏有效违例。</li><li><strong>“get_* 没报错，所以选对了。”</strong>集合可能为空、过多或类型错误；显式打印名称与数量，检查 ignored。</li><li><strong>“旧网表能用，新网表原样用。”</strong>重命名、综合优化、DFT 插入、层级变化和派生时钟新增，都可能改变约束覆盖。每次都重新验证。</li></ul>
+</section>
+<section id="cheatsheet"><div class="eyebrow">CHAPTER 09</div><h2>速查表：从意图找到命令</h2><p class="small">以下例外报告与 coverage 命令沿用 PT；FC 的差异在第 10 章列出。</p>
+<div class="tablewrap"><table><thead><tr><th>意图</th><th>写法 / 工具</th><th>牢记</th></tr></thead><tbody>
+<tr><td>一个普通寄存器对</td><td><code>set_false_path -from [get_pins S/CK] -to [get_pins D/D]</code></td><td>默认 setup + hold；不自动限定组合分支。</td></tr>
+<tr><td>一个异步输入入口</td><td><code>-from [get_ports async_in] -to [get_pins sync1/D]</code></td><td>保留 sync1→sync2。</td></tr>
+<tr><td>A→B 单向跨域</td><td><code>-from [get_clocks A] -to [get_clocks B]</code></td><td>B→A 不受此条影响。</td></tr>
+<tr><td>双向跨域</td><td>两个相反方向的 <code>set_false_path</code></td><td>不要构造包含同域路径的集合积。</td></tr>
+<tr><td>两个完整异步组</td><td><code>set_clock_groups -asynchronous -group ... -group ...</code></td><td>明确列入派生时钟；考虑 SI 语义。</td></tr>
+<tr><td>经过 X 或 Y</td><td><code>-through [get_pins {X Y}]</code></td><td>同一集合 = OR。</td></tr>
+<tr><td>先 X 后 Y</td><td><code>-through [get_pins X] -through [get_pins Y]</code></td><td>多个 through = 按顺序 AND。</td></tr>
+<tr><td>只豁免一类检查</td><td><code>-setup</code> 或 <code>-hold</code></td><td>另一类仍需检查。</td></tr>
+<tr><td>只针对某种边沿</td><td><code>-rise_from/-fall_from</code>、<code>-rise_to/-fall_to</code>、<code>-rise_through/-fall_through</code></td><td>clock 对象按时钟发射/捕获边沿；数据 pin 按相应转换。不得把时钟边沿与 D 上的数据转换混为一谈。</td></tr>
+<tr><td>功能模式固定值</td><td><code>set_case_analysis 0/1 ...</code></td><td>本身不是新增 false-path exception。</td></tr>
+<tr><td>检查约束是否被忽略</td><td><code>report_exceptions -ignored</code></td><td>读本次报告的 Reasons 图例。</td></tr>
+<tr><td>看当前路径主导例外</td><td><code>report_timing ... -exceptions dominant</code></td><td>PT 完整拼写为复数；FC 本文版本为 <code>-exception dominant</code>。都不保证找回所有 false path。</td></tr>
+<tr><td>看主导与被覆盖例外</td><td><code>report_timing ... -exceptions all</code></td><td>此处为 PT；FC 本文版本不支持此 <code>all</code> 用法。未约束路径需额外报告设置。</td></tr>
+<tr><td>看时钟组 / 检查覆盖</td><td><code>report_clock -groups</code><br><code>report_analysis_coverage</code></td><td>与 exception 报告互补。</td></tr>
+</tbody></table></div><h3>写入签核约束前的五个问题</h3><ol class="checklist"><li>这条路径为什么无需该检查？能引用哪条功能/CDC/测试规格？</li><li>该理由在哪些 mode、scenario、clock relationship 下成立？</li><li>from/to/through 集合是否正好覆盖意图，且没有空匹配？</li><li>setup/hold、边沿与例外覆盖是否符合预期？</li><li>被豁免样本与应保留样本，是否都有前后报告证据？</li></ol>
+</section>
+<section id="fc"><div class="eyebrow">CHAPTER 10</div><h2>Fusion Compiler：单独核对报告与模式</h2><p class="lead">依据本地 Synopsys《Fusion Compiler Tool Commands》与《Timing Analysis User Guide》，T-2022.03-SP4。FC 的报告命令不会因为共用 SDC 语义而自动接受 PT 的全部选项。</p>
+<div class="tablewrap"><table><thead><tr><th>任务</th><th>PrimeTime</th><th>FC T-2022.03-SP4</th></tr></thead><tbody><tr><td>查看路径主导例外</td><td><code>report_timing … -exceptions dominant</code></td><td><code>report_timing … -exception dominant</code></td></tr><tr><td>同时看被覆盖例外</td><td><code>-exceptions all</code> / <code>overridden</code></td><td>本版该选项只接受 dominant；另查 <code>report_exceptions -ignored</code>。</td></tr><tr><td>允许报告未约束路径</td><td><code>set_app_var timing_report_unconstrained_paths true</code></td><td><code>set_app_options -name time.report_unconstrained_paths -value true</code></td></tr><tr><td>查看例外命令</td><td><code>report_exceptions</code> / <code>-ignored</code></td><td><code>report_exceptions</code> / <code>-dominant</code> / <code>-ignored</code></td></tr><tr><td>查看时钟组</td><td><code>report_clock -groups</code></td><td><code>report_clock -groups</code></td></tr><tr><td>覆盖范围</td><td>核对当前设计及分析会话/场景。</td><td><code>set_false_path</code> 和 <code>report_exceptions</code> 只作用于当前 mode；<code>report_timing</code> 可跨 active scenarios，需显式限定比较范围。</td></tr></tbody></table></div>
+<h3>1. 先查版本、当前模式与对象</h3><div class="codebox"><div class="codehead"><span>Tcl · Fusion Compiler T-2022.03-SP4</span><button class="copy" type="button">复制代码</button></div><pre><code>man set_false_path
+man report_exceptions
+man report_timing
+man time.report_unconstrained_paths
+current_mode
+current_scenario
+
+set src [get_pins u_src/CK]
+set dst [get_pins u_dst/D]
+if {[sizeof_collection $src] != 1 || [sizeof_collection $dst] != 1} {
+    error &quot;Expected exactly one source CK and one destination D&quot;
+}
+puts [get_object_name $src]
+puts [get_object_name $dst]</code></pre></div><p>先在没有目标例外的独立基线会话里，对同一 mode/scenario 与起终点保存 max/min 报告。下面假定已正确选中目标模式，并用当前 scenario 作为报告范围；它必须已启用相应的 setup/hold 分析。</p>
+<h3>2. 检查当前 mode 的例外</h3><div class="codebox"><div class="codehead"><span>Tcl · Fusion Compiler T-2022.03-SP4</span><button class="copy" type="button">复制代码</button></div><pre><code># 只有设计依据成立时，才在目标 mode 中施加此教学约束
+set_false_path -from $src -to $dst
+update_timing
+report_exceptions
+report_exceptions -dominant
+report_exceptions -ignored
+report_clock -groups
+
+# 用与设置时一致的对象范围缩小例外报告
+report_exceptions -from $src -to $dst
+
+report_timing -from $src -to $dst -scenarios [current_scenario] \
+    -delay_type max -exception dominant
+report_timing -from $src -to $dst -scenarios [current_scenario] \
+    -delay_type min -exception dominant</code></pre></div><div class="callout"><strong>例外报告的筛选不是“所有影响该路径的约束”查询。</strong><p>FC 的 <code>report_exceptions -from/-to</code> 会按原例外的路径说明对象筛选。原来用 clock 设置的约束，不能只用寄存器 pin 过滤而据此认定它不存在。先看不加过滤的报告，再按原 clock/pin/through 形式查询，并结合路径的主导例外。<code>-dominant</code> 表示至少影响一条路径，不等于覆盖了所有预期路径；<code>-ignored</code> 补查完全被忽略的例外，两者分开执行。</p></div>
+<h3>3. 需要时启用未约束路径报告</h3><div class="codebox"><div class="codehead"><span>Tcl · Fusion Compiler T-2022.03-SP4</span><button class="copy" type="button">复制代码</button></div><pre><code># 保存当前值，调试后恢复
+set saved_unconstrained [get_app_option_value -name time.report_unconstrained_paths]
+set_app_options -name time.report_unconstrained_paths -value true
+
+report_timing -from $src -to $dst -scenarios [current_scenario] \
+    -delay_type max -path_type full_clock_expanded -exception dominant
+
+set_app_options -name time.report_unconstrained_paths -value $saved_unconstrained</code></pre></div><p>这个设置允许工具搜索未约束路径，<code>-exception dominant</code> 则为已找到的路径补充例外信息。它们都不保证枚举所有 false path，也不会恢复被豁免的检查。若命令中途报错，先执行最后一行恢复原设置，再按本机帮助排查。</p>
+<ul><li>FC 本文版本会对找不到受约束路径的终点进一步搜索未约束路径；有其他可报告路径时，仍需收紧起终点/through 范围。</li><li>调试时先去掉 <code>-slack_lesser_than</code> 与 <code>-groups</code> 等筛选：本版它们会排除未约束路径。未约束路径没有可用于签核的有限 slack。</li><li>本版 exception 报告不搭配 <code>-path_type short/end/end_detailed</code>；上例使用 <code>full_clock_expanded</code>。</li><li>无路径仍可能来自 case analysis、禁用弧、对象/时钟缺失或实际不连通。查看报告和模型，再用保留相同网表、场景的独立基线对照。</li></ul>
+<h3>4. 再确认应该保留的路径仍受检查</h3><div class="codebox"><div class="codehead"><span>Tcl · Fusion Compiler T-2022.03-SP4</span><button class="copy" type="button">复制代码</button></div><pre><code># u_keep 是真实存在、未获豁免的同步终点；请替换成实际对象
+report_timing -from $src -to [get_pins u_keep/D] \
+    -scenarios [current_scenario] -delay_type max -exception dominant
+report_timing -from $src -to [get_pins u_keep/D] \
+    -scenarios [current_scenario] -delay_type min -exception dominant</code></pre></div><p>逐个目标 mode 检查例外，逐个相关 scenario 对照 max/min；确认 required time、时钟边沿、路径身份与预期一致。CDC 还要保留同步器第一级到第二级的同域检查。</p><div class="callout warn"><strong>删除或覆盖例外要格外明确。</strong><p>不要把 <code>set_false_path -reset_path</code> 当成“恢复正常检查”：该形式会先清理匹配的既有例外，再施加新的 false path。FC 本地手册在 reset_path/reset_paths 的文字处有不一致，本教程不提供跨工具通用删除脚本；调试对照优先从干净基线重新加载所需约束。正式 SDC 的修改须同时检查重叠例外、clock groups 与所有适用模式。</p></div>
+<p class="source">来源与版本边界见<a href="#references">第 11 章</a>；PT 与 FC 的报告方法分别见第 7、10 章。</p></section>
+<section id="references"><div class="eyebrow">CHAPTER 11</div><h2>参考、适用版本与使用说明</h2><p>本页以你提供的原 PrimeTime 中文教程为基础，保留主要内容与 12 个教学示例。本次重点用下列本地 Synopsys 手册核对 FC 对象、报告命令和模式范围，并交叉核对 PT 培训资料中的例外报告与未约束路径设置。未声明兼容所有版本，也没有将 ICC2/DC 的报告命令作为 PT/FC 命令使用。</p><ol class="source"><li><a href="file:///C:/Users/32549/Desktop/obsidian/sd029/%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3/FC/Fusion%20Compiler%E2%84%A2%20Tool%20Commands.md">Synopsys Fusion Compiler Tool Commands · T-2022.03-SP4</a></li><li><a href="file:///C:/Users/32549/Desktop/obsidian/sd029/%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3/FC/Fusion%20Compiler%E2%84%A2%20Timing%20Analysis%20User%20Guide.md">Synopsys Fusion Compiler Timing Analysis User Guide · T-2022.03-SP4</a></li><li><a href="file:///C:/Users/32549/Desktop/obsidian/sd029/%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3/PT/PrimeTime_Student-Guide%202018.06.md">Synopsys PrimeTime Student Guide · 2018.06</a></li><li><a href="file:///C:/Users/32549/Documents/Codex/2026-09-15/referenced-chatgpt-conversation-this-is-an/outputs/PrimeTime_set_false_path_%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B.html">原稿：PrimeTime_set_false_path_中文教程.html</a>（保留原文件，本页为面向 Obsidian 的扩展版）。原稿还列有 PrimeTime User Guide V-2023.12 等参考资料。</li></ol><p class="small">这些参考链接指向本机已有资料，移动到其他电脑后应按新路径定位。FC 手册的 SYNTAX/ARGUMENTS 与部分注释存在单复数等文字差异，本文在关键处明确标出；实际安装版本的 man 帮助优先。</p><div class="codebox"><div class="codehead"><span>在对应的 pt_shell / fc_shell 中分别核对</span><button class="copy" type="button">复制代码</button></div><pre><code>man set_false_path
+man report_timing
+man report_exceptions
+man set_clock_groups
+man set_multicycle_path</code></pre></div><div class="callout"><strong>示例运行边界</strong><p>实例、端口、时钟和连线都是教学假设。本文未连接 PT/FC 和实际网表运行；完成的是手册核对与网页检查。实际应用需替换真实对象，核对版本，并采用第 7、10 章的正反样本及模式检查流程。</p></div><p class="small">本地阅读无需联网，样式、目录、复制与打印交互均内嵌。整理日期：2026-09-15。</p></section>
+<footer class="footer">PRIMETIME / FUSION COMPILER · SET_FALSE_PATH<br>一个好的例外，必须既有功能依据，也有覆盖证据。</footer></main></div><div class="status" role="status" aria-live="polite"></div>
+<script>
+const statusBox=document.querySelector('.status');let statusTimer;
+function notify(text){statusBox.textContent=text;statusBox.style.display='block';clearTimeout(statusTimer);statusTimer=setTimeout(()=>statusBox.style.display='none',2400)}
+document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{const text=button.closest('.codebox').querySelector('code').textContent;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text)}else{const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;left:-9999px';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();if(!ok)throw Error('copy')}notify('代码已复制')}catch(e){notify('请选中代码，按 Ctrl+C 复制')}}));
+const links=[...document.querySelectorAll('nav a')],sections=[...document.querySelectorAll('section')];let scheduled=false;function updateNav(){let current=sections[0];for(const section of sections){if(section.getBoundingClientRect().top<=140)current=section}links.forEach(a=>a.classList.toggle('active',a.hash==='#'+current.id));scheduled=false}addEventListener('scroll',()=>{if(!scheduled){scheduled=true;requestAnimationFrame(updateNav)}},{passive:true});updateNav();
+</script></body></html>

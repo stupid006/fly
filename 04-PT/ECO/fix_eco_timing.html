@@ -1,0 +1,756 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>fix_eco_timing · 中文工程参考手册</title><style>
+:root{--ink:#20323d;--muted:#70818a;--teal:#087f79;--paper:#f6f5f0;--line:#dde5e2;--navy:#142d3c}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:35px}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;font-size:15px;line-height:1.9}button,input{font:inherit}button{cursor:pointer}a{color:var(--teal)}.sidebar{position:fixed;inset:0 auto 0 0;width:260px;background:#eef0ea;border-right:1px solid var(--line);padding:34px 26px;overflow:auto}.brand{font-size:12px;letter-spacing:2px;font-weight:800;color:var(--teal)}.sidebar h2{font-size:21px;line-height:1.5;margin:20px 0 5px}.edition{font-size:11px;color:var(--muted);letter-spacing:1px}.sidebar nav{margin-top:27px}.sidebar nav a{display:block;text-decoration:none;color:#54636b;font-size:13px;padding:9px 11px;border-radius:6px;margin:2px 0;line-height:1.5}.sidebar nav a:hover,.sidebar nav a.active{background:#dce9e1;color:#076b64}.side-foot{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}main{margin-left:260px;max-width:1240px;padding:45px 65px 70px}.topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;letter-spacing:1.7px;margin-bottom:35px}.print{background:white;border:1px solid var(--line);border-radius:7px;padding:7px 14px;color:var(--ink);font-size:12px;letter-spacing:0}.hero{position:relative;background:var(--navy);color:#f4f6ee;padding:47px 43px 34px;border-radius:16px;overflow:hidden}.hero:after{content:'';position:absolute;width:300px;height:300px;border:1px solid #ffffff12;border-radius:50%;right:-145px;top:-100px;box-shadow:0 0 0 40px #ffffff04,0 0 0 80px #ffffff03;pointer-events:none}.eyebrow{color:#76cdc0;font-size:11px;letter-spacing:3px;font-weight:700}.hero h1{font:600 clamp(26px,3.3vw,43px)/1.3 Consolas,monospace;letter-spacing:-1.8px;margin:21px 0 4px}.hero .subtitle{font-size:24px;font-weight:400;letter-spacing:3px;margin:0}.hero .intro{color:#aec5ce;font-size:14px;max-width:590px;margin:19px 0 28px}.stats{display:flex;gap:34px;border-top:1px solid #ffffff21;padding-top:22px}.stat b{font-size:25px;font-weight:500;color:#f6fbf7}.stat span{font-size:11px;color:#a3bcc5;display:block;letter-spacing:1px}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0 24px}.quick a{background:white;border:1px solid var(--line);padding:17px 19px;border-radius:9px;text-decoration:none;font-size:14px;font-weight:600}.quick small{display:block;color:var(--muted);font-size:11px;font-weight:400}.searchbox{background:#fff;border:1px solid var(--line);border-radius:9px;margin:22px 0 30px;padding:12px 17px;display:flex;align-items:center;gap:12px}.searchbox label{color:var(--teal);font-size:12px;white-space:nowrap}.searchbox input{width:100%;border:0;outline:0;background:transparent;font-size:13px}.searchbox button{border:0;background:#edf4ee;color:var(--teal);border-radius:4px;font-size:12px;padding:4px 11px;white-space:nowrap}.searchbox output{font-size:11px;color:var(--muted);white-space:nowrap}.source-note{font-size:12px;color:var(--muted)}blockquote{margin:0 0 30px;padding:13px 20px;border-left:3px solid #b7cfc3;background:#eef1e9}blockquote p{margin:0}.chapter{margin-top:48px}h2{font-size:24px;font-weight:650;letter-spacing:-.5px;margin:0 0 23px;padding-bottom:15px;border-bottom:2px solid var(--ink)}h3{font-size:18px;line-height:1.7;margin:40px 0 18px;padding:14px 18px;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:0 8px 8px 0;background:#fff;overflow-wrap:anywhere}p{margin:14px 0}ul,ol{padding-left:24px}li{margin:7px 0}strong{font-weight:650;color:#163e4a}code{font-family:Consolas,"Cascadia Code",monospace;font-size:.88em;background:#e7eee9;color:#176763;padding:3px 5px;border-radius:4px;overflow-wrap:anywhere}h2 code,h3 code{background:transparent;padding:0;color:inherit}.code-panel{background:var(--navy);border-radius:9px;overflow:hidden;margin:19px 0 25px;box-shadow:0 5px 14px #17343f08}.code-top{padding:8px 18px;display:flex;justify-content:space-between;align-items:center;background:#1d3a49;color:#93b5c1;font-size:10px;letter-spacing:1.4px}.copy{border:1px solid #ffffff24;background:transparent;color:#c9dfe3;border-radius:4px;font-size:11px;padding:2px 9px;letter-spacing:0}pre{padding:18px 22px;margin:0;overflow:auto;line-height:1.75}pre code{background:none;padding:0;color:#cfe9dc;font-size:12.5px;overflow-wrap:normal}.table-wrap{overflow:auto;margin:20px 0 27px;border:1px solid var(--line);border-radius:9px;background:white}table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;line-height:1.8}th{background:#e7eee7;color:#24443e;font-size:12px;font-weight:650;padding:13px 16px}td{padding:13px 16px;vertical-align:top;border-top:1px solid #e7ece8}tr:nth-child(even){background:#f9faf6}td:first-child{font-weight:550}td code{font-size:11.5px}hr{border:0;border-top:1px solid var(--line);margin:35px 0}footer{margin-top:55px;color:var(--muted);border-top:1px solid var(--line);padding-top:20px;font-size:11px;display:flex;justify-content:space-between}mark{background:#ffe4a3;color:inherit;padding:2px;border-radius:3px}.empty{display:none;color:var(--muted);text-align:center;padding:35px}button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+@media(min-width:1600px){main{margin-left:calc(260px + (100vw - 1500px)/2)}}@media(max-width:1000px){.sidebar{width:215px;padding:25px 17px}main{margin-left:215px;padding:30px}.hero{padding:35px 28px}}@media(max-width:720px){.sidebar{position:static;width:auto;padding:20px}.sidebar h2,.edition,.side-foot{display:none}.sidebar nav{display:flex;gap:5px;overflow:auto;margin-top:14px}.sidebar nav a{white-space:nowrap;font-size:12px;padding:7px}.sidebar nav a.active{background:transparent}main{margin:0;padding:22px 17px}.topline{margin-bottom:20px}.hero{padding:29px 24px}.hero .subtitle{font-size:20px}.stats{gap:23px}.quick{gap:7px}.quick a{padding:12px;font-size:12px}.quick small{font-size:10px}h2{font-size:21px}.searchbox{flex-wrap:wrap}.searchbox input{flex:1;min-width:120px}h3{font-size:16px}td,th{padding:10px;min-width:95px}.table-wrap table{min-width:530px}}@media print{body{background:white;font-size:10pt;line-height:1.7}.sidebar,.topline,.searchbox,.quick,.copy{display:none!important}main{margin:0!important;padding:0;max-width:none}.hero{padding:22px 28px;border-radius:0;print-color-adjust:exact;-webkit-print-color-adjust:exact}.hero h1{font-size:30pt}.hero .subtitle{font-size:20pt}.hero .intro{margin:12px 0}.stats{padding-top:12px}.source-note{margin-top:18px}h2{font-size:19pt;break-after:avoid}h3{font-size:12pt;break-after:avoid;margin-top:22px}.chapter{margin-top:30px}.code-panel{break-inside:avoid;background:#eef3ef;box-shadow:none;border:1px solid #d4dfd7;print-color-adjust:exact}.code-top{background:#dfe8e0;color:#334d40}pre{white-space:pre-wrap;padding:12px 15px}pre code{color:#203f37;font-size:9pt}.table-wrap{overflow:visible;border-radius:0}table{font-size:9pt}thead{display:table-header-group}tr{break-inside:avoid}td,th{padding:8px}footer{margin-top:25px}a{color:inherit;text-decoration:none}[hidden]{display:block!important}@page{size:A4;margin:17mm 16mm}}
+</style></head><body><aside class="sidebar"><div class="brand">TIMING / FIELD GUIDE</div><h2>ECO 时序修复<br>中文参考手册</h2><div class="edition">PRIMETIME · U-2022.12-SP5</div><nav aria-label="章节目录"><a href="#section-0">1. 命令用途</a><a href="#section-1">2. 语法</a><a href="#section-2">3. 快速理解</a><a href="#section-3">4. 参数详解</a><a href="#section-33">5. Unfixable Violation Report</a><a href="#section-37">6. 典型用法</a><a href="#section-53">7. 导出实际 ECO 修改</a><a href="#section-54">8. 推荐工作流程</a><a href="#section-55">9. 常见误区</a><a href="#section-56">10. 相关命令和设置</a></nav><div class="side-foot">查参数 · 看示例 · 定位瓶颈<br>离线可读，无需联网</div></aside><main><div class="topline"><span>ENGINEERING REFERENCE / 01</span><button class="print" onclick="window.print()">打印 / 保存 PDF</button></div><header class="hero"><div class="eyebrow">PRIMETIME ENGINEERING CHANGE ORDER</div><h1>fix_eco_timing</h1><p class="subtitle">中文工程参考手册</p><p class="intro">从路径选择、修复方法到物理约束，把 setup / hold ECO 的关键参数、用法与排障线索放在手边。</p><div class="stats"><div class="stat"><b>30</b><span>命令参数</span></div><div class="stat"><b>18</b><span>REASON CODES</span></div><div class="stat"><b>15</b><span>典型用法</span></div></div></header><div class="quick"><a href="#section-3">01 / 查参数<small>范围、方法、目标与限制</small></a><a href="#section-36">02 / 查原因<small>未修复违例诊断表</small></a><a href="#section-37">03 / 看示例<small>从 sizing 到 clock ECO</small></a></div><div class="searchbox"><label for="search">快速查找</label><input id="search" type="search" placeholder="输入参数、reason code 或关键词，如 hold_margin" autocomplete="off"><output id="count"></output><button id="next" type="button">下一处 ↓</button></div><article id="content"><div class="source-note"><blockquote>
+<p>面向 PrimeTime ECO timing fixing 的中文速查资料。本文依据用户提供的 Synopsys <code>fix_eco_timing</code> man page（文档标注版本：U-2022.12-SP5）重新组织撰写，保留命令、参数、取值、关键约束和实用示例，但不是原手册的逐句翻译。不同工具版本的行为可能有差异，执行前请以当前安装版本的 <code>man fix_eco_timing</code> 为准。</p>
+</blockquote>
+</div><section class="chapter"><h2 id="section-0">1. 命令用途</h2>
+<p><code>fix_eco_timing</code> 通过工程变更（ECO）修复或改善 setup（最大延迟）与 hold（最小延迟）违例。常见动作包括：</p>
+<ul>
+<li>将实例替换为逻辑等价、驱动能力不同的 library cell；</li>
+<li>在数据路径或时钟网络中插入 buffer / inverter pair；</li>
+<li>在特定条件下绕过或删除已有 buffer；</li>
+<li>利用 placement、空闲 site、spare cell 等物理信息生成更容易落地的 ECO；</li>
+<li>在多场景、PBA、功耗约束下选择修改方案；</li>
+<li>分析未能修复的违例及其原因。</li>
+</ul>
+<p>命令返回 <code>status</code>。实际 ECO 修改保存在当前 PrimeTime session 中，可再用 <code>write_changes</code> 导出。</p>
+</section><section class="chapter"><h2 id="section-1">2. 语法</h2>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing \
+    -type setup|hold \
+    [-methods method_list] \
+    [-slack_lesser_than slack_limit] \
+    [-slack_greater_than slack_limit] \
+    [-group group_name] \
+    [-pba_mode none|path|exhaustive|ml_exhaustive] \
+    [-from from_list] \
+    [-to to_list] \
+    [-setup_margin margin] \
+    [-hold_margin margin] \
+    [-buffer_list list] \
+    [-verbose] \
+    [-current_library] \
+    [-ignore_drc] \
+    [-cell_type combinational|sequential|clock_network] \
+    [-physical_mode none|open_site|occupied_site|freeze_silicon] \
+    [-path_selection_options option_string] \
+    [-timeout seconds] \
+    [-power_attribute power_attribute_name] \
+    [-clock_fixes_per_change violation_limit] \
+    [-clock_max_level_from_reg level_limit] \
+    [-estimate_unfixable_reasons] \
+    [-power_mode total|dynamic|leakage] \
+    [-leakage_scenario scenario_name] \
+    [-dynamic_scenario scenario_name] \
+    [-load_cell_list list] \
+    [-target_violation_type endpoint|tns] \
+    [-wns_limit wns_value] \
+    [-unfixable_reasons_format text|csv] \
+    [-unfixable_reasons_prefix string]
+</code></pre></div>
+<p>时间值使用当前 library time unit。例如，当时间单位为 ns 时，<code>0.05</code> 表示 50 ps。</p>
+</section><section class="chapter"><h2 id="section-2">3. 快速理解</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>主要参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>修 setup 还是 hold？</td>
+<td><code>-type</code></td>
+</tr>
+<tr>
+<td>修哪些路径？</td>
+<td><code>-group</code>、<code>-from</code>、<code>-to</code>、<code>-slack_*</code>、<code>-path_selection_options</code></td>
+</tr>
+<tr>
+<td>用什么 ECO 手段？</td>
+<td><code>-methods</code>、<code>-buffer_list</code>、<code>-load_cell_list</code></td>
+</tr>
+<tr>
+<td>目标修到多少 slack？</td>
+<td><code>-setup_margin</code>、<code>-hold_margin</code></td>
+</tr>
+<tr>
+<td>允许修改哪类 cell？</td>
+<td><code>-cell_type</code></td>
+</tr>
+<tr>
+<td>是否考虑真实版图空间？</td>
+<td><code>-physical_mode</code></td>
+</tr>
+<tr>
+<td>用 GBA 还是 PBA？</td>
+<td><code>-pba_mode</code></td>
+</tr>
+<tr>
+<td>是否兼顾功耗？</td>
+<td><code>-power_attribute</code>、<code>-power_mode</code></td>
+</tr>
+<tr>
+<td>为什么没有修掉？</td>
+<td><code>-verbose</code>、<code>-estimate_unfixable_reasons</code></td>
+</tr>
+<tr>
+<td>如何导出最终修改？</td>
+<td><code>write_changes</code></td>
+</tr>
+</tbody></table></div>
+</section><section class="chapter"><h2 id="section-3">4. 参数详解</h2>
+<h3 id="section-4">4.1 <code>-type setup | hold</code></h3>
+<p>必选参数。</p>
+<ul>
+<li><code>setup</code>：处理 maximum-delay / setup timing violation。</li>
+<li><code>hold</code>：处理 minimum-delay / hold timing violation。</li>
+</ul>
+<p>当设计同时存在 setup 与 hold 违例时，常见顺序是先 setup、后 hold。原因是 setup fixing 可能引入新的 hold 风险，而 hold fixing 会尝试避免造成新的 setup 或 DRC 问题。最终仍应按项目 flow 和 signoff 策略复核。</p>
+<h3 id="section-5">4.2 <code>-methods method_list</code></h3>
+<p>指定允许使用的 ECO 方法。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>method</th>
+<th>作用</th>
+<th>主要限制/适用范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>size_cell</code></td>
+<td>用逻辑等价但 drive strength 不同的 cell 替换路径上的 cell</td>
+<td>setup/hold 均可用</td>
+</tr>
+<tr>
+<td><code>size_cell_side_load</code></td>
+<td>除路径 cell 外，也考虑 driver fanout 上的 side-load cell，以降低关键路径寄生负载</td>
+<td>仅 <code>-type setup</code>；setup 默认 method</td>
+</tr>
+<tr>
+<td><code>insert_buffer</code></td>
+<td>在 driver pin、load pin 或 route 上插 buffer</td>
+<td>需要 <code>-buffer_list</code>；setup 插 buffer 需要 physical mode</td>
+</tr>
+<tr>
+<td><code>insert_buffer_at_load_pins</code></td>
+<td>仅在 load pin 附近插 buffer</td>
+<td>hold fixing 可用；不要同时指定普通 <code>insert_buffer</code> 来表达“仅 load”</td>
+</tr>
+<tr>
+<td><code>insert_buffer_at_driver_pins</code></td>
+<td>仅在 driver pin 附近插 buffer</td>
+<td>setup fixing 可用；不要同时指定普通 <code>insert_buffer</code> 来表达“仅 driver”</td>
+</tr>
+<tr>
+<td><code>insert_inverter_pair</code></td>
+<td>插入两级 inverter，保持逻辑极性不变</td>
+<td>需要 inverter <code>-buffer_list</code>；不能与 <code>insert_buffer</code> 同用</td>
+</tr>
+<tr>
+<td><code>bypass_buffer</code></td>
+<td>绕过 clock network 中的 buffer 或 inverter pair</td>
+<td>仅配合 <code>-cell_type clock_network</code></td>
+</tr>
+<tr>
+<td><code>remove_buffer</code></td>
+<td>删除 buffer，以改善 setup，并尽量不恶化 hold/DRC</td>
+<td>仅 setup；必须单独使用；另有多项互斥参数</td>
+</tr>
+</tbody></table></div>
+<p>setup fixing 的要点：</p>
+<ul>
+<li>sizing 可选 <code>size_cell</code> 或 <code>size_cell_side_load</code>，默认是 <code>{size_cell_side_load}</code>；</li>
+<li><code>insert_buffer</code> 可单独使用，也可与 sizing 组合，但 <code>-physical_mode</code> 必须为 <code>open_site</code> 或 <code>occupied_site</code>；</li>
+<li><code>freeze_silicon</code> 模式只允许 <code>insert_buffer</code>；</li>
+<li><code>insert_buffer_at_driver_pins</code> 用于把位置限定在 driver pin。</li>
+</ul>
+<p>hold fixing 的要点：</p>
+<ul>
+<li>可使用 <code>size_cell</code>、<code>insert_buffer</code>、<code>insert_buffer_at_load_pins</code>、<code>insert_inverter_pair</code>；</li>
+<li>默认是 <code>{size_cell insert_buffer}</code>；组合使用时，工具会先尝试 sizing，再考虑插 buffer，以减少新增 cell 和版图扰动；</li>
+<li><code>insert_buffer_at_load_pins</code> 用于把插入位置限定在 load pin。</li>
+</ul>
+<p><code>remove_buffer</code> 的特殊限制：</p>
+<ul>
+<li>不能用于 hold fixing；</li>
+<li>setup fixing 中不能与其他 method 组合；</li>
+<li>不能与 <code>-cell_type</code>、<code>-power_attribute</code>、<code>-current_library</code>、<code>-load_cell_list</code>、<code>-timeout</code>、<code>-unfixable_reasons_format</code>、<code>-unfixable_reasons_prefix</code>、<code>-power_mode</code> 同用。</li>
+</ul>
+<h3 id="section-6">4.3 <code>-slack_lesser_than slack_limit</code></h3>
+<p>只处理 slack 比给定值更差的路径，即：</p>
+<div class="code-panel"><div class="code-top"><span>REFERENCE</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-text">slack &lt; slack_limit
+</code></pre></div>
+<p>默认值为 <code>0</code>，因此默认目标是 negative-slack violation。</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">-slack_lesser_than -0.1
+</code></pre></div>
+<p>表示只处理比 <code>-0.1</code> 更差的路径；<code>-0.05</code> 不在本轮范围内。</p>
+<p>如果要把正 slack 路径也纳入 overfix，需要把上限设为正值，并配合正 margin。例如：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -slack_lesser_than 0.2 \
+    -setup_margin 0.2
+</code></pre></div>
+<h3 id="section-7">4.4 <code>-slack_greater_than slack_limit</code></h3>
+<p>只处理 slack 比给定值更好的路径，即：</p>
+<div class="code-panel"><div class="code-top"><span>REFERENCE</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-text">slack &gt; slack_limit
+</code></pre></div>
+<p>这个参数常用于跳过极严重、可能来自 design/constraint 问题的违例。例如：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">-slack_greater_than -2.0
+</code></pre></div>
+<p>可把修复范围限制在 <code>-2.0</code> 以上。两个 slack 参数可组合：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">-slack_greater_than -0.5 \
+-slack_lesser_than 0
+</code></pre></div>
+<p>大致表示只处理：</p>
+<div class="code-panel"><div class="code-top"><span>REFERENCE</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-text">-0.5 &lt; slack &lt; 0
+</code></pre></div>
+<h3 id="section-8">4.5 <code>-group group_name</code></h3>
+<p>只修指定 path group 中的路径。支持：</p>
+<ul>
+<li>单个 group 名称；</li>
+<li>多个 group 的 Tcl list；</li>
+<li>wildcard；</li>
+<li><code>get_path_groups</code> 返回的 collection。</li>
+</ul>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup -group {SYSCLK* IOCLK}
+</code></pre></div>
+<h3 id="section-9">4.6 <code>-from from_list</code> / <code>-to to_list</code></h3>
+<p>分别限定 timing path 的 startpoint 和 endpoint：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -from [get_pins REG_A/Q] \
+    -to   [get_pins REG_B/D]
+</code></pre></div>
+<p>与 <code>report_timing</code> / <code>get_timing_paths</code> 的同名参数不同，这里只能指定 pin 或 port，不能直接传 cell 或 net。</p>
+<h3 id="section-10">4.7 <code>-pba_mode none | path | exhaustive | ml_exhaustive</code></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>值</th>
+<th>含义</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>none</code></td>
+<td>普通 GBA，不启用 PBA</td>
+<td>默认；最快</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>先由 GBA 收集路径，再对路径做 PBA</td>
+<td>精度高于纯 GBA</td>
+</tr>
+<tr>
+<td><code>exhaustive</code></td>
+<td>exhaustive PBA，寻找真正的 worst-case path</td>
+<td>最精确、计算量最大</td>
+</tr>
+<tr>
+<td><code>ml_exhaustive</code></td>
+<td>机器学习辅助的 exhaustive PBA</td>
+<td>在 flow 中权衡 runtime 与精度，接近 signoff 时趋近 exhaustive 的结果与开销</td>
+</tr>
+</tbody></table></div>
+<p>所选模式既影响违例识别，也影响修复过程使用的 timing 结果。</p>
+<h3 id="section-11">4.8 <code>-setup_margin margin</code></h3>
+<p>单位为 library time unit，默认 <code>0</code>。</p>
+<ul>
+<li>setup fixing 中：指定目标 setup slack；正值表示 overfix，负值表示 underfix。</li>
+<li>hold fixing 中：指定修 hold 时希望保护的最小 setup margin。</li>
+</ul>
+<p>注意：margin 不会自动扩大路径选择范围。默认没有被选中的正 slack 路径，不会仅因为设置了正 margin 就被修改。若要处理正 slack 路径，需要同时调整 <code>-slack_lesser_than</code>。</p>
+<h3 id="section-12">4.9 <code>-hold_margin margin</code></h3>
+<p>单位为 library time unit，默认 <code>0</code>。</p>
+<ul>
+<li>hold fixing 中：指定目标 hold slack；正值 overfix，负值 underfix。</li>
+<li>setup fixing 中：指定修 setup 时希望保护的最小 hold margin。</li>
+</ul>
+<p>未显式设置 margin 时，工具也会尝试保护 DRC 和另一类 timing，但其行为不一定完全等同于显式指定 <code>-setup_margin 0.0 -hold_margin 0.0</code>。</p>
+<h3 id="section-13">4.10 <code>-buffer_list list</code></h3>
+<p>指定 buffer insertion 可使用的 buffer，或 <code>insert_inverter_pair</code> 可使用的 inverter。</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">-buffer_list {BUFX1 BUFX2 DLYX1 DLYX2}
+</code></pre></div>
+<p>关键规则：</p>
+<ul>
+<li>使用 <code>insert_buffer</code> 或 <code>insert_inverter_pair</code> 时必须提供；没有默认 list；</li>
+<li>使用 library cell 的 base name，例如 <code>BUFX2</code>，通常不写成 <code>mylib/BUFX2</code>；</li>
+<li>工具按 <code>link_path</code> 中的 library 顺序搜索，遇到第一个同名 cell 即使用；</li>
+<li>list 中的 cell 即使 <code>dont_use=true</code>，仍可用于 buffer insertion；<code>dont_use</code> 只限制 cell sizing；</li>
+<li>hold 下组合 <code>{size_cell insert_buffer}</code> 时，工具可能先插 list 中的 buffer，再把它 size 成未显式列入 list 的其他 buffer。</li>
+</ul>
+<h3 id="section-14">4.11 <code>-load_cell_list list</code></h3>
+<p>指定可沿 data path 使用的 load-capacitance cell、buffer 或 inverter，主要配合 hold 的 <code>insert_buffer</code> 方法处理几 ps 量级的小违例。</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">-load_cell_list {CLOAD1 CLOAD2}
+</code></pre></div>
+<p>它可以单独使用，也可以与 <code>-buffer_list</code> 同时使用。</p>
+<h3 id="section-15">4.12 <code>-verbose</code></h3>
+<p>打印更多修复过程信息。在 DMSA 中会显示各 scenario 的违例信息。</p>
+<p>若以下变量被设为正整数，<code>-verbose</code> 还会在真正执行 fixing 后生成 <code>Unfixable Violations</code> 报告：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">set_app_var eco_report_unfixed_reason_max_endpoints 50
+</code></pre></div>
+<p>DMSA flow 中，该变量需要在 manager 上设置。</p>
+<h3 id="section-16">4.13 <code>-estimate_unfixable_reasons</code></h3>
+<p>只做 fixing analysis，不真正修改当前 design；用于估算哪些违例难以修复以及原因。使用前同样必须把 <code>eco_report_unfixed_reason_max_endpoints</code> 设为正整数。</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">set_app_var eco_report_unfixed_reason_max_endpoints 50
+
+fix_eco_timing -type hold \
+    -buffer_list {BUFX1 BUFX2} \
+    -estimate_unfixable_reasons
+</code></pre></div>
+<p>重要：运行日志里即使出现类似“多少 cell 被 resized”的过程性统计，也只是分析中的模拟 change，不会保留为实际设计修改，因此没有可供 <code>write_changes</code> 导出的真实 ECO。</p>
+<h3 id="section-17">4.14 <code>-unfixable_reasons_format text | csv</code></h3>
+<p>设置 unfixable reasons 报告格式：</p>
+<ul>
+<li><code>text</code>：文本格式；</li>
+<li><code>csv</code>：可供 PrimeTime GUI 或电子表格使用；</li>
+<li>未指定该参数时，若启用了文件输出，则默认同时生成 text 与 csv。</li>
+</ul>
+<h3 id="section-18">4.15 <code>-unfixable_reasons_prefix string</code></h3>
+<p>设置报告文件名前缀。只有提供该参数才会实际生成独立报告文件。</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">-unfixable_reasons_prefix abc \
+-unfixable_reasons_format csv
+</code></pre></div>
+<p>会生成类似：</p>
+<div class="code-panel"><div class="code-top"><span>REFERENCE</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-text">abc_eco_tim.csv
+</code></pre></div>
+<h3 id="section-19">4.16 <code>-current_library</code></h3>
+<p>cell sizing 时只允许从原 cell 所属 library 中选择 replacement。候选更少，通常可改善 runtime，但也可能降低 QoR。</p>
+<h3 id="section-20">4.17 <code>-ignore_drc</code></h3>
+<p>默认情况下，路径上已有 <code>max_transition</code>、<code>max_capacitance</code> 或 <code>max_fanout</code> 违例时，工具不会继续做 timing fixing。使用 <code>-ignore_drc</code> 后可忽略这些限制继续尝试，但可能新增或恶化 DRC，适合作为明确接受风险后的手段，而非默认选项。</p>
+<h3 id="section-21">4.18 <code>-cell_type combinational | sequential | clock_network</code></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>值</th>
+<th>修改对象</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>combinational</code></td>
+<td>data path 上的组合逻辑 cell</td>
+<td>默认</td>
+</tr>
+<tr>
+<td><code>sequential</code></td>
+<td>sequential cell</td>
+<td>只支持 <code>-methods size_cell</code></td>
+</tr>
+<tr>
+<td><code>clock_network</code></td>
+<td>时钟网络中的组合 cell</td>
+<td>可 sizing、插入或 bypass，以改变 clock arrival time</td>
+</tr>
+</tbody></table></div>
+<p>可以只指定一种，也可以用 <code>{combinational sequential}</code> 同时处理组合与时序 cell。<code>sequential</code> 与 <code>clock_network</code> 修改可能影响较大，通常先尝试 <code>combinational</code>，不足时再考虑其他类型。</p>
+<h3 id="section-22">4.19 <code>-physical_mode none | open_site | occupied_site | freeze_silicon</code></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>值</th>
+<th>物理行为</th>
+<th>适用提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>none</code></td>
+<td>不使用 physical data</td>
+<td>默认；setup buffer insertion 不允许使用此模式</td>
+</tr>
+<tr>
+<td><code>open_site</code></td>
+<td>只有周围空间足够才 size；只有空 site 足够才插 buffer；不移动邻近 cell</td>
+<td>保守，适合 late/post-route ECO</td>
+</tr>
+<tr>
+<td><code>occupied_site</code></td>
+<td>density 允许时，可让新/变大 cell 暂时与邻近 cell overlap</td>
+<td>后续必须由 ICC2 等 implementation 工具移动邻近 cell 并合法化</td>
+</tr>
+<tr>
+<td><code>freeze_silicon</code></td>
+<td>只利用已定义的 programmable spare cell；不新增 cell、不 resize 现有 cell</td>
+<td>只允许 <code>insert_buffer</code>，配合 ICC2 freeze-silicon flow</td>
+</tr>
+</tbody></table></div>
+<p>physical-aware session 的一致性很重要：一旦在当前 PrimeTime session 中用 <code>open_site</code> 或 <code>occupied_site</code> 做过 fixing，建议后续继续使用 physical-aware fixing，不要再切回 <code>none</code>，也尽量避免直接运行 what-if <code>size_cell</code> / <code>insert_buffer</code>。混用可能使逻辑 ECO 与物理数据库状态不一致，给实现阶段带来明显版图扰动。</p>
+<p><code>freeze_silicon</code> 使用前需要通过 <code>set_eco_options -programmable_spare_cell_names</code> 标识 spare cell；可以用 <code>report_eco_options</code> 检查当前配置。</p>
+<h3 id="section-23">4.20 <code>-path_selection_options option_string</code></h3>
+<p>把与 ECO timing fixing 相关的 <code>get_timing_paths</code> 选择条件交给命令，用于精确限定路径。</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -path_selection_options {
+        -through u01/A
+        -to ff0/D
+        -max_paths 10
+        -nworst 5
+    }
+</code></pre></div>
+<p>限制：</p>
+<ul>
+<li>不能与 <code>-from</code>、<code>-to</code>、<code>-group</code>、<code>-pba_mode</code>、<code>-slack_lesser_than</code>、<code>-slack_greater_than</code> 同用；</li>
+<li>只支持 <code>get_timing_paths</code> 中与 ECO fixing 相关的选项；</li>
+<li>内含 collection 时，整个参数字符串必须放在 <code>{}</code> 中；</li>
+<li>除非使用 <code>-start_end_pair</code> 或 <code>-cover_design</code>，否则应显式给出适合 ECO 的 <code>-max_paths</code> 与 <code>-nworst</code>；</li>
+<li>修复后应使用同一组 path selection options 运行 <code>get_timing_paths</code> 或 <code>report_timing</code>，以正确评估 QoR。</li>
+</ul>
+<h3 id="section-24">4.21 <code>-timeout seconds</code></h3>
+<p>设置整个命令的最大 wall-clock runtime。工具在每轮 fixing iteration 结束时检查，因此不是严格到秒的硬中断。未设置时，工具会按 QoR、fix rate 及继续迭代的预期收益决定何时结束。</p>
+<h3 id="section-25">4.22 <code>-power_attribute power_attribute_name</code></h3>
+<p>指定一个用户定义的 lib-cell attribute，代表 worst leakage corner 下的 leakage 值。工具会优先选择 leakage 较低的替代 cell；未指定时默认优先考虑 area。</p>
+<h3 id="section-26">4.23 <code>-power_mode total | dynamic | leakage</code></h3>
+<p>使用 PrimePower 数据在 timing fixing 中考虑功耗：</p>
+<ul>
+<li><code>dynamic</code>：只考虑动态功耗；</li>
+<li><code>leakage</code>：只考虑漏电功耗；</li>
+<li><code>total</code>：同时考虑 dynamic 与 leakage。</li>
+</ul>
+<p>使用前必须已有 <code>update_power</code> 或 <code>report_power</code> 产生的 power analysis data。</p>
+<p>互斥限制：</p>
+<ul>
+<li>不能与 <code>-power_attribute</code> 同用；</li>
+<li>不能与 <code>-cell_type clock_network</code> 同用。</li>
+</ul>
+<p>setup 下也会影响 <code>size_cell_side_load</code> 的候选选择；hold 下会影响 sizing 与 buffer insertion 的选择。未指定时默认优化倾向仍是 area，而不是 power。</p>
+<h3 id="section-27">4.24 <code>-leakage_scenario scenario_name</code></h3>
+<p>DMSA 中使用 <code>-power_mode</code> 时，指定提供 leakage 数据的 scenario，通常应选择 worst-leakage scenario。</p>
+<h3 id="section-28">4.25 <code>-dynamic_scenario scenario_name</code></h3>
+<p>DMSA 中使用 <code>-power_mode</code> 时，指定提供 dynamic power 数据的 scenario，通常应选择 worst-dynamic scenario。它可以与 leakage scenario 相同，也可以不同。</p>
+<h3 id="section-29">4.26 <code>-clock_fixes_per_change violation_limit</code></h3>
+<p>仅在 <code>-cell_type clock_network</code> 时生效。规定每一次 clock sizing、buffer insertion 或 inverter-pair insertion 至少要改善多少个 leaf sequential endpoint violation。默认值为 <code>1</code>。</p>
+<p>值调大可减少 clock network ECO 数量，并倾向于只做影响范围更大的修改，但也可能降低 fix rate。</p>
+<h3 id="section-30">4.27 <code>-clock_max_level_from_reg level_limit</code></h3>
+<p>仅在 <code>-cell_type clock_network</code> 时有意义，用于限制从 leaf sequential clock pin 向上游允许修改的 clock-tree 层数。例如 <code>1</code> 只允许修改紧邻寄存器 clock pin 的 leaf-level driver。设置更高可扩大范围；关闭限制则允许更上游的 clock ECO。</p>
+<h3 id="section-31">4.28 <code>-target_violation_type endpoint | tns</code></h3>
+<p>仅可用于 <code>-cell_type clock_network</code>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>值</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>endpoint</code></td>
+<td>默认；逐 endpoint 改善 slack，不恶化已有 endpoint violation</td>
+</tr>
+<tr>
+<td><code>tns</code></td>
+<td>以整体 TNS 改善为目标；只要 TNS 变好，允许部分 endpoint 进一步恶化到当前 WNS 或指定的 <code>-wns_limit</code></td>
+</tr>
+</tbody></table></div>
+<p><code>tns</code> 需要 PrimeTime-ADV license。</p>
+<h3 id="section-32">4.29 <code>-wns_limit wns_value</code></h3>
+<p>只配合 <code>-target_violation_type tns</code> 使用，指定允许的 WNS 下限。默认是运行命令前的现有 WNS。</p>
+<p>例如当前 WNS 为 <code>-0.100</code>，某 endpoint 为 <code>-0.060</code>。在 TNS 模式下，该 endpoint 可能被恶化到 <code>-0.100</code>，只要整体 TNS 变好；若设置 <code>-wns_limit -0.080</code>，则最多只允许恶化到 <code>-0.080</code>。</p>
+</section><section class="chapter"><h2 id="section-33">5. Unfixable Violation Report</h2>
+<h3 id="section-34">5.1 如何生成</h3>
+<p>真正执行 ECO 并在结尾报告：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">set_app_var eco_report_unfixed_reason_max_endpoints 50
+
+fix_eco_timing -type hold \
+    -buffer_list {BUFX1 BUFX2 BUFX3} \
+    -physical_mode open_site \
+    -verbose
+</code></pre></div>
+<p>只分析、不修改 design：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">set_app_var eco_report_unfixed_reason_max_endpoints 50
+
+fix_eco_timing -type hold \
+    -buffer_list {BUFX1 BUFX2 BUFX3} \
+    -physical_mode open_site \
+    -estimate_unfixable_reasons
+</code></pre></div>
+<p>输出独立 CSV 文件：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -buffer_list {BUFX1 BUFX2 BUFX3} \
+    -verbose \
+    -unfixable_reasons_prefix hold_try1 \
+    -unfixable_reasons_format csv
+</code></pre></div>
+<h3 id="section-35">5.2 表格标记和优先级</h3>
+<ul>
+<li><code>S</code>：一段 violating path 的起点；</li>
+<li><code>E</code>：path endpoint，该行的 <code>Prio/slk</code> 显示整条路径 slack；</li>
+<li><code>C</code>：与之前路径共享的片段之后，从最后一个共享点继续；</li>
+<li><code>P0</code> 到 <code>P9</code>：候选 pin 的 fixing priority / bottleneck 排名，<code>P9</code> 最高、<code>P0</code> 最低。高优先级位置通常更值得优先人工排查或放宽限制。</li>
+</ul>
+<p>报告按 worst slack path 优先排列；一条路径内部按 startpoint 到 endpoint 的顺序显示。</p>
+<h3 id="section-36">5.3 完整 reason code</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>中文含义</th>
+<th>常见检查或处理方向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>A</code></td>
+<td>有可能有效的 library cell，但其面积超过候选面积上限</td>
+<td>检查 <code>eco_alternative_area_ratio_threshold</code>；评估放宽面积上限</td>
+</tr>
+<tr>
+<td><code>B</code></td>
+<td>当前 stage 能获得的 delay 改善太小，无法完全修掉违例</td>
+<td>检查违例是否过大；可用负的 <code>-setup_margin</code> / <code>-hold_margin</code> 做 underfix，先取得部分改善</td>
+</tr>
+<tr>
+<td><code>C</code></td>
+<td>违例位于 clock network</td>
+<td>默认不碰 clock network；先尝试 combinational / sequential，必要时评估 <code>-cell_type clock_network</code></td>
+</tr>
+<tr>
+<td><code>D</code></td>
+<td>cell 或 net 位于高 density 区域，附近空间不足</td>
+<td>在 implementation 工具检查局部 utilization、placement 与 filler；必要时腾挪空间</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>physical information 不完整或不可用，或相关 net 在 DEF 中被标记为 <code>+USE CLOCK</code></td>
+<td>检查 DEF/LEF 与当前 netlist 是否一致，确认 physical data 配置</td>
+</tr>
+<tr>
+<td><code>H</code></td>
+<td>logical hierarchy 与 physical hierarchy 不一致，无法插 buffer</td>
+<td>在 implementation 工具中解决 netlist/layout 层级不一致</td>
+</tr>
+<tr>
+<td><code>I</code></td>
+<td>给定 <code>-buffer_list</code> 中的 cell 无法通过插 buffer 修复</td>
+<td>扩大 buffer 类型、drive strength 或 delay-cell 范围后重新估算</td>
+</tr>
+<tr>
+<td><code>L</code></td>
+<td>可用物理面积限制了一个或多个本可使用的 library cell</td>
+<td>在 implementation 工具中增加附近可用面积或换更小候选</td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>clock ECO 可修复的 leaf-cell violation 数低于阈值</td>
+<td>仅 clock fixing；调低 <code>-clock_fixes_per_change</code></td>
+</tr>
+<tr>
+<td><code>N</code></td>
+<td>clock-tree 位置的层级高于允许阈值</td>
+<td>仅 clock fixing；调高或关闭 <code>-clock_max_level_from_reg</code> 限制</td>
+</tr>
+<tr>
+<td><code>O</code></td>
+<td>route 上或附近没有可用 open free site</td>
+<td>检查 LEF/DEF、filler 识别和 spacing rule；在 implementation 工具中创建空 site</td>
+</tr>
+<tr>
+<td><code>Q</code></td>
+<td>同一 FF 的 capture 与 launch 侧违例冲突，改变 clock arrival 会顾此失彼</td>
+<td>仅 clock fixing；分别检查 D/Q 两侧 setup/hold，优先考虑 data-path 方案或修改约束/结构</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>parasitics 中没有 buffer insertion 所需的坐标，或 location transformation 失败</td>
+<td>检查寄生文件是否含 location，以及层级/坐标映射</td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>所有 alternative library cell 都尝试过，cell sizing 仍无法修复</td>
+<td>考虑 buffer insertion、结构性 ECO 或放宽其他限制</td>
+</tr>
+<tr>
+<td><code>T</code></td>
+<td>timing margin 太紧，目标违例与 opposite constraint 之间没有足够余量</td>
+<td>复核 setup/hold margin；明确接受风险时可用负 margin 放宽目标</td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>UPF 限制该位置的 sizing 或 buffering</td>
+<td>检查 always-on、isolation、retention、level-shifter 等 UPF cell 限制</td>
+</tr>
+<tr>
+<td><code>V</code></td>
+<td>cell/net 无效，或相关对象带 <code>dont_touch</code></td>
+<td>检查 <code>dont_touch</code> 是否必要、对象是否有效，以及层级对象解析</td>
+</tr>
+<tr>
+<td><code>W</code></td>
+<td>修 timing 可能产生或恶化 DRC</td>
+<td>检查 transition/capacitance/fanout；明确接受 DRC 风险时才考虑 <code>-ignore_drc</code></td>
+</tr>
+</tbody></table></div>
+<p>补充说明：</p>
+<ul>
+<li>当 <code>eco_allow_filler_cells_as_open_sites=true</code>（手册所述默认值）时，physical-aware ECO 会把 filler cell 当作 open site；</li>
+<li>advanced-node spacing rule 可能使看似空闲的 site 实际宽度不足，因此 <code>O</code> 不一定只是“没有空白格”；</li>
+<li><code>M</code>、<code>N</code>、<code>Q</code> 专用于 clock-network fixing 的诊断。</li>
+</ul>
+</section><section class="chapter"><h2 id="section-37">6. 典型用法</h2>
+<h3 id="section-38">6.1 Setup：默认 sizing</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup
+</code></pre></div>
+<p>setup 默认 method 是 <code>{size_cell_side_load}</code>。</p>
+<h3 id="section-39">6.2 Setup：只修指定 slack 区间</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -slack_greater_than -0.3 \
+    -slack_lesser_than 0
+</code></pre></div>
+<p>表示只处理约 <code>-0.3 &lt; slack &lt; 0</code> 的路径。</p>
+<h3 id="section-40">6.3 Setup：overfix，同时保护 hold</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -setup_margin 0.05 \
+    -hold_margin 0.02
+</code></pre></div>
+<p>目标是把已选中的 setup violation 尽量修到 <code>+0.05</code>，同时尽量保留至少 <code>+0.02</code> 的 hold margin。</p>
+<h3 id="section-41">6.4 Hold：只用 sizing</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -methods size_cell
+</code></pre></div>
+<h3 id="section-42">6.5 Hold：physically-aware sizing + buffer insertion</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -methods {size_cell insert_buffer} \
+    -buffer_list {BUFX1 BUFX2 DLYX1 DLYX2} \
+    -hold_margin 0.02 \
+    -setup_margin 0.05 \
+    -physical_mode open_site \
+    -verbose
+</code></pre></div>
+<h3 id="section-43">6.6 Hold：仅在 pin 附近插 buffer</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -methods {
+        insert_buffer_at_load_pins
+        insert_buffer_at_driver_pins
+    } \
+    -buffer_list {BUFX1 BUFX2 BUFX3}
+</code></pre></div>
+<h3 id="section-44">6.7 Hold：用 inverter pair</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -methods insert_inverter_pair \
+    -buffer_list {INVX1 INVX2 INVX4}
+</code></pre></div>
+<h3 id="section-45">6.8 Hold：几 ps 小违例使用 load cell</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -methods insert_buffer \
+    -load_cell_list {CLOAD1 CLOAD2} \
+    -slack_greater_than -0.005
+</code></pre></div>
+<p>也可同时给普通 buffer：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -methods insert_buffer \
+    -load_cell_list {CLOAD1 CLOAD2} \
+    -buffer_list {BUFX1 BUFX2}
+</code></pre></div>
+<h3 id="section-46">6.9 用 PBA 选择 hold 路径</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type hold \
+    -pba_mode exhaustive \
+    -buffer_list {BUFX2 DLY1X2 DLY2X2}
+</code></pre></div>
+<h3 id="section-47">6.10 精确指定 timing paths</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -path_selection_options {
+        -through u01/A
+        -to ff0/D
+        -max_paths 10
+        -nworst 5
+    }
+</code></pre></div>
+<h3 id="section-48">6.11 同时 size sequential 与 combinational cell</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -cell_type {sequential combinational} \
+    -methods size_cell
+</code></pre></div>
+<h3 id="section-49">6.12 Clock network fixing</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -cell_type clock_network \
+    -clock_fixes_per_change 4 \
+    -clock_max_level_from_reg 2
+</code></pre></div>
+<p>用 inverter pair 修改 clock network：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -methods insert_inverter_pair \
+    -cell_type clock_network \
+    -buffer_list {INVX1 INVX2 INVX4}
+</code></pre></div>
+<h3 id="section-50">6.13 TNS-driven clock ECO</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -cell_type clock_network \
+    -target_violation_type tns \
+    -wns_limit -0.10
+</code></pre></div>
+<p>该模式以 TNS 改善为目标，允许个别 endpoint 在不越过 <code>-0.10</code> 的前提下变差。执行前确认 PrimeTime-ADV license 和项目对 WNS degradation 的接受标准。</p>
+<h3 id="section-51">6.14 Setup：删除已有 buffer</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -methods remove_buffer
+</code></pre></div>
+<p><code>remove_buffer</code> 必须单独使用，并遵守前文列出的互斥限制。</p>
+<h3 id="section-52">6.15 不改设计，先诊断</h3>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">set_app_var eco_report_unfixed_reason_max_endpoints 50
+
+fix_eco_timing -type setup \
+    -methods size_cell \
+    -group reg2reg \
+    -estimate_unfixable_reasons \
+    -unfixable_reasons_prefix setup_dryrun \
+    -unfixable_reasons_format csv
+</code></pre></div>
+</section><section class="chapter"><h2 id="section-53">7. 导出实际 ECO 修改</h2>
+<p>真正运行 <code>fix_eco_timing</code> 后，用 <code>write_changes</code> 把当前 session 中的修改写成可供其他 PrimeTime session 或 implementation tool 使用的 Tcl：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">fix_eco_timing -type setup \
+    -methods size_cell \
+    -group reg2reg
+
+write_changes -format icctcl eco_setup.tcl
+</code></pre></div>
+<p>导出的脚本可能包含：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">size_cell U123 BUF_X4
+</code></pre></div>
+<p>physical-aware buffer insertion 还可能带 location 信息，例如：</p>
+<div class="code-panel"><div class="code-top"><span>TCL / PRIMETIME</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-tcl">insert_buffer U2/Z BUF2X -location {200.0 300.0 0}
+</code></pre></div>
+<p>注意：</p>
+<ul>
+<li><code>-estimate_unfixable_reasons</code> 不会真实修改 design，因此不会产生可导出的实际 change；</li>
+<li>日志中的 change 次数不一定等于最终脚本命令数。例如一个新插入的 buffer 后续又被 resize，日志可能计作两次 change，而 <code>write_changes</code> 会合并成插入最终尺寸 buffer 的一个最终动作；</li>
+<li>判断“最终到底改了什么”时，应以 <code>write_changes</code> 导出的脚本和 implementation 后的验证结果为准。</li>
+</ul>
+</section><section class="chapter"><h2 id="section-54">8. 推荐工作流程</h2>
+<div class="code-panel"><div class="code-top"><span>REFERENCE</span><button class="copy" type="button">复制代码</button></div><pre><code class="language-text">1. 检查约束、异常大违例、DRC、dont_touch、UPF 与 physical data
+2. 先用 combinational setup fixing
+3. 导出并在 implementation 环境实现、合法化、重新抽取寄生
+4. 重新分析 setup/hold/DRC/power
+5. 再做 hold fixing，并保护 setup margin
+6. 数据路径仍不足时，谨慎评估 sequential 或 clock-network ECO
+7. 用 unfixable report 定位物理空间、候选 cell、margin 或约束瓶颈
+8. 最终以实现后重新提取的 signoff timing 为准
+</code></pre></div>
+<p>尤其是 clock-network bypass、插入或其他会改变 net topology 的 ECO，PrimeTime 中的估算不能替代 implementation、合法化、重新抽取寄生后的 signoff 验证。</p>
+</section><section class="chapter"><h2 id="section-55">9. 常见误区</h2>
+<ol>
+<li><strong>把 <code>-setup_margin</code> 当成路径筛选条件。</strong>  margin 是修复目标；选择哪些路径主要由 <code>-slack_lesser_than</code> 等参数决定。</li>
+<li><strong>以为设置正 margin 会自动 overfix 所有正 slack 路径。</strong> 默认只修改已被选择的目标路径；要包含正 slack 路径，需调整 <code>-slack_lesser_than</code>。</li>
+<li><strong>使用 <code>insert_buffer</code> 却不提供 <code>-buffer_list</code>。</strong> 该方法没有默认 buffer list。</li>
+<li><strong>把 <code>library/cell</code> 写进 <code>-buffer_list</code>。</strong> 通常应给 base name，并注意同名 cell 按 <code>link_path</code> 顺序匹配。</li>
+<li><strong>把 cell/net 直接传给 <code>-from</code> 或 <code>-to</code>。</strong> 这里仅接受 pin/port。</li>
+<li><strong>把 <code>-estimate_unfixable_reasons</code> 当作真实 ECO。</strong> 它是 dry-run 风格的分析，不保留修改。</li>
+<li><strong>在同一 session 先做 physical-aware ECO，后切回 <code>-physical_mode none</code>。</strong> 这可能破坏逻辑和物理数据库的一致性。</li>
+<li><strong>看到 <code>W</code> 就无条件加 <code>-ignore_drc</code>。</strong> 这只是把风险转移到 DRC，必须由后续实现和 signoff 验证承担。</li>
+<li><strong>认为 open site 一定能放 cell。</strong> advanced-node spacing、blockage、cell 宽度和 filler 识别都可能让“看起来空闲”的位置不可用。</li>
+<li><strong>把 PrimeTime 中的估算结果当作最终 signoff。</strong> ECO 落地后应重新 placement/legalization、route、extract，并复查所有 scenario。</li>
+</ol>
+</section><section class="chapter"><h2 id="section-56">10. 相关命令和设置</h2>
+<p>常见关联项：</p>
+<ul>
+<li><code>write_changes</code>：导出最终 ECO changelist；</li>
+<li><code>set_eco_options</code> / <code>report_eco_options</code>：配置和检查 physical/freeze-silicon/多场景 ECO 选项；</li>
+<li><code>get_timing_paths</code> / <code>report_timing</code>：按相同筛选条件验证 fixing 前后路径；</li>
+<li><code>group_path</code> / <code>get_path_groups</code>：建立和选择 path group；</li>
+<li><code>implement_eco</code>：在支持的 implementation flow 中实现 ECO；</li>
+<li><code>eco_report_unfixed_reason_max_endpoints</code>：控制 unfixable report 的 endpoint 数；</li>
+<li><code>eco_alternative_area_ratio_threshold</code>：限制 alternative cell 的面积比；</li>
+<li><code>eco_allow_filler_cells_as_open_sites</code>：控制 physical-aware ECO 是否把 filler 视为 open site；</li>
+<li><code>eco_enable_mim</code>：控制 Multiply Instantiated Module 的一致性 ECO。</li>
+</ul>
+<hr>
+<p>本文是工程速查版，不代替当前 Synopsys 版本的正式命令手册、许可说明和项目 signoff 规范。</p>
+</section></article><footer><span>FIX_ECO_TIMING / 中文重组参考</span><span>源文档版本 U-2022.12-SP5</span></footer></main><script>
+document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{const code=button.closest('.code-panel').querySelector('code').textContent;try{await navigator.clipboard.writeText(code);button.textContent='已复制';}catch{const area=document.createElement('textarea');area.value=code;document.body.append(area);area.select();const ok=document.execCommand('copy');area.remove();button.textContent=ok?'已复制':'请选择代码复制';}setTimeout(()=>button.textContent='复制代码',1800);}));
+const article=document.querySelector('article');let matches=[],current=-1,timer;
+function find(){article.querySelectorAll('mark').forEach(m=>m.replaceWith(document.createTextNode(m.textContent)));article.normalize();matches=[];current=-1;const q=document.querySelector('#search').value.trim();if(q){const walker=document.createTreeWalker(article,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('button')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const n of nodes){const value=n.textContent;let i=0,p;const fragment=document.createDocumentFragment();while((p=value.toLowerCase().indexOf(q.toLowerCase(),i))!==-1){fragment.append(value.slice(i,p));const m=document.createElement('mark');m.textContent=value.slice(p,p+q.length);fragment.append(m);matches.push(m);i=p+q.length;}if(i){fragment.append(value.slice(i));n.replaceWith(fragment);}}}document.querySelector('#count').textContent=q?matches.length+' 处匹配':'';}
+document.querySelector('#search').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(find,180)});function next(){if(matches.length){current=(current+1)%matches.length;matches[current].scrollIntoView({behavior:'smooth',block:'center'});document.querySelector('#count').textContent=(current+1)+' / '+matches.length;}}document.querySelector('#next').addEventListener('click',next);document.querySelector('#search').addEventListener('keydown',e=>{if(e.key==='Enter'){clearTimeout(timer);if(current===-1)find();next();}});
+const links=[...document.querySelectorAll('nav a')];const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.hash==='#'+e.target.id));}},{rootMargin:'0px 0px -65% 0px'});document.querySelectorAll('h2[id]').forEach(h=>observer.observe(h));
+</script></body></html>
