@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light"><meta name="description" content="dma_ep_ss_top Ic2Place 阶段的单文件复习笔记：完整七章、五阶段流程、QoR 演进、风险和纠错 FAQ。">
+<title>Place Log 详细解析 · 纠错复习版</title>
+<style>
+:root{--ink:#172d3a;--muted:#61737d;--navy:#112b39;--navy2:#1c3b4a;--mint:#78ddc4;--green:#126953;--paper:#f3f5f3;--line:#dce4e2;--orange:#b75924;--white:#fff;--code:#122a37;--shadow:0 14px 36px #173a4810}
+*{box-sizing:border-box}html{scroll-behavior:auto;scroll-padding-top:98px}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;line-height:1.85;font-size:15px;-webkit-font-smoothing:antialiased}a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #df9d39;outline-offset:4px}.skip{position:fixed;top:-100px;left:20px;z-index:20;background:white;padding:10px 20px}.skip:focus{top:8px}.shell{max-width:1440px;margin:auto;padding:0 48px}
+.hero{color:#eef7f8;background:var(--navy);position:relative;overflow:hidden}.hero:after{content:"";width:460px;height:460px;border:1px solid #ffffff0b;border-radius:50%;position:absolute;right:-180px;top:20px;box-shadow:0 0 0 70px #ffffff03,0 0 0 140px #ffffff02;pointer-events:none}.hero .shell{padding-top:44px;padding-bottom:40px}.hero-top{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:30px}.edition{letter-spacing:.15em;font-size:12px;color:#b2cbd3}.pill{border:1px solid #71cbb15c;color:var(--mint);border-radius:30px;padding:3px 12px;font-size:12px}.hero-grid{display:grid;grid-template-columns:1fr 300px;gap:64px;align-items:center}.kicker{font-size:13px;color:var(--mint);letter-spacing:.13em;margin:0 0 10px}.hero h1{font-size:clamp(32px,3.7vw,52px);line-height:1.25;letter-spacing:-.025em;margin:0 0 20px;font-weight:700}.hero h1 span{display:block;font-size:.52em;letter-spacing:.03em;font-weight:400;color:#c6d8df;margin-top:14px}.lede{max-width:670px;color:#b9cdd5;margin:0;font-size:15px;line-height:1.9}.hero-meta{background:#ffffff05;border-left:2px solid var(--mint);padding:14px 22px;font-size:13px}.hero-meta p{margin:0 0 12px;display:flex;flex-direction:column;gap:1px}.hero-meta p:last-child{margin:0}.hero-meta span{color:#8ca7b3;font-size:11px;letter-spacing:.09em}.hero-meta strong{font-weight:500;color:#dfedf0;overflow-wrap:anywhere}.hero-bottom{margin-top:32px;display:flex;gap:20px;align-items:center;color:#8eaeb8;font-size:12px}.hero-bottom i{width:6px;height:6px;border-radius:50%;background:var(--mint)}
+.top-nav{position:sticky;top:0;z-index:10;background:#fffefcf5;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav-inner{display:flex;align-items:center;gap:22px;min-height:64px}.nav-brand{font-size:11px;font-weight:700;letter-spacing:.1em;color:#6c7e85;flex-shrink:0}.nav-links{display:flex;overflow-x:auto;gap:5px;scrollbar-width:thin;align-items:center;flex:1}.nav-links a{white-space:nowrap;font-size:12px;color:#536a74;padding:6px 10px;border-radius:5px}.nav-links a.active{background:#e0f2eb;color:#155f4c;font-weight:600}.print{font-size:12px;color:var(--ink);padding:6px 13px;border:1px solid var(--line);background:white;border-radius:6px;white-space:nowrap}
+.overview{padding-top:34px;padding-bottom:0}.small-title{font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--muted);margin:0 0 16px}.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.metric{padding:18px 17px;background:white;border:1px solid var(--line);border-top:3px solid #83b7a9;border-radius:8px}.metric:first-child{border-top-color:#c87c50}.metric .label{font-size:12px;color:#5b707b;margin-bottom:9px}.metric .value{font-size:26px;font-weight:650;letter-spacing:-.035em;line-height:1.3;font-variant-numeric:tabular-nums;white-space:nowrap}.metric .unit{font-size:12px;font-weight:400;color:var(--muted);margin-left:4px}.metric .caption{font-size:11px;color:#73848c;line-height:1.7;margin-top:9px}.scope-note{font-size:12px;color:var(--muted);margin:12px 0 28px}.section-label{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:18px}.section-label h2{font-size:21px;margin:0;letter-spacing:-.02em}.section-label span{font-size:12px;color:var(--muted)}
+.timeline-panel{background:white;border:1px solid var(--line);border-radius:12px;padding:26px 28px;margin-bottom:28px;box-shadow:var(--shadow)}.timeline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;position:relative}.timeline:before{content:"";position:absolute;left:14px;right:14px;height:1px;background:#b5d3ca;top:17px}.stage{position:relative;min-width:0}.stage .step{position:relative;background:#fff;border:1px solid #b5d3ca;color:#246e5a;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-size:12px;font-weight:600;margin-bottom:14px}.stage:last-child .step{background:#1b6552;color:white}.stage .name{font:600 14px Consolas,monospace;margin-bottom:5px}.stage .time{font-size:11px;color:#7a898f;font-variant-numeric:tabular-nums}.stage h3{font-size:14px;margin:12px 0 7px}.stage p{font-size:12px;color:var(--muted);line-height:1.85;min-height:68px;margin:0}.stage .stage-stat{border-top:1px solid #edf1ef;margin-top:14px;padding-top:12px;font-size:21px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.stage-stat small{display:block;font-size:11px;font-weight:400;letter-spacing:0;color:var(--muted)}.timeline-foot{font-size:12px;color:#62757e;border-top:1px solid var(--line);margin-top:22px;padding-top:15px}.timeline-foot strong{color:var(--green)}
+.revision{background:#eaf1ed;border:1px solid #d2e1d9;border-radius:12px;padding:24px 28px;margin-bottom:30px}.revision h2{font-size:20px;margin:0 0 4px}.revision>.description{font-size:13px;color:#60756b;margin:0 0 22px}.correction-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px 26px}.correction .term{font:600 12px Consolas,"Microsoft YaHei",monospace;color:#276250;margin-bottom:7px;overflow-wrap:anywhere}.correction strong{display:block;font-size:13px;line-height:1.8}.correction p{font-size:12px;line-height:1.8;color:#60746b;margin:5px 0 0}
+.reading-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;padding-bottom:48px}.side{align-self:start;position:sticky;top:94px;font-size:12px}.side-label{font-size:11px;color:#809087;letter-spacing:.12em;margin:6px 0 14px}.side a{display:flex;align-items:baseline;gap:10px;padding:9px 12px;color:#5d727d;border-radius:6px;border-left:2px solid transparent;margin:2px 0}.side a span{font:11px Consolas,monospace;color:#819990}.side a.active{background:#e2ece6;border-left-color:#277d60;color:#154f3e;font-weight:600}.side-note{border-top:1px solid #d9e2dd;padding:19px 12px;margin-top:22px;color:#738178;line-height:1.9}.side-note strong{color:#456657;font-weight:500}.side .legend{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.main-col{min-width:0}.preface{background:#fff;border:1px solid var(--line);padding:26px 30px;margin-bottom:24px;border-radius:12px}.preface>h3{margin-top:24px}.preface blockquote:first-child{margin-top:0}.preface h2{font-size:21px}.preface blockquote{font-size:13px}.chapter{background:white;border:1px solid var(--line);border-radius:12px;margin-bottom:26px;overflow:hidden;box-shadow:var(--shadow)}.chapter-head{display:flex;gap:21px;background:#f9fbfa;padding:28px 32px;border-bottom:1px solid var(--line)}.chapter-number{font:300 40px "Segoe UI",sans-serif;letter-spacing:-.08em;line-height:1.15;color:#89b2a3;min-width:48px}.chapter-head .eyebrow{font-size:10px;letter-spacing:.18em;color:#618476;margin:0 0 4px}.chapter-head h2{font-size:25px;line-height:1.4;margin:0;letter-spacing:-.02em}.chapter-head p:last-child{font-size:12px;color:#6d7f86;margin:9px 0 0}.chapter-body{padding:8px 32px 28px;min-width:0}.chapter-body>h3{font-size:20px;line-height:1.6;margin:32px 0 18px;padding-top:24px;border-top:1px solid var(--line);overflow-wrap:anywhere}.chapter-body>h3:first-child{border:0;padding-top:0}.chapter-body h4{font-size:13px;color:#456b62;margin:22px 0 9px;font-weight:600;letter-spacing:.02em}.chapter-body h4:before{content:"";display:inline-block;width:4px;height:12px;background:#b0cfc1;margin-right:8px;vertical-align:-1px}.chapter-body p{margin:10px 0 14px}.chapter-body ul,.chapter-body ol{padding-left:23px;margin:12px 0 18px}.chapter-body li{padding-left:3px;margin:6px 0;overflow-wrap:anywhere}.chapter-body li::marker{color:#629785}.backlink{display:block;border-top:1px solid #eef2ef;padding:12px 32px;text-align:right;font-size:12px;color:#7b9186}.chapter-body hr{border:0;border-top:1px solid var(--line);margin:26px 0}.chapter-body>hr:last-child{display:none}strong{font-weight:650}p,td{overflow-wrap:anywhere}blockquote{border-left:3px solid #7fb9a4;margin:18px 0;padding:7px 18px;background:#f1f7f3;color:#5c716a;font-size:13px}blockquote p:last-child{margin-bottom:8px}blockquote p:first-child{margin-top:8px}
+.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:7px;margin:18px 0 22px;background:white;scrollbar-width:thin;scrollbar-color:#adc1b7 #f3f7f4}table{width:100%;border-collapse:collapse;text-align:left;font-size:12px;line-height:1.8;font-variant-numeric:tabular-nums;min-width:540px}thead{background:var(--navy2);color:#e8f2f4}th{font-weight:500;padding:12px 13px;white-space:normal;text-align:left;min-width:82px}td{padding:12px 13px;border-bottom:1px solid #e7ece9;vertical-align:top;min-width:80px}td:first-child{font-weight:500;color:#294d42}tr:last-child td{border-bottom:0}tbody tr:nth-child(even){background:#f7faf8}tbody tr:hover{background:#eaf4ee}.table-wrap code{font-size:11px;word-break:break-word}#chapter-5 table{min-width:680px}#chapter-6 table{min-width:750px}#chapter-6 td:nth-child(3){white-space:nowrap;font-weight:650;color:#986126}#chapter-1 .table-wrap:first-of-type table{min-width:900px}
+code{font-family:Consolas,"Cascadia Code",monospace;font-size:.86em;background:#edf2ef;color:#205b49;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}.code-wrap{background:var(--code);color:#d9e9ed;border:1px solid #213f4e;border-radius:9px;margin:15px 0 23px;overflow:hidden}.code-toolbar{display:flex;align-items:center;justify-content:space-between;background:#ffffff05;padding:8px 15px;border-bottom:1px solid #ffffff0e;font-size:10px;letter-spacing:.08em;color:#88a9b7}.copy{font-size:11px;color:#a7cabc;background:transparent;border:1px solid #58787070;padding:2px 9px;border-radius:4px}.copy:hover{background:#ffffff0a}pre{margin:0;padding:19px 18px;overflow:auto;tab-size:4;font:12px/1.95 Consolas,"Microsoft YaHei",monospace;scrollbar-width:thin;scrollbar-color:#466b7c #122a37}pre code{font:inherit;color:inherit;background:none;padding:0;white-space:pre;overflow-wrap:normal;border-radius:0}.tag{display:inline-block;font-size:10px;font-weight:600;line-height:1.8;padding:1px 6px;border-radius:4px;vertical-align:1px;margin-right:5px;white-space:nowrap;letter-spacing:.02em}.tag-fact{color:#266f58;background:#e5f3eb}.tag-explain{color:#3c6585;background:#eaf1f7}.tag-infer{color:#856a2e;background:#f8f0d9}.tag-risk{color:#a34e2c;background:#fff0e6}.tag-pending{color:#755d89;background:#f0ebf6}
+.faq{border:1px solid var(--line);border-radius:8px;margin:14px 0;background:white}.faq:first-child{margin-top:24px}.faq summary{position:relative;cursor:pointer;font-weight:600;font-size:14px;padding:18px 44px 18px 19px;list-style:none;line-height:1.9}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";position:absolute;right:19px;top:17px;font-size:20px;color:#5f947b;font-weight:400}.faq[open] summary{background:#f1f7f3;border-radius:7px 7px 0 0}.faq[open] summary:after{content:"−"}.faq-answer{padding:6px 20px 13px;font-size:14px}.faq-tools{display:flex;justify-content:flex-end;margin-top:16px}.faq-tools button{background:#fff;border:1px solid #cedcd3;border-radius:5px;font-size:12px;padding:6px 12px;color:#447561}.footer{padding:28px 0 32px;background:var(--navy);color:#9db6bf;font-size:12px}.footer .shell{display:flex;justify-content:space-between;gap:25px}.footer strong{color:#d8e9e9;font-weight:500}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#173c31;color:white;border-radius:6px;padding:8px 20px;font-size:13px;z-index:30;box-shadow:var(--shadow)}.toast[hidden]{display:none}
+@media(min-width:1600px){.shell{max-width:1520px}}
+@media(max-width:1200px){.shell{padding-left:28px;padding-right:28px}.metrics{grid-template-columns:repeat(3,1fr)}.metric .caption{margin-top:5px}.reading-layout{grid-template-columns:170px minmax(0,1fr);gap:22px}.chapter-body{padding-left:25px;padding-right:25px}.chapter-head{padding:25px}.hero-grid{gap:32px}.correction-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}.nav-brand{display:none}}
+@media(max-width:920px){.side{display:none}.reading-layout{display:block}.hero-grid{grid-template-columns:1fr 250px;gap:25px}.hero h1{font-size:38px}.timeline{grid-template-columns:repeat(5,minmax(145px,1fr));gap:17px}.timeline-panel{overflow:auto}.timeline{min-width:820px}.timeline-foot{min-width:300px}.correction-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav-inner{gap:12px}.hero-top{margin-bottom:25px}}
+@media(max-width:600px){body{font-size:14px}.shell{padding-left:17px;padding-right:17px}.hero .shell{padding-top:25px;padding-bottom:29px}.hero-grid{display:block}.hero h1{font-size:34px}.hero h1 span{font-size:18px}.hero-top{gap:12px}.edition{font-size:10px;letter-spacing:.1em}.pill{font-size:10px;padding:3px 8px}.hero-meta{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px 16px}.hero-meta p{margin:0}.hero-meta strong{font-size:11px}.hero-bottom{font-size:10px;gap:11px;margin-top:23px;flex-wrap:wrap}.nav-inner{min-height:56px;gap:6px}.print{padding:5px 8px;font-size:11px}.nav-links a{padding:6px 9px;font-size:11px}.overview{padding-top:24px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{padding:15px 13px}.metric .value{font-size:25px}.metric .label{font-size:11px}.scope-note{font-size:11px;line-height:1.8;margin-bottom:24px}.timeline-panel{padding:21px 18px}.section-label{display:block}.section-label h2{font-size:19px}.section-label span{display:block;margin-top:4px}.revision{padding:21px 18px}.revision h2{font-size:19px}.correction-grid{gap:22px 18px}.correction strong{font-size:12px}.correction p{font-size:11px}.preface{padding:18px}.chapter-head{padding:23px 19px;gap:14px}.chapter-number{font-size:33px;min-width:37px}.chapter-head h2{font-size:21px}.chapter-head p:last-child{font-size:11px}.chapter-body{padding:6px 18px 22px}.chapter-body>h3{font-size:18px;margin-top:26px;padding-top:20px}.chapter-body h4{font-size:12px}table{font-size:11px}td,th{padding:10px}pre{font-size:11px;padding:15px}.faq summary{font-size:13px;padding-left:15px}.faq-answer{font-size:13px;padding-left:15px;padding-right:15px}.footer .shell{display:block}.footer p{margin:5px 0}blockquote{padding-left:12px;font-size:12px}.backlink{padding:11px 18px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{html{scroll-padding-top:0}body{background:white;font-size:10pt;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact}.shell{max-width:none;padding-left:0;padding-right:0}.hero .shell{padding:20px}.hero{break-after:avoid}.hero h1{font-size:30px}.hero-grid{grid-template-columns:1fr 230px}.hero-meta{font-size:10px}.top-nav,.side,.backlink,.copy,.faq-tools,.toast,.skip{display:none!important}.reading-layout{display:block}.metrics{grid-template-columns:repeat(3,1fr)}.metric{break-inside:avoid}.correction-grid{grid-template-columns:repeat(2,1fr)}.timeline{min-width:0;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.stage p{min-height:0}.stage .name{font-size:10px;overflow-wrap:anywhere}.stage .time{font-size:8px}.stage-stat{font-size:16px!important}.timeline-panel,.revision{break-inside:avoid;box-shadow:none}.chapter{break-before:page;box-shadow:none;border:0;border-radius:0}.chapter-head{break-after:avoid;padding:15px 0}.chapter-body{padding:0}.chapter-body>h3{break-after:avoid}.chapter-body h4{break-after:avoid}p{orphans:3;widows:3}.table-wrap{overflow:visible}table,#chapter-1 .table-wrap:first-of-type table,#chapter-5 table,#chapter-6 table{min-width:0;width:100%;font-size:8pt;table-layout:fixed}th,td{min-width:0;padding:7px 6px;overflow-wrap:anywhere}tr{break-inside:avoid}thead{display:table-header-group}.code-wrap{break-inside:auto}pre,pre code{white-space:pre-wrap;overflow-wrap:anywhere;font-size:8pt}.faq{break-inside:avoid}.footer{padding:15px}.preface{padding:15px 0;border:0}.tag{font-size:8pt}.chapter-body li{margin:4px 0}@page{size:A4;margin:15mm}}
+</style></head>
+<body id="top"><a class="skip" href="#chapter-1">跳到正文</a>
+<header class="hero"><div class="shell"><div class="hero-top"><span class="edition">PHYSICAL DESIGN / STUDY NOTES</span><span class="pill">纠错复习版 · 单文件</span></div><div class="hero-grid"><div><p class="kicker">dma_ep_ss_top · Ic2Place</p><h1>Place Log 详细解析<span>读懂五阶段，也读懂结论的边界。</span></h1><p class="lede">从 initial_place 到 final_opto，保留日志主线与关键数据。把“发生了什么”“可能为什么”与“还要确认什么”分开，建立可回查的 Place 复习笔记。</p></div><div class="hero-meta"><p><span>TOOL / 工具</span><strong>Fusion Compiler X-2025.06-SP1</strong></p><p><span>RUN / 运行</span><strong>2026.08.31 → 09.01 · 7.8h</strong></p><p><span>DESIGN / 设计</span><strong>12nm · 6T · 1,023,523 leaf cells</strong></p><p><span>ANALYSIS / 场景</span><strong>9 scenarios · 5 setup + 4 hold</strong></p></div></div><div class="hero-bottom"><i></i><span>7 大章节</span><span>8 项重点纠错</span><span>10 个复习问答</span><span>离线阅读 · 本地浏览器 / Obsidian 外链</span></div></div></header>
+<nav class="top-nav" aria-label="顶部目录"><div class="shell nav-inner"><span class="nav-brand">CONTENTS</span><div class="nav-links"><a href="#chapter-1">01 Flow 总览</a><a href="#chapter-2">02 逐段日志解析</a><a href="#chapter-3">03 FC 命令</a><a href="#chapter-4">04 警告 / 错误</a><a href="#chapter-5">05 QoR 演进</a><a href="#chapter-6">06 风险清单</a><a href="#chapter-7">07 复习 FAQ</a><a href="#appendix">行号索引</a></div><button class="print" type="button">打印 / PDF</button></div></nav>
+<div class="shell overview"><p class="small-title">FINAL SNAPSHOT / 最终关键数字</p><div class="metrics">
+<div class="metric"><div class="label">WNS · FuncTT</div><div class="value">−0.7059<span class="unit">ns</span></div><div class="caption">场景级最差 setup slack</div></div><div class="metric"><div class="label">NSV · 全设计</div><div class="value">30,821<span class="unit"></span></div><div class="caption">日志最终检查点 · 未 clean</div></div><div class="metric"><div class="label">R2RTNS · 全设计</div><div class="value">491.1<span class="unit"></span></div><div class="caption">日志成本 / 非负幅值口径</div></div><div class="metric"><div class="label">DRV · Transition / Cap</div><div class="value">978 / 2,020<span class="unit"></span></div><div class="caption">最终 MaxTrnV / MaxCapV</div></div><div class="metric"><div class="label">Hold · 全设计</div><div class="value">14,644<span class="unit"></span></div><div class="caption">NHV；最差 slack −0.1421ns</div></div><div class="metric"><div class="label">Leaf cells · 最终</div><div class="value">1,023,523<span class="unit"></span></div><div class="caption">源文终态规模 · 各分类不直接相加</div></div>
+</div><p class="scope-note">数据来自上传解析文本。最终 QoR 应回查 report_qor.rpt.gz；日志成本、场景报告和路径组统计各有口径。本页未重新解析原始 log 或签核报告。</p>
+<section class="timeline-panel" aria-labelledby="timeline-title"><div class="section-label"><h2 id="timeline-title">五阶段主线</h2><span>2026.08.31 晚 → 09.01 凌晨 · 墙钟时间沿用原文</span></div><div class="timeline"><div class="stage"><div class="step">1</div><div class="name">initial_place</div><div class="time">20:22—20:41</div><h3>建立初始放置</h3><p>两轮 coarse placement，建立位置、密度与时序权重。</p><div class="stage-stat">0.55<small>初始 max_density</small></div></div><div class="stage"><div class="step">2</div><div class="name">initial_drc</div><div class="time">20:45—20:59</div><h3>GR 评估 + HFS</h3><p>用 GR 估算 RC 与可布性，集中处理高扇出和 DRV。</p><div class="stage-stat">165,033<small>HFS 新增 buffer/inv</small></div></div><div class="stage"><div class="step">3</div><div class="name">initial_opto</div><div class="time">21:00—次日 01:08</div><h3>时序 / DRV 大幅改善</h3><p>重排、尺寸与缓冲优化，配合 DTDP 和 legalize。</p><div class="stage-stat">29,125<small>出口 NSV</small></div></div><div class="stage"><div class="step">4</div><div class="name">final_place</div><div class="time">01:14—01:57</div><h3>整理门控拓扑与位置</h3><p>ICG 合并，再做 timing/congestion-driven placement。</p><div class="stage-stat">60,108<small>出口 NSV · 反弹</small></div></div><div class="stage"><div class="step">5</div><div class="name">final_opto</div><div class="time">02:00—04:01</div><h3>修复反弹，保留风险基线</h3><p>优化与 legalize 交替，交付 CTS/PostCTS 继续处理。</p><div class="stage-stat">30,821<small>最终 NSV · 未 clean</small></div></div></div><div class="timeline-foot"><strong>记忆主线：</strong>初始放置 → GR/HFS 修 DRV → 大规模时序优化 → 门控拓扑与位置整理 → 修复放置反弹。<br>“大幅改善 → 位置调整后反弹 → 再次改善”是本次 NSV 的趋势；最终仍保留 setup、DRV 与 hold 风险。</div></section>
+<section class="revision" aria-labelledby="revision-title"><h2 id="revision-title">先记住这 8 个纠错点</h2><p class="description">修正已同步到正文、表格、风险项和 FAQ；保留事实，把结论限定在证据能支持的范围内。</p><div class="correction-grid"><div class="correction"><div class="term">final_place</div><strong>CTS 前门控拓扑整理 + 最终 placement</strong><p>时钟树尚未定稿。</p></div><div class="correction"><div class="term">HFS 165,033</div><strong>新增量</strong><p>删除 33,156；两项相减净 +131,877。</p></div><div class="correction"><div class="term">R2R</div><strong>约束正确，才更能反映实现质量</strong><p>时钟、例外、derate 与 scenario 仍影响结果。</p></div><div class="correction"><div class="term">reg2reg</div><strong>大幅收敛，仍未 clean</strong><p>FuncTT 8,446 条；TNS -495.8ns。</p></div><div class="correction"><div class="term">UIC-105</div><strong>offset 未生效，需按路径复核</strong><p>不固定套用 setup/hold ±0.1ns。</p></div><div class="correction"><div class="term">FuncTT 最差</div><strong>检查 IO constraint 的线索</strong><p>不能仅凭最差 corner 确定原因。</p></div><div class="correction"><div class="term">Hold</div><strong>CTS/PostCTS 阶段重点处理</strong><p>持续跟踪；建树不保证自动清零。</p></div><div class="correction"><div class="term">ccd.skip_path_groups</div><strong>按后续配置与实际 target 判断</strong><p>无效列表是否沿用、哪些组被优化，均需检查。</p></div></div></section>
+</div>
+<div class="shell reading-layout"><aside class="side" aria-label="章节导航"><p class="side-label">READING MAP / 阅读地图</p><a href="#source-note"><span>00</span>阅读说明与数据口径</a><a href="#chapter-1"><span>01</span>Flow 总览</a><a href="#chapter-2"><span>02</span>逐段日志解析</a><a href="#chapter-3"><span>03</span>FC 命令</a><a href="#chapter-4"><span>04</span>警告 / 错误</a><a href="#chapter-5"><span>05</span>QoR 演进</a><a href="#chapter-6"><span>06</span>风险清单</a><a href="#chapter-7"><span>07</span>复习 FAQ</a><a href="#appendix"><span>↗</span>日志行号速查</a><div class="side-note"><strong>复习时优先问</strong><br>这是日志事实吗？<br>统计口径一致吗？<br>结论还缺哪些证据？<div class="legend"><span class="tag tag-fact">事实</span><span class="tag tag-infer">推断</span><span class="tag tag-risk">风险</span></div><p>查找具体消息或命令：<br>使用浏览器 Ctrl / ⌘ + F。</p></div></aside><main class="main-col"><section id="source-note" class="preface"><p class="small-title">SOURCE & SCOPE / 阅读说明</p><blockquote>
+<p><strong>适用范围</strong>:<code>/nobackup/users/fulaixiao_sd/fc_shell/project/8313/pnr/log/Ic2Place.log</code>
+<strong>工具</strong>:Synopsys Fusion Compiler (fc_shell) X-2025.06-SP1
+<strong>运行时间</strong>:2026-08-31 20:14:59 → 2026-09-01 04:02(7.8h,CPU 265,480s,峰值内存 73.4GB,16 线程,主机 srv111)
+<strong>设计</strong>:dma_ep_ss_top(6T 标准单元,12nm 工艺,布线层 M0–M13 + AP，按层名计 15 层；原文层数表述不一致，需对照 techfile)
+<strong>权威数据源</strong>:QoR 数字以 <code>../rpt/Ic2Place/report_qor.rpt.gz</code> 为准;log 中的 WNS/TNS/NSV 快照为优化器口径,两者的符号、场景聚合与统计对象需分别核对，不默认等价。</p>
+</blockquote>
+<blockquote>
+<p><strong>整理范围</strong>：依据上传的《place_log 详细解析》与当前对话纠错整理，保留七大章节、主要数字、代码示例及日志行号。原始 log/SDC/report_qor 未随本次输入提供，因此保留数据不表示已完成独立签核验证。代码中的占位符、项目自定义过程与省略号保留作复习用途。</p>
+<p><strong>原文口径待核对</strong>：总运行时间保留 7.8h；阶段时长为原文工具统计，和墙钟起止不一定一致。全设计、场景、路径组与优化成本分开阅读；路径组违例数不直接相加。第 5.4 节 33819–33823 行位于 final_opto 范围，标作“后续 GR 观察点”。HFS 第 2 轮“净 +18,930”沿用原文，未获得对应增删明细独立核对。</p>
+</blockquote>
+<h3 id="heading-144">阅读说明(标注体系)</h3>
+<p>保留原文的五类标注。下文“日志事实”指上传解析文本所摘录的日志信息；本次未直接复核原始 log、SDC 或 report_qor 文件。行号均为原解析中的定位线索。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>标注</th>
+<th>含义</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="tag tag-fact">日志事实</span></td>
+<td>log 中明确出现的内容,附行号</td>
+<td>行 17633:NSV=130,884</td>
+</tr>
+<tr>
+<td><span class="tag tag-explain">解释</span></td>
+<td>命令/阶段/选项在做什么(基于工具知识)</td>
+<td><code>compile_fusion -from ... -to ...</code> 的含义</td>
+</tr>
+<tr>
+<td><span class="tag tag-infer">推断</span></td>
+<td>根据日志对工具行为的推测,<strong>未经工具文档确认</strong></td>
+<td>堆叠推断:ZRT-643 与 FRAM-054 同源</td>
+</tr>
+<tr>
+<td><span class="tag tag-risk">风险</span></td>
+<td>值得后续检查的项</td>
+<td>DFT-005 扫描链异常</td>
+</tr>
+<tr>
+<td><span class="tag tag-pending">待确认</span></td>
+<td>当前无法从日志确定的信息</td>
+<td>OPT-069 的具体消息文本</td>
+</tr>
+</tbody></table></div>
+<hr>
+</section><section id="chapter-1" class="chapter" data-chapter="1"><div class="chapter-head"><span class="chapter-number">01</span><div><p class="eyebrow">CHAPTER 01</p><h2>Place Flow 总览</h2><p>从全局理解本次运行、阶段边界与时间分配。</p></div></div><div class="chapter-body"><h3 id="heading-1">1.1 本次运行基本盘</h3>
+<ul>
+<li>设计规模(最终):1,023,523 个 leaf cell(Buf 54,002 / Inv 120,076 / 组合 927,552 / 时序 95,971 / ICG 5,218 / 宏 81)</li>
+<li>芯片核心尺寸:(9600, 9600) → (16982400, 9782400) DB unit,即约 <strong>16.98mm × 9.78mm</strong></li>
+<li>场景:<strong>9 个</strong>(5 setup + 4 hold),时钟:<strong>12 个 master + 10 个 generated</strong></li>
+<li>工艺栈:15 布线层(M0-M13 + AP),cell 布线层 M2-M11,双 pattern 层 M1(DPT)+ M2/M3 双 pattern 利用率 70%/75%</li>
+</ul>
+<h3 id="heading-2">1.2 完整流程地图(与日志一致)</h3>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>Ic2Place.cmd 启动 (行 1-46)
+   │
+   ├── Ic2Place_loadDesign (行 47-128)      拷贝 Ic2Floorplan → Ic2Place,链接,设场景
+   ├── Ic2Place_updateSetting (行 296-441)  时钟约束/CTS NDR/P48 marker
+   ├── optionSetting (行 443-1910)          POCV/放置/布线 app options
+   ├── set_qor_strategy (行 1912-1987)      balanced 模式,timing 单指标
+   ├── libpurpose / tieSelect / aware (行 1989-2115)
+   ├── Ic2Place_strategy (行 2119-2208)     定义 compile_fusion 五段流程
+   │
+   └── compile_fusion 五段 (行 2214-37202)
+        ├── initial_place  (行 5097-8447)   两轮粗放置 + DFT 检查
+        ├── initial_drc    (行 11373-11630) GR + HFS(高扇出综合)
+        ├── initial_opto   (行 14515-26624) 4h 时序优化(48+ phase)+ CCD(详见 2.11 三轮记录；原图写 ×2)
+        ├── final_place    (行 26806-32709) CTS 前 ICG 合并 + T&amp;C 时序/拥塞驱动放置
+        └── final_opto     (行 32863-36736) 2 轮 Optimization + 2 轮 Legalize
+   │
+   └── Ic2Place_saveAndRpt (行 37206-37402) connect_pg + save_block + 报告
+</code></pre></div>
+<h3 id="heading-3">1.3 各阶段状态总表</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>主要目标</th>
+<th>优化对象</th>
+<th>会不会 resize/插 buffer/动 cell</th>
+<th>timing 状态</th>
+<th>congestion</th>
+<th>density</th>
+<th>legalize</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>initial_place</td>
+<td>建立可布线的摆放</td>
+<td>线长/密度/时序权重</td>
+<td>第二轮时序驱动放置 + buffering-aware</td>
+<td>估算(trial RC)</td>
+<td>不感知</td>
+<td>max 0.55</td>
+<td>不做(后续 legalize)</td>
+</tr>
+<tr>
+<td>initial_drc</td>
+<td>GR 验证 + 修 DRV</td>
+<td>transition/cap(HFS)</td>
+<td><strong>新增 165,033；删除 33,156</strong></td>
+<td>GR 估算 RC</td>
+<td>只评估</td>
+<td>-</td>
+<td>不做</td>
+</tr>
+<tr>
+<td>initial_opto</td>
+<td>收敛 setup/DRV</td>
+<td>所有时序路径</td>
+<td>resize/buffer/重排,含 DTDP 重放 2 轮 + legalize 2 轮</td>
+<td><strong>主战场</strong>(13 万→2.9 万违例)</td>
+<td>DTDP 感知(有效利用 72%)</td>
+<td>0.55→0.65</td>
+<td>2 次全量</td>
+</tr>
+<tr>
+<td>final_place</td>
+<td>CTS 前 clock-gating topology 整理 + 最终放置</td>
+<td>ICG 合并 + 时序/拥塞放置</td>
+<td>ICG 合并(动网表)+ 移动 26.6% cell</td>
+<td>临时反弹(NSV 6 万)</td>
+<td><strong>后续 GR 观察峰值 344%/252%</strong></td>
+<td>0.65→0.70</td>
+<td>1 次全量</td>
+</tr>
+<tr>
+<td>final_opto</td>
+<td>修回放置反弹</td>
+<td>setup/DRV + 面积</td>
+<td>resize/buffer</td>
+<td>大幅改善但未 clean(WNS -0.706,NSV 3.1 万)</td>
+<td>不感知</td>
+<td>稳定</td>
+<td>2 次全量</td>
+</tr>
+</tbody></table></div>
+<p><strong>关键关系</strong>:</p>
+<ul>
+<li>initial_place → initial_drc:放置后先用 GR 验证可布性,再用 HFS 清 DRV</li>
+<li>initial_drc → initial_opto:日志中的 SETUP-COST 已在 Load Design 检查点达到 29,331,404；RC 模型与网表均在演进，不能把成本变化全部归因于 HFS。initial_opto 集中优化时序与 DRV</li>
+<li>initial_opto → final_place:时序已大幅改善的网表 → ICG 合并(调整 clock-gating topology)→ 最终放置；此时尚非 CTS 时钟树定稿</li>
+<li>final_place → final_opto:放置大挪动造成时序反弹,最后一轮统一修回</li>
+</ul>
+<h3 id="heading-4">1.4 时间轴</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>事件</th>
+<th>行号</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20:14:59</td>
+<td>脚本启动</td>
+<td>39</td>
+<td>-</td>
+</tr>
+<tr>
+<td>20:16-20:18</td>
+<td>loadDesign/updateSetting/optionSetting</td>
+<td>47-2208</td>
+<td>~3min</td>
+</tr>
+<tr>
+<td>20:22-20:41</td>
+<td><strong>initial_place</strong></td>
+<td>5097-8447</td>
+<td>0.31h</td>
+</tr>
+<tr>
+<td>20:45-20:59</td>
+<td><strong>initial_drc</strong></td>
+<td>11373-11630</td>
+<td>0.22h</td>
+</tr>
+<tr>
+<td>21:00-01:08</td>
+<td><strong>initial_opto</strong>(含 55min 大时序更新)</td>
+<td>14515-26624</td>
+<td>4.05h</td>
+</tr>
+<tr>
+<td>01:14-01:57</td>
+<td><strong>final_place</strong></td>
+<td>26806-32709</td>
+<td>0.71h</td>
+</tr>
+<tr>
+<td>02:00-04:01</td>
+<td><strong>final_opto</strong></td>
+<td>32863-36736</td>
+<td>1.93h</td>
+</tr>
+<tr>
+<td>04:01-04:02</td>
+<td>saveAndRpt</td>
+<td>37206-37402</td>
+<td>~1min</td>
+</tr>
+</tbody></table></div>
+<hr>
+</div><a class="backlink" href="#top">↑ 返回顶部</a></section>
+<section id="chapter-2" class="chapter" data-chapter="2"><div class="chapter-head"><span class="chapter-number">02</span><div><p class="eyebrow">CHAPTER 02</p><h2>按日志时间顺序详细解析</h2><p>沿用原文 2.0–2.18 与 2.5b 的结构，将事实、解释和推断分开阅读。</p></div></div><div class="chapter-body"><h3 id="heading-5">2.0 启动区(行 1-46)</h3>
+<h4 id="heading-6">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">set target Ic2Place; set design_name dma_ep_ss_top; set lib_type 6T
+USER-INFO(): Running script .../Ic2Place.cmd at Aug 31 2026 20:14:59
+</code></pre></div>
+<h4 id="heading-7">发生了什么</h4>
+<p><span class="tag tag-fact">日志事实</span>读取偏好文件、设定设计名/目标/库类型(6T 单元)、创建报告目录 <code>../rpt/Ic2Place</code>。</p>
+<h4 id="heading-8">为什么要做</h4>
+<p>无实质含义,确认运行身份与产物位置。</p>
+<h4 id="heading-9">对设计的可能影响</h4>
+<p>无。</p>
+<h4 id="heading-10">我应该关注什么</h4>
+<p>确认 <code>design_name</code>、<code>lib_type</code>、时间戳是否与预期批次一致(防止跑错设计/旧脚本)。</p>
+<h3 id="heading-11">2.1 Ic2Place_loadDesign(行 47-128)+ 库打开(行 132-295)</h3>
+<h4 id="heading-12">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">copy_lib -from_lib ../db/dma_ep_ss_top.Ic2Floorplan.nlib -to_lib ../db/dma_ep_ss_top.Ic2Place.nlib
+open_block dma_ep_ss_top; link_block -rebind
+Ic2_set_analysis_scenario -setup $PR,PLACE_SETUP_VIEW -hold $PR,PLACE_HOLD_VIEW
+</code></pre></div>
+<h4 id="heading-13">发生了什么</h4>
+<p><span class="tag tag-fact">日志事实</span>把上一站 Ic2Floorplan 的 nlib 拷贝为 Ic2Place.nlib → open_block + link_block → 激活 9 个场景(5 setup + 4 hold,见行 278-286)→ 各场景下 remove/set ideal network。</p>
+<p><span class="tag tag-explain">解释</span><code>copy_lib</code> 保证本阶段不动上游库;<code>link_block -rebind</code> 重新绑定库单元;场景 = (mode, corner) 对,后续所有时序分析都在这 9 个场景下做 MCMM 分析。</p>
+<p><span class="tag tag-fact">日志事实</span>期间出现 69 条 <code>FRAM-054</code> + 69 条 <code>NDM-102</code>:各 IP 库的 frame-view 由旧 techfile(11M/12M)创建,与当前 13M techfile 不一致(VIA1 cut 规则不同、缺 poly 层),工具建议 <code>derive_design_level_via_regions</code>。</p>
+<p><span class="tag tag-fact">日志事实</span>行 293-294 出现本 log 唯一的 Error 类型消息(共 16 条):</p>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>Error: Mode: accapture, Generated clock &#39;bap1_tck&#39; has no path from master clock
+&#39;ts_tck_ijtag_tck&#39;; zero source latency will be used. (GRF-014)
+</code></pre></div>
+<h4 id="heading-14">为什么要做</h4>
+<ul>
+<li>场景化分析:place 阶段同时跑 func/shift/dccapture 三种模式、tt/ss/ff 三种工艺角</li>
+<li>ideal network 处理:时钟树未建前把时钟/复位当 ideal 网络,避免布线延迟污染分析</li>
+</ul>
+<h4 id="heading-15">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-explain">解释</span>NDM-102:frame-view 是几何壳(库单元的布线抽象),techfile 不一致意味着这些单元的 pin/阻挡信息在 13M 工艺下可能不完全准确——对<strong>布线</strong>有潜在影响(见 ZRT-643 的推断)</li>
+<li><span class="tag tag-explain">解释</span>GRF-014:DFT 时钟 <code>bap1_tck</code> 在 accapture 模式下找不到 master 路径,按零 source latency 处理 → 该模式下 bap1 时钟域的分析精度下降</li>
+</ul>
+<h4 id="heading-16">我应该关注什么</h4>
+<ol>
+<li><strong>GRF-014 ×16</strong>:所有阶段重复出现且流程未中断；这只能说明流程继续运行，不能证明时序影响为零。<span class="tag tag-pending">待确认</span><code>bap1_tck</code> 的 master 时钟关系在 accapture SDC 中为何缺失,应与 DFT 确认</li>
+<li><strong>NDM-102/FRAM-054</strong>:记下&quot;库 frame-view 与工艺不一致&quot;这条账,它与后面 ZRT-643(路由引导丢宏信息)疑似同源<span class="tag tag-infer">推断</span></li>
+<li>场景清单是否齐全(9 个)</li>
+</ol>
+<h3 id="heading-17">2.2 Ic2Place_updateSetting(行 296-441)</h3>
+<h4 id="heading-18">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">set_max_transition 0.200 [current_design] -scenarios [all_scenarios]
+# 快时钟(&lt;1.5ns)自动收紧:
+#   clock_path = period/8, data_path = period/4
+#   dma_ep_clk 1.0ns → clock 0.125 / data 0.250
+#   dma_ep_clk 0.77ns → clock 0.096 / data 0.192  (行 810-820)
+set_clock_uncertainty -setup 0.00025 -hold 0.02   (Clock Uncertainty Setup 0.25ps Hold 20ps)
+Ic2_create_ndr_rule NDR_2W2S (M4-M11, space 2 width 2)
+set_clock_routing_rules -net_type root NDR_2W2S -max M11 -min M10
+set_clock_routing_rules -net_type internal NDR_2W2S -max M11 -min M4
+create_marker_layers M2_P48/M3_P48 (6T 宏周边双 pattern marker)
+</code></pre></div>
+<h4 id="heading-19">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>按时钟周期自适应收紧 transition;CTS 布线规则(NDR)与层限制在 place 前先定好;6T 工艺下为宏周围 M2/M3 的 48nm 双 pattern 间距生成 marker。</p>
+<h4 id="heading-20">为什么要做</h4>
+<ul>
+<li>transition 约束决定 buffer 插入量:0.2ns 全局 + 快时钟更紧 → 直接影响 HFS/优化阶段插多少 buffer</li>
+<li>时钟 NDR 规则(pre-CTS 设定)后续 CTS 直接继承,保证时钟树走线质量</li>
+</ul>
+<h4 id="heading-21">对设计的可能影响</h4>
+<ul>
+<li>transition 约束越紧 → buffer 越多、面积越大、拥塞越重<span class="tag tag-explain">解释</span></li>
+<li>0.77ns 的 <code>dma_ep_clk</code> 变体(data 0.192ns)属于应优先核对的紧约束；它与 in2reg 残余违例的因果关系需结合具体路径确认</li>
+</ul>
+<h4 id="heading-22">我应该关注什么</h4>
+<p><span class="tag tag-fact">日志事实</span>行 821-849 起出现 <strong>UIC-090 ×936</strong>:<code>func</code> 模式找不到 <code>SCAN_CLK</code>/<code>OCC_SCAN_CLK_0~3</code>,<code>dccapture</code> 模式找不到全部 func 时钟。</p>
+<ul>
+<li><span class="tag tag-risk">风险</span><strong>当前模式中相应时钟名未匹配成功</strong>，相关约束命令可能未作用于预期对象；不据此判定整个时钟域完全无约束，需 DFT 确认模式划分与实际覆盖</li>
+</ul>
+<h3 id="heading-23">2.3 optionSetting(行 443-1910)</h3>
+<h4 id="heading-24">日志内容(关键项)</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">set_app_options -name time.enable_constraint_variation true
+set_app_options -name time.pocvm_enable_analysis true     # POCV, sigma=3.0
+set_app_options -name time.remove_clock_reconvergence_pessimism true  # CRPR
+set_app_options -name place.coarse.pin_density_aware true
+set_app_options -name opt.power.mode none                 # 功耗优化关闭
+set_app_options -name opt.area.effort medium
+set_app_options -name route.common.global_min_layer_mode hard
+set_app_options -name route.global.double_pattern_utilization_by_layer_name {{M2 70} {M3 75}}
+set_app_options -name route.common.extra_nonpreferred_direction_wire_cost_multiplier_by_layer_name {M4 3} {M5 3} {M6 3} {M7 3}
+set_app_options -name route.common.connect_within_pins_by_layer_name {M1 via_wire_standard_cell_pins}
+# 时钟门控相关 (行 1785-1807):
+place_opt.flow.estimate_clock_gate_latency false
+set_clock_latency -scenarios &quot;func*/FuncTT*&quot; -offset -0.1 [ICG 时钟输入 pin]   # 行 1787
+ccd.skip_path_groups {**IN_to_REG **OUT_from_REG **FEEDTHROUGH}                # 行 1807
+</code></pre></div>
+<h4 id="heading-25">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>POCV(统计变化建模)+ CRPR(时钟重汇聚悲观消除)用于更完整的时序分析；仅凭开启选项不等于达到签核精度;功耗优化关闭(opt.power.mode none)聚焦时序;布线层规则在放置前预置。</p>
+<h4 id="heading-26">为什么要做</h4>
+<ul>
+<li>POCV sigma=3.0:本次统计时序分析设置；是否符合项目签核要求需核对 signoff methodology</li>
+<li>M1 只做引脚内连接:避免 M1 走线(它是 pin access 层)</li>
+<li>非优选方向代价 ×3:逼走线跟 track,改善布线收敛</li>
+</ul>
+<h4 id="heading-27">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-explain">解释</span><code>set_clock_latency -offset -0.1</code>:脚本尝试对目标 pin 设置 -0.1ns offset。它是后续 <strong>UIC-105 刷屏(20,973 条)的直接来源</strong>:MBIST 的 latch 门控(<code>MBISTPG_STATUS/CLOCK_GATING_BIST_CLK_*/latch/CP</code>)和 DFT marker(<code>dft_mrk_*</code>)未满足工具对 offset latency 目标的要求，offset 未成功应用</li>
+<li><span class="tag tag-risk">风险</span>UIC-105 的实质影响:实际 timing model 与脚本预期不一致；影响方向和数值取决于 launch/capture 角色、关联时钟、early/late 设置等，不能统一写成 setup/hold 固定 ±0.1ns(详见 FAQ)</li>
+<li><span class="tag tag-risk">风险</span><code>ccd.skip_path_groups</code> 指定的三个 path group 名在本设计中不存在(行 1946-1954 警告)→ <strong>这三个配置项没有匹配到预期组</strong>；实际 CCD 作用范围还取决于 target/path group 与后续阶段配置(详见 2.11 与 FAQ)</li>
+</ul>
+<h4 id="heading-28">我应该关注什么</h4>
+<ul>
+<li>弃用警告 <code>NDMUI-441</code>(opt.power.mode、refine_opt.flow.optimize_layers、route.global.deterministic 等 6 条):流程脚本需随版本迁移</li>
+<li><code>UIC-028</code> ×6,415(显示 20):<strong>时钟 latency 被写成 -6.95e-310(垃圾值)</strong>,SDC 问题,建议清理</li>
+</ul>
+<h3 id="heading-29">2.4 set_qor_strategy(行 1912-1987)</h3>
+<h4 id="heading-30">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>Strategy-Info: Applying single metric strategy for timing metric_target
+Strategy-Info: Running balanced mode.
+| place_opt.final_place.effort   | timing | medium | medium | high |
+| place_opt.place.congestion_effort | timing | medium | medium | high |
+| opt.area.effort                | timing | low    | medium | high |
+</code></pre></div>
+<h4 id="heading-31">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>FC 的策略引擎按&quot;技术节点 12 + 单指标 timing + balanced&quot;给一组默认目标选项;本流程在此基础上再手动覆盖。</p>
+<h4 id="heading-32">为什么要做</h4>
+<p>统一成本函数口径,让 place/CTS/route 各阶段用同一套时序权重。</p>
+<h4 id="heading-33">对设计的可能影响</h4>
+<ul>
+<li>final_place.effort = high(目标值):final_place 会花更多时间做时序驱动放置</li>
+</ul>
+<h4 id="heading-34">我应该关注什么</h4>
+<p>无(配置确认信息)。</p>
+<h3 id="heading-35">2.5 libpurpose / tieSelect / aware(行 1989-2115)</h3>
+<h4 id="heading-36">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">set_lib_cell_purpose -exclude cts [get_lib_cells */*]     # 默认全部排除 CTS
+set_lib_cell_purpose -include cts [cts_only_cell_list]    # 再把时钟专用单元加回
+set_lib_cell_purpose -include none */*ULVT                # ULVT 禁用
+set_threshold_voltage_group_type -type low_vt {ULVT} ...  # (见下节)
+</code></pre></div>
+<h4 id="heading-37">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>CTS 专用单元白名单 + ULVT 禁用;TIE 单元允许优化;默认参数档(aware=default)把 opt.timing/area.effort 设为 medium。</p>
+<h4 id="heading-38">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-risk">风险</span><code>NDMUI-010</code> ×10:对无逻辑模型的 frame cell(pcie_solder_bump、ESD 库)执行 set_lib_cell_purpose 失败——需确认这些 frame cell 是否需要该策略</li>
+<li><span class="tag tag-risk">风险</span><code>ATTR-12</code> ×27,125:库 cell 属性(threshold_voltage_group 等)写成设计级覆盖,量大但机制正常</li>
+</ul>
+<h4 id="heading-39">我应该关注什么</h4>
+<ul>
+<li><code>SEL-003</code> ×6(行 670-674):dont_use 列表里的 6 个 cell 名匹配不到任何单元(<code>*/*D0*BWP*</code>、<code>INVD1BWP16P90CPDLVT</code> 等)——<strong>旧库/改名残留,可清理</strong></li>
+</ul>
+<h3 id="heading-40">2.5b 阈值电压分组(行 688-796,sec_set_threshold_v_group.tcl)</h3>
+<h4 id="heading-41">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">set_attribute [get_lib_cells */*BWP*CPD]   threshold_voltage_group RVT
+set_attribute [get_lib_cells */*BWP*CPDLVT] threshold_voltage_group LVT
+set_threshold_voltage_group_type -type low_vt {ULVT} ...
+reset_multi_vth_constraint
+set_multi_vth_constraint -low_vt_percentage 3 -cost cell_count   # LVT 上限 3%
+</code></pre></div>
+<h4 id="heading-42">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>给全部库单元打 VT 分组标签;<strong>LVT 用量限制为 3%</strong>(cell 计数口径)。</p>
+<h4 id="heading-43">为什么要做</h4>
+<p>VT 分组是 leakage 优化与 later CTS/route 阶段 VT 平衡的基础;LVT 限制控制漏电。</p>
+<h4 id="heading-44">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-infer">推断</span>LVT 上限 3% 意味着优化器在时序紧迫时会先耗尽 LVT 预算,可能限制极端路径的修复手段——final QoR 中 in2reg 等难修路径的残余违例,可能与 LVT 预算受限有关<span class="tag tag-infer">推断</span></li>
+</ul>
+<h4 id="heading-45">我应该关注什么</h4>
+<p>确认 MAX_LVTH_PERCENTAGE 设置是否符合项目漏电目标。</p>
+<h3 id="heading-46">2.6 Ic2Place_strategy(行 2119-2208)—— 流程定义</h3>
+<h4 id="heading-47">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">if {[regexp fc_shell $synopsys_program_name]} { set cmd compile_fusion }
+eval &quot;$cmd -from initial_place -to initial_place&quot;; save_block -as initial_place
+eval &quot;$cmd -from initial_drc    -to initial_drc&quot;;    save_block -as initial_drc
+eval &quot;$cmd -from initial_opto   -to initial_opto&quot;;   save_block -as initial_opto
+eval &quot;$cmd -from final_place    -to final_place&quot;;    save_block -as final_place
+eval &quot;$cmd -from final_opto     -to final_opto&quot;
+</code></pre></div>
+<h4 id="heading-48">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span><code>compile_fusion -from X -to X</code> = 只执行 recipe 中 X 步骤;所示片段在前四段后 <code>save_block -as</code>，形成 initial_place/initial_drc/initial_opto/final_place 四个中间快照；final_opto 后由 saveAndRpt 保存最终块。</p>
+<h4 id="heading-49">为什么要做</h4>
+<ul>
+<li>分段保存:任一步骤失败/效果差,可从上一 checkpoint 重来</li>
+<li>FC 的 recipe 将放置流程拆为 initial(快速试探)+ final(收敛)两段</li>
+</ul>
+<h4 id="heading-50">对设计的可能影响</h4>
+<p>每个快照是可审计的中间状态;也解释了为什么 QoR 表会出现多份(每段一次)。</p>
+<h4 id="heading-51">我应该关注什么</h4>
+<p>无。</p>
+<h3 id="heading-52">2.7 compile_fusion 启动 + 消息洪水(行 2214-5100)</h3>
+<h4 id="heading-53">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>INFO: compile_fusion is running in balanced flow mode.
+INFO: EIO v6.2 - EPO v4.1 &lt;off&gt; - Cost Function Configuration 0.5/0.5/0.5/0.5
+Warning: Mapping to scan cell &#39;GSDFCNQMCOD1BWP6T16P96CPD&#39; ... &#39;dont_use&#39; attribute. (SQM-1067)
+Warning: Offset latency can only be specified for clock-sink pins ... (UIC-105)  ×~4,850
+</code></pre></div>
+<h4 id="heading-54">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span></p>
+<ul>
+<li>EIO/EPO:优化引擎版本;成本函数 0.5/0.5/0.5/0.5 = setup/R2R/hold/DRC 四路权重</li>
+<li><strong>SQM-1067</strong>:工具想把普通寄存器映射成扫描寄存器,但目标 scan cell 在 dont_use 列表 ；具体映射结果需结合消息全文与最终网表确认(本段 126 条)</li>
+<li><strong>UIC-105 洪水</strong>:postLboTimerUpdate 步骤逐 pin 应用 <code>set_clock_latency -offset -0.1</code>,对不符合 clock-sink pin 要求的目标报出警告(全 log 20,973 条)</li>
+</ul>
+<h4 id="heading-55">为什么要做</h4>
+<ul>
+<li>scan 映射:place 阶段允许把 DFF 换成扫描 DFF,为 DFT 省一次 ECO</li>
+<li>时钟延迟应用:优化前的时序更新准备</li>
+</ul>
+<h4 id="heading-56">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-risk">风险</span><strong>SQM-1067:设计中需要 scan cell 的地方大量被 dont_use 挡住</strong>(后面会看到:initial_opto 单轮 1,890 次、全 log 被抑制 8,054 次)——若 dont_use 非有意，存在扫描映射/覆盖风险，需核对最终 DFT 结果</li>
+<li><span class="tag tag-explain">解释</span>UIC-105 影响:相关目标的 -0.1ns offset 未生效，实际模型与脚本预期不同；应按路径复核，不能直接判为无害(见 FAQ)</li>
+</ul>
+<h4 id="heading-57">我应该关注什么</h4>
+<ul>
+<li>SQM-1067 的总量(汇总表:8,054 被抑制)——<strong>列入 DFT 确认清单</strong></li>
+<li><span class="tag tag-pending">待确认</span>OPT-069 被抑制 8,116,876 次(全 log 最大抑制量),具体文本未在 log 中打印,需在其它日志或工具文档确认</li>
+</ul>
+<h3 id="heading-58">2.8 initial_place(行 5097-8447)</h3>
+<h4 id="heading-59">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>running create_placement   (×2:行 5121, 5184)
+Placement Options: 第一轮 high_effort/非时序;第二轮 medium_effort/timing-driven/buffering-aware
+Net weight manager: 1,137,633 nets 非默认权重 (0.7977~2.3930)
+max_density 0.55, congestion_driven_max_util 0.87  (PLACE-027)
+Found 28766 sequential multibit cells
+Added 4342 bounds for preserving balanced registers
+DFT-005 ×278: scan chain abnormal ... (行 8105-8129)
+DFT-029: partition_1 overconstrained 39/46 bits (行 8244)
+Total SCANCHAINS checked: 282 / VALIDATED: 282 / FAILED: 0  (行 8246-8250)
+</code></pre></div>
+<h4 id="heading-60">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span></p>
+<ul>
+<li>两轮 create_placement:第一轮非时序快速放(建密度/权重/宏位置,只跑到 39% 被收工),第二轮<strong>时序驱动 + buffering-aware</strong> 正式放置(coarse 0→100%)</li>
+<li>时序权重:关键 net 加权(最高 2.39 倍),使放置倾向缩短关键路径</li>
+<li>4,342 个 balanced register bound:为时钟树平衡预留的寄存器位置约束</li>
+<li>放置完成后跑扫描链结构检查</li>
+</ul>
+<h4 id="heading-61">为什么要做</h4>
+<p>时序驱动放置让摆放直接反映时序需求,比&quot;先放完再修&quot;效率高。</p>
+<h4 id="heading-62">对设计的可能影响</h4>
+<ul>
+<li>timing:无直接结论(仅 trial RC 估算)</li>
+<li>density:max 0.55(宽松,后续会收紧)</li>
+<li><span class="tag tag-risk">风险</span><strong>DFT-005 ×278</strong>:三类异常 ——<ol>
+<li>OCC persistent buffer(<code>tessent_persistent_cell_scan_in_buf</code>)作为链首且驱动多负载(4 条)</li>
+<li>大量 <code>DNT_dff</code> 的 <strong>SI 脚与另一输入脚短接</strong>(scan_segment_155/156/224 等,集中在 CDC 同步器 GEN_FST2/3_SYNC、u_sample_meta/syncm1/syncl)</li>
+<li>RAM/配置寄存器位(mem_reg_1__285_、r_reg_tagExt_en_)同类</li>
+</ol>
+</li>
+<li><span class="tag tag-risk">风险</span><strong>DFT-029</strong>:partition_1 的 stub chain 容量 39 bits、占用 46 bits(超 7 bits)</li>
+</ul>
+<h4 id="heading-63">我应该关注什么</h4>
+<ol>
+<li><span class="tag tag-infer">推断</span>SI 短接 + 链结构 282/282 全部 VALIDATED → <strong>大概率是 DFT 有意设计</strong>(CDC 同步器不入链、SI 接地/接 D 是 Tessent 常规做法),但必须 DFT 确认——<strong>不能仅凭推断放行</strong></li>
+<li>DFT-029 的超容量 partition 会影响测试时间/链平衡质量,知会 DFT</li>
+<li>12.8 万 user fixed cell(占可移动 12.5%):fixed 比例偏高,后续拥塞问题先查这批</li>
+</ol>
+<h3 id="heading-64">2.9 initial_drc(行 11373-11630)</h3>
+<h4 id="heading-65">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>Cell Min-Routing-Layer = M2 / Max-Routing-Layer = M11
+Load Design 阶段成本: SETUP-COST 29,331,404  (行 11426)
+Global Route: LDRC-COST 4,091 → 147,171      (行 11435-11436)
+High Fanout Synthesis: 97,436 drivers; 删 33,156 / 加 165,033 buffer/inv; 尺寸调整 28,595
+HFS 后: LDRC-COST 147,171 → 2,582            (行 11550-11553)
+Top10 transition violators 最差 -0.035ns (u14_find_id_top/.../U36161)
+</code></pre></div>
+<h4 id="heading-66">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span></p>
+<ul>
+<li>GR 提供更接近当前布线状态的 RC 估算，但仍不是最终抽取 RC。SETUP-COST 在 Load Design 检查点记录为 29,331,404；跨检查点差异需同时检查模型与网表变化</li>
+<li><strong>HFS</strong>:把高扇出/长走线 net 插 buffer 拆扇出,集中修 transition/cap 违例</li>
+</ul>
+<h4 id="heading-67">为什么要做</h4>
+<ul>
+<li>GR 用于评估可布性与寄生参数，再据此修 DRV；GR 结果不能单独保证详细布线最终成功</li>
+<li>HFS 一次过清掉 DRV 大头,让后续 optimization 专注时序</li>
+</ul>
+<h4 id="heading-68">对设计的可能影响</h4>
+<ul>
+<li><strong>HFS 新增 165,033、删除 33,156，按这两项相减净 +131,877 buffer/inv</strong>。InstCnt 1,020,950 → 1,155,749，净 +134,799，统计范围不同，可能含同期其他 cell 操作；不把两者混为同一净增量。插入单元会增加面积/布线负担，最终功耗仍需报告确认</li>
+<li>LDRC-COST 从 147,171 → 2,582，下降约 98%；这是成本值变化，不直接等同于违例条数变化</li>
+</ul>
+<h4 id="heading-69">我应该关注什么</h4>
+<ol>
+<li>HFS 后的残余 transition 违例名单(LUT 搜索模块、edma_rdbuff 的 driver,fanout 仅 2)——这些小余量违例留给 initial_opto</li>
+<li><span class="tag tag-explain">解释</span>HFS 的&quot;账&quot;会在后续每次 cellmap 装载时体现(1,147,349 → 1,282,121 实例)</li>
+</ol>
+<h3 id="heading-70">2.10 initial_opto 准备(行 11631-17633)</h3>
+<h4 id="heading-71">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>SQM-4104 ×2: dnt_dft_hold_regs / dnt_dft_lockup_regs 寄存器被保护 (行 14519-14520)
+SQM-1067 本轮 1,890 次(仅打印 10)                  (行 14521)
+Timing Update Started 21:06:06 → complete (55min, CPU 20,266s)  (行 14525, 17411)
+时序配置: AWP full_design / POCV / CRPR / Advanced Receiver Model  (行 17400-17407)
+initial QoR: WNS 2.2514 / NSV 130,884 / TNS 54,479 / R2RTNS 34,223   (行 17633)
+</code></pre></div>
+<h4 id="heading-72">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span></p>
+<ul>
+<li>两个 DFT 专用寄存器带 user_dont_touch,优化器不卸载它们(SQM-4104,好事)</li>
+<li><strong>55 分钟全量时序更新</strong>:9 场景 MCMM 底座,单步耗时最长</li>
+<li>initial QoR 是优化起点的日志快照(优化器口径):13 万 setup 违例</li>
+</ul>
+<h4 id="heading-73">为什么要做</h4>
+<p>优化前必须有一次精确的时序评估;之后的 phase 迭代都基于它。</p>
+<h4 id="heading-74">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-fact">日志事实</span>违例大头:<strong>reg2reg 87,957 条(TNS -20,860,行 17488-17489)与 in2reg 22,613 条(TNS -17,193,行 17486-17487)</strong></li>
+</ul>
+<h4 id="heading-75">我应该关注什么</h4>
+<ol>
+<li><strong>SQM-1067 单轮 1,890 次</strong>:比 initial_place 的 126 条暴涨 15 倍——scan cell dont_use 的优先级上调</li>
+<li>initial QoR 的构成:reg2reg 数量多、in2reg 单条更差,决定了后面优化的主攻方向</li>
+</ol>
+<h3 id="heading-76">2.11 initial_opto 优化轮(行 17638-26303)—— 全程最大段(约 4h)</h3>
+<h4 id="heading-77">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>Phase 3 Iter 1: SETUP 39,974 / R2R 21,538 → Phase 5: 17,473      (行 17679-17695)
+Optimization (4): 15,308 → 11,809                                  (行 23143-23184)
+Optimization (5): 11,809 → 6,992 → 6,535, R2R → 260               (行 23188-26303)
+CCD round1 (行 20166-20224): target=**clock_gating_default**, skip 全无效,
+  15,294 边界 sink 排除, Uskew 缩放因子 (rcworst 1.0/tt 0.821/ffg 0.746)
+CCD round2 (行 23073-23107): Useful skew copied/scaled 0 balance points  (行 23097)
+CCD round3 (行 23239-26147): CCD-001 ×15,310(打印 10)
+DTDP 重放(行 17700, 19344): congestion-aware, 密度 0.65, 21.1% cell 疏散
+Legalize ×2 (行 18151: 1,157,506 cells; 行 19589: 100%)
+第二轮 HFS (bufferHfsDrcAfterScanSynthesis, 行 ~19590): 净 +18,930 buffer
+Phase 35 附近 InstCnt 118.4万 → 103.6万 (大回收 ~15万 cell)
+</code></pre></div>
+<h4 id="heading-78">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span></p>
+<ul>
+<li><strong>成本表解读</strong>:SETUP-COST(全场景 setup 成本)、R2R-COST(仅 reg2reg)、HOLD-COST(本段成本表为 0，不代表不存在 hold 风险；CTS/PostCTS 阶段重点处理)、LDRC-COST(DRV)、AREA/INSTCNT。R2R-COST 与 QoR 的 R2RTNS 收敛时数值吻合(260.05 vs 260.32,行 26310 vs 26586)</li>
+<li><strong>优化配方</strong>:npo/sz/szbf/TDS 系列 = 网表重排、尺寸优化、尺寸+buffer、TNS/WNS 专项</li>
+<li><strong>CCD</strong>(Concurrent Clock and Data):并行搬时钟与数据优化。本次明确可定位的 round 2 输出为 <strong>0 个 balance point / 0 clock latency</strong>【日志事实,行 23097】；不能只凭该行概括所有轮次或所有数据路径优化均无动作</li>
+<li><strong>ASR</strong>(Advanced Scenario Reduction):9 场景缩减为少数代表场景加速迭代</li>
+<li><strong>DTDP</strong>(Direct Timing-Driven Placement):按当前模型的时序梯度移动 cell,配合 RDE 拥塞图;每 wave 后 legalize</li>
+</ul>
+<h4 id="heading-79">为什么要做</h4>
+<ul>
+<li>R2R 单独考核：在时序约束正确的前提下，reg2reg 更能直接反映实现质量；仍需核对 clock period、uncertainty、generated clock、multicycle/false path、derate 与 scenario<span class="tag tag-explain">解释</span></li>
+<li>CCD round 2 的 skew 相关调整计数为 0。pre-CTS 模型、target 选择与优化条件可能共同影响结果，尚不能仅凭该计数断言“时钟树未建，所以 CCD 必然无效”<span class="tag tag-infer">推断</span></li>
+</ul>
+<h4 id="heading-80">对设计的可能影响</h4>
+<ul>
+<li>setup 违例 130,884 → 29,125(-78%),R2R 21,538 → 260(-99%)</li>
+<li><span class="tag tag-risk">风险</span><strong><code>ccd.skip_path_groups</code> 三个名字未匹配到预期组</strong>。所摘录 target 为 clock_gating_default，round 2 的 skew 调整计数为 0，但不足以证明配置整体无影响。<strong>若 CTS/PostCTS 仍沿用相同无效配置，这些预期组不会通过该列表被排除；是否被 CCD 优化还需检查实际 target/path group 与阶段选项</strong><span class="tag tag-risk">条件性风险</span></li>
+</ul>
+<h4 id="heading-81">我应该关注什么</h4>
+<ol>
+<li>成本收敛曲线:R2R 约 260 表示成本已大幅收敛，并非 reg2reg 已清零；剩余问题需按路径组区分，mem2reg 是存储器到寄存器路径，不统称为 IO 类</li>
+<li>GR 拥塞数据(行 19085-19275):Initial 溢出 8.81% 格点(H 12.78%/V 4.85%),层分布 <strong>M6 4.06%、M8 3.76% 为瓶颈</strong>;宏区上方 H 14.34% 绕行;收尾平均 V 27.9%/H 34.2%、峰值 110.7%/129.4%——<strong>平均值较低仍不能排除局部拥塞热点</strong></li>
+<li>HPWL 分布(行 18989-19001):90% net &lt; 50μm,12 条 &gt; 1000μm——线长健康</li>
+<li>FLW-2892(ropt.rbuf_subtree_crit_range 恢复不一致)×16:scoped option 恢复提示；需核对阶段有效配置，不能仅凭流程继续判为无影响</li>
+</ol>
+<h3 id="heading-82">2.12 initial_opto 出口(行 26366-26624)</h3>
+<h4 id="heading-83">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>final QoR: NSV 29,125 / TNS 6,535.6 / R2RTNS 260.3 / MaxTrnV 850 / MaxCapV 1,614
+shift 场景: 0 违例
+FuncTT 场景 NSV 27,658 (大头)
+runtime: Optimization (5) 66.9% / (4) 2.9% / 其他 30.2%
+</code></pre></div>
+<h4 id="heading-84">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>initial_opto 后 reg2reg 已大幅收敛，仍有非零 R2RTNS；流程带着残余违例进入 final_place，不据此推定“所有剩余路径都是 IO”或工具已判定实现合格。</p>
+<h4 id="heading-85">为什么要做</h4>
+<p>R2R 改善是重要的实现质量线索；同时应在当前阶段核查 IO 约束、深逻辑及 DRV，不把所有残余违例推迟到 CTS 后。</p>
+<h4 id="heading-86">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-infer">推断</span>in2reg 残余违例(22k+/TNS -6,399)提示优先检查 <strong>input delay、50 级深逻辑以及关键路径的 cell/net delay</strong>；仅凭残余数量，不能排除放置、布线或其他实现因素，也不能断言后续优化一定无效</li>
+</ul>
+<h4 id="heading-87">我应该关注什么</h4>
+<p>shift 模式 0 违例与 R2R 约 260 表明这一阶段改善明显；是否通过项目门限，还需结合残余 setup/DRV、拥塞与约束正确性判断。</p>
+<h3 id="heading-88">2.13 final_place:ICG 合并(行 26806-29671)</h3>
+<h4 id="heading-89">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>* CTS STEP: Clock Gate Merging                          (行 26818)
+Collecting ICGs → Searching for equivalent ICGs → Merging
+CSTR-013 ×2,412: Removed cell ... had a constraint      (行 26849+)
+Total 104 ICGs are not considered (don&#39;t touch)         (行 29611)
+Total 4802 ICGs are unique in the design                (行 29624)
+原文所比较成本: 6,535.60/260.32 → 6,535.60/260.32 (行 26812 vs 26816；与行 26818 的步骤起点关系待核对，不直接作为合并后的证据)
+</code></pre></div>
+<h4 id="heading-90">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>工具按等效性条件合并 ICG，可减少门控单元数量；实际 clock sink 数、功耗与面积影响需结合网表和后续 CTS 报告确认。104 个被排除的 ICG 全部是 DFT persistent cell(dft_mrk_*、tessent_persistent_cell_*),4,802 个判定唯一不可合并。</p>
+<h4 id="heading-91">为什么要做</h4>
+<ul>
+<li>本流程把 ICG 合并安排在 initial_opto 之后、最终放置之前，便于在逻辑相对稳定后整理门控拓扑，再优化位置<span class="tag tag-explain">解释</span>；这是本次 flow 的安排，不推定所有流程都必须如此</li>
+</ul>
+<h4 id="heading-92">对设计的可能影响</h4>
+<ul>
+<li><span class="tag tag-risk">风险</span><strong>CSTR-013 ×2,412:被移除 ICG 上的约束(时序/时钟约束)随之失效</strong>——合并是正常操作,但这些约束是否需要在别处重新挂靠,需复核<span class="tag tag-pending">待确认</span></li>
+</ul>
+<h4 id="heading-93">我应该关注什么</h4>
+<p>汇总成本接近不构成逻辑等价性或约束完整性的证明；应核对合并记录、约束继承和必要的等价检查。CSTR-013 记入复核清单。</p>
+<h3 id="heading-94">2.14 final_place:Optimization(行 29675-30010)</h3>
+<h4 id="heading-95">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>initial QoR: NSV 29,113 / TNS 6,535.3  (与 initial_opto 出口一致,行 29902-29903)
+Phase 9/10: 成本持平
+</code></pre></div>
+<h4 id="heading-96">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>合并后快速稳定轮,确认合并未破坏时序后进入最终放置。</p>
+<h4 id="heading-97">为什么要做</h4>
+<p>ICG 合并调整了 CTS 前的 clock-gating topology,先小步优化稳定,再做大动作放置。</p>
+<h4 id="heading-98">对设计的可能影响</h4>
+<p>无(持平)。</p>
+<h4 id="heading-99">我应该关注什么</h4>
+<p>无。</p>
+<h3 id="heading-100">2.15 final_place:T&amp;C 放置(行 30013-32395)—— 拥塞热点现场</h3>
+<h4 id="heading-101">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>Running congestion-aware direct-timing-driven placement  (行 30018)
+Legalizing 1,040,632 moveable cells                     (行 30094)
+Build Congestion Map ×2                                  (行 30892, 33537)
+Automatic density: max_density 0.65 → 0.70               (行 31152)
+Reducing cell density for 26.6% of movable cells (平均密度 0.761 → 0.794)  (行 31155)
+Congestion utilization per direction: 峰值 V 344.83% / H 252.08%  (行 33819-33823)
+final QoR: NSV 29,113 → 60,108, MaxTrnV 8,351            (行 32637-32638)
+</code></pre></div>
+<h4 id="heading-102">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>T&amp;C(Timing and Congestion Driven Placement with Legalization):用当前模型的时序梯度 + RDE 拥塞图移动 cell,每次 wave 后立即 legalize。<strong>峰值利用率 344.8%(V)/252.1%(H)分别约为局部容量的 3.45 倍/2.52 倍，即超出容量约 244.8%/152.1%</strong>,工具用密度控制(0.70)与 26.6% cell 疏散应对。</p>
+<h4 id="heading-103">为什么要做</h4>
+<ul>
+<li>这是&quot;最后一次大移动&quot;:把时序关键 cell 拉到理想位置,同时用拥塞图避免热点</li>
+<li>密度参数 0.55→0.70 反映阶段设置变化；局部疏散与全局密度上限并非同一指标，不能仅凭该参数上升断言可布性改善</li>
+</ul>
+<h4 id="heading-104">对设计的可能影响</h4>
+<ul>
+<li><strong>时序临时反弹</strong>:NSV 60,108、MaxTrnV 8,351——大挪动后 expected,交给 final_opto</li>
+<li><span class="tag tag-infer">推断</span>宏周围绕行与 M6/M8 层瓶颈值得重点检查；原文的 81 为宏数量，不能据此断言全为 SRAM，或所有峰值都来自同一区域</li>
+</ul>
+<h4 id="heading-105">我应该关注什么</h4>
+<ol>
+<li><strong>GR 估算峰值 344.8% 提示严重局部热点</strong>,后续 Route 阶段需关注该区域的 DRC/时序;若 Route 失败,回来查宏间距与 M6/M8 层利用率</li>
+<li>密度上限 0.70 需结合局部利用率、固定单元与可用 whitespace 判断，不能单独量化后期插 buffer 的余量</li>
+</ol>
+<h3 id="heading-106">2.16 final_opto(行 32863-36736)</h3>
+<h4 id="heading-107">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>Optimization (1) (行 32880-35052): 先 legalize 1,040,255 cells (行 32958)
+  initial QoR: NSV 73,893 / MaxTrnV 9,185 / MaxCapV 4,538  (行 34095-34096)
+  ~22 phase: 成本 8,948 → 7,008
+Legalization (1) (行 35055-35526): 1,017,253 cells
+Optimization (2) (行 35529-35895): Phase 35-37, 7,086/563, 面积微调
+Legalization (2) (行 35898-36375): 1,021,815 cells —— 全流程最后一次 legalize
+final QoR: NSV 30,821 / TNS 7,031.9 / R2RTNS 491.1 / MaxTrnV 978 / MaxCapV 2,020  (行 37162)
+</code></pre></div>
+<h4 id="heading-108">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>final_opto = 放置反弹后的总修:先归位(legalize)→ 集中修 transition/cap(MaxTrnV 9,185 → 978)与 setup → 两轮优化 + 两轮归位交替收尾。</p>
+<h4 id="heading-109">为什么要做</h4>
+<p>T&amp;C 放置为了位置质量牺牲了时序,最后统一修复,并以 legalize 保证交付时摆放合法。</p>
+<h4 id="heading-110">对设计的可能影响</h4>
+<ul>
+<li>setup 违例 60,108 → 30,821;MaxTrnV -89%</li>
+<li><strong>hold 违例出现:NHV 14,644 / WHV 0.1421</strong>——末态报告中已存在 hold 风险；路径延迟与分析设置均可能影响结果，不能仅凭这些统计归因于插 buffer。<strong>CTS/PostCTS 阶段重点处理 hold，并持续跟踪至后续布线阶段</strong><span class="tag tag-explain">解释</span></li>
+</ul>
+<h4 id="heading-111">我应该关注什么</h4>
+<ul>
+<li>hold 违例集中 reg2mem(cbest 场景 11,551 条)——CTS 前先检查约束与路径群体，CTS/PostCTS 阶段重点修复并跟踪</li>
+<li>WNS -0.7059 在 FuncTT 的 in2out 组(68 条),与 in2reg 的 2 万+ 相比是小头</li>
+</ul>
+<h3 id="heading-112">2.17 最终 QoR(行 37142-37162,权威:report_qor.rpt.gz)</h3>
+<h4 id="heading-113">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>DESIGN QOR: WNS 0.7059 / TNS 7,031.9 / R2RTNS 491.1 / NSV 30,821
+           WHV 0.1421 / THV 392.0 / NHV 14,644 / MaxTrnV 978 / MaxCapV 2,020
+场景: FuncTT setup -0.7059/30,718; ss 三 corner ~-0.54/22-24k; shift 干净(+8.96)
+hold: 最差 func cbest -0.1421/12,965
+</code></pre></div>
+<h4 id="heading-114">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>place 阶段终态。<strong>WNS/TNS/NSV 口径说明</strong>:log 内 QoR 快照的 WNS 与 NSV 存在&quot;WNS 为正但 NSV 数万&quot;的现象,属优化器/检查点口径差异;权威数字以 <code>report_qor.rpt.gz</code> 为准(FuncTT WNS = <strong>-0.7059ns</strong>)。</p>
+<h4 id="heading-115">为什么要做</h4>
+<p>交付给 CTS 的基线;hold 违例构成 CTS/PostCTS 重点复核与优化的基线。</p>
+<h4 id="heading-116">对设计的可能影响</h4>
+<p>见第 5 节演进表。</p>
+<h4 id="heading-117">我应该关注什么</h4>
+<ol>
+<li><strong>in2reg 为最大违例源</strong>(FuncTT TNS -6,398.6 / 22,613 条,逻辑级数最深 50):提示优先核查 IO 约束、逻辑深度与 cell/net delay 分解；不足以排除放置因素</li>
+<li>MaxCapV 2,020 &gt; MaxTrnV 978:电容违例是次要矛盾</li>
+<li>hold 14,644 条：CTS/PostCTS 阶段重点处理的残余风险(集中在 reg2mem)</li>
+</ol>
+<h3 id="heading-118">2.18 saveAndRpt 与收尾(行 37206-37402)</h3>
+<h4 id="heading-119">日志内容</h4>
+<div class="code-wrap"><div class="code-toolbar"><span>LOG / FLOW · 原文摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code>connect_pg_net -automatic: VDD/VSS 1,141,229/1,136,589 pins,0 新增连接
+save_block dma_ep_ss_top → ../db/dma_ep_ss_top.Ic2Place.nlib
+Diagnostics summary: 16 errors, 28,149 warnings, 969 informationals
+Completed script ... using 7.8h
+</code></pre></div>
+<h4 id="heading-120">发生了什么</h4>
+<p><span class="tag tag-explain">解释</span>PG 自动连接校验(无新增=floorplan 已接好)、保存、输出 <code>Ic2Place.info</code> 消息字典。</p>
+<h4 id="heading-121">为什么要做</h4>
+<p>交付物落地 + 消息统计留档。</p>
+<h4 id="heading-122">对设计的可能影响</h4>
+<p>无。</p>
+<h4 id="heading-123">我应该关注什么</h4>
+<ol>
+<li>最终消息字典(行 37269-37384)是<strong>官方警告台账</strong>,按 tag 核对第 4 节清单</li>
+<li>436 个 placement spacing label / 5,386 条 spacing rule 已存 NDM(行 37387)</li>
+</ol>
+<hr>
+</div><a class="backlink" href="#top">↑ 返回顶部</a></section>
+<section id="chapter-3" class="chapter" data-chapter="3"><div class="chapter-head"><span class="chapter-number">03</span><div><p class="eyebrow">CHAPTER 03</p><h2>所有重要 FC 命令整理</h2><p>保留本次脚本摘录与选项；包含项目自定义过程和占位符。</p></div></div><div class="chapter-body"><blockquote>
+<p>按用途分组;参数为本次运行实际值。</p>
+</blockquote>
+<h3 id="heading-124">3.1 库与设计管理</h3>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">copy_lib -from_lib ../db/dma_ep_ss_top.Ic2Floorplan.nlib -to_lib ../db/dma_ep_ss_top.Ic2Place.nlib
+current_lib ../db/dma_ep_ss_top.Ic2Place.nlib
+open_block dma_ep_ss_top
+link_block -rebind
+save_block -as &lt;initial_place|initial_drc|initial_opto|final_place|dma_ep_ss_top&gt;
+</code></pre></div>
+<ul>
+<li><strong>用途</strong>:阶段库拷贝、打开/链接、checkpoint 保存</li>
+<li><strong>输出怎么看</strong>:<code>DES-028</code>(保存成功);link 失败会中断</li>
+</ul>
+<h3 id="heading-125">3.2 场景与时钟</h3>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">Ic2_set_analysis_scenario -setup $vars(PR,PLACE_SETUP_VIEW) -hold $vars(PR,PLACE_HOLD_VIEW)
+set_clock_uncertainty -setup 0.00025 -hold 0.02 [all_clocks]   # 0.25ps / 20ps
+set_max_transition 0.200 [current_design]
+set_max_transition [expr $clkPeriod/8] -clock_path $CLK       # 快时钟收紧
+set_max_transition [expr $clkPeriod/4] -data_path  $CLK
+set_clock_latency -offset -0.1 [ICG 时钟输入 pin]               # UIC-105 源头
+</code></pre></div>
+<ul>
+<li><strong>用途</strong>:场景激活、不确定性/transition/latency 建模</li>
+<li><strong>注意</strong>:日志消息要求 offset latency 目标满足 clock-sink pin 条件；应按工具版本与实际对象属性筛选目标，不能简单把“是否 ICG”当成唯一判断条件(UIC-105)</li>
+</ul>
+<h3 id="heading-126">3.3 时钟树布线规则</h3>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">Ic2_create_ndr_rule -name NDR_2W2S -layer &quot;M4 M5 M6 M7 M8 M9 M10 M11&quot; -space 2 -width 2
+set_ignored_layers -max_routing_layer M11 -min_routing_layer M2
+set_clock_routing_rules -net_type root     -rule NDR_2W2S -max_routing_layer M11 -min_routing_layer M10
+set_clock_routing_rules -net_type internal -rule NDR_2W2S -max_routing_layer M11 -min_routing_layer M4
+create_marker_layers -horizontal_extension {{M2_P48 0} {M3_P48 0}} ...  # 6T 双 pattern
+</code></pre></div>
+<ul>
+<li><strong>用途</strong>:CTS 的层/规则预置；本次 place 阶段并不等于完成 CTS 建树</li>
+</ul>
+<h3 id="heading-127">3.4 库单元策略</h3>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">set_lib_cell_purpose -exclude cts [get_lib_cells */*]
+set_lib_cell_purpose -include cts  [get_lib_cells $vars(icc2,cts_only_cell_list)]
+set_lib_cell_purpose -include none */*ULVT                      # 禁 ULVT
+set_attribute [get_lib_cells */*BWP*CPD] threshold_voltage_group RVT
+set_threshold_voltage_group_type -type low_vt {ULVT} ...
+set_multi_vth_constraint -low_vt_percentage 3 -cost cell_count  # LVT ≤ 3%
+set_clock_cell_spacing -x_spacing 0.2 -y_spacing 0.2 -lib_cells */$cell
+</code></pre></div>
+<ul>
+<li><strong>用途</strong>:CTS 单元白名单、VT 分组、LVT 预算、时钟单元间距</li>
+</ul>
+<h3 id="heading-128">3.5 优化与放置</h3>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">set_qor_strategy -stage pnr -metric timing -mode balanced
+compile_fusion -from initial_place -to initial_place   # 五段中的一段
+compile_fusion -from final_opto  -to final_opto
+</code></pre></div>
+<ul>
+<li><strong>用途</strong>:策略设置 + recipe 分段执行(与 ICC2 的 <code>place_opt</code> 对应,FC 统一为 compile_fusion)</li>
+<li><strong>输出怎么看</strong>:FLW-8000(开始)/FLW-8001(结束)/FLW-8100(时间)/FLW-9000/9001(统计);阶段内&quot;Compile-fusion optimization Phase N&quot;成本行是收敛记分牌</li>
+</ul>
+<h3 id="heading-129">3.6 报告与保存</h3>
+<div class="code-wrap"><div class="code-toolbar"><span>TCL · 复习摘录</span><button type="button" class="copy" aria-label="复制代码块">复制</button></div><pre tabindex="0"><code class="language-tcl">connect_pg_net -automatic
+report_optimization_history
+get_ews_info
+proc_qor &gt; proc_qor_init_opto.rpt
+ocPrintMessageInfo    # 输出 Ic2Place.info 消息字典
+set_svf -off
+</code></pre></div>
+<ul>
+<li><strong>用途</strong>:PG 连接、优化历史、消息台账</li>
+</ul>
+<h3 id="heading-130">3.7 关键 app options 清单(optionSetting 中)</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>option</th>
+<th>值</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>time.pocvm_enable_analysis</code></td>
+<td>true(sigma 3.0)</td>
+<td>统计时序精度</td>
+</tr>
+<tr>
+<td><code>time.remove_clock_reconvergence_pessimism</code></td>
+<td>true</td>
+<td>CRPR,减悲观</td>
+</tr>
+<tr>
+<td><code>opt.power.mode</code></td>
+<td>none</td>
+<td>不做功耗优化(已弃用,待迁移)</td>
+</tr>
+<tr>
+<td><code>place.coarse.pin_density_aware</code></td>
+<td>true</td>
+<td>pin 密度感知</td>
+</tr>
+<tr>
+<td><code>place_opt.flow.enable_ccd</code></td>
+<td>true</td>
+<td>允许 CCD</td>
+</tr>
+<tr>
+<td><code>place_opt.flow.estimate_clock_gate_latency</code></td>
+<td>false</td>
+<td>ICG 延迟估计关(已弃用)</td>
+</tr>
+<tr>
+<td><code>place_opt.flow.clock_aware_placement</code></td>
+<td>true</td>
+<td>时钟感知放置</td>
+</tr>
+<tr>
+<td><code>route.common.connect_within_pins_by_layer_name</code></td>
+<td>{M1 via_wire_standard_cell_pins}</td>
+<td>M1 只做引脚内连接</td>
+</tr>
+<tr>
+<td><code>route.common.extra_nonpreferred_direction_wire_cost_multiplier_by_layer_name</code></td>
+<td>{M4-M7 ×3}</td>
+<td>逼走线跟 track</td>
+</tr>
+<tr>
+<td><code>route.global.double_pattern_utilization_by_layer_name</code></td>
+<td>{M2 70} {M3 75}</td>
+<td>DPT 利用率上限</td>
+</tr>
+<tr>
+<td><code>ccd.skip_path_groups</code></td>
+<td>{**IN_to_REG **OUT_from_REG **FEEDTHROUGH}</td>
+<td><strong>本设计无效(组名不存在)</strong></td>
+</tr>
+</tbody></table></div>
+<hr>
+</div><a class="backlink" href="#top">↑ 返回顶部</a></section>
+<section id="chapter-4" class="chapter" data-chapter="4"><div class="chapter-head"><span class="chapter-number">04</span><div><p class="eyebrow">CHAPTER 04</p><h2>警告/错误全字典</h2><p>消息数量与处理建议；流程继续运行不等于问题没有影响。</p></div></div><div class="chapter-body"><blockquote>
+<p>汇总:16 errors / 28,149 warnings / 969 informationals(行 37384)。处置保留原文分档：<strong>低优先级跟踪</strong> / <strong>知会</strong>(转交 DFT/约束/库 owner)/ <strong>复核</strong>(需人工确认)。原文“忽略”在此统一改为“跟踪”，表示暂不阻断，不代表问题已被证明无影响；是否放行须依据项目要求。</p>
+</blockquote>
+<h3 id="heading-131">4.1 Error 级(仅 1 种)</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>次数</th>
+<th>内容</th>
+<th>处置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GRF-014</strong></td>
+<td>16</td>
+<td>accapture 模式下 <code>bap1_tck</code>/<code>bap1_interfaces_tck</code> 无 master 时钟路径,零 source latency</td>
+<td><strong>知会</strong>(DFT SDC)</td>
+</tr>
+</tbody></table></div>
+<p><span class="tag tag-explain">解释</span>流程全程未中断、各阶段重复出现，但这不证明无影响。零 source latency 回退提示 generated clock 建模缺口；应核对 accapture 的 master/source 定义及实际检查路径后判断影响。</p>
+<h3 id="heading-132">4.2 Warning 级(重点 20 类)</h3>
+<h4 id="heading-133">A. 需要复核/知会 DFT 的</h4>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>次数</th>
+<th>内容</th>
+<th>影响</th>
+<th>处置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DFT-005</strong></td>
+<td>834</td>
+<td>scan chain abnormal:OCC persistent buffer 链首多负载;DNT_dff SI 与数据脚短接</td>
+<td>可能引入数据路径逻辑错误(工具措辞)</td>
+<td><strong>知会</strong>:282 链全 VALIDATED/0 FAILED,大概率有意,须确认</td>
+</tr>
+<tr>
+<td><strong>DFT-029</strong></td>
+<td>8</td>
+<td>partition_1 stub chain 容量 39/46 bits 超限</td>
+<td>测试质量/链平衡折扣</td>
+<td><strong>知会</strong></td>
+</tr>
+<tr>
+<td><strong>SQM-1067</strong></td>
+<td>756(抑制 8,054)</td>
+<td>想映射的 scan cell 被 dont_use 挡住</td>
+<td>扫描覆盖率受损风险</td>
+<td><strong>知会</strong>:确认 dont_use 是否有意</td>
+</tr>
+<tr>
+<td><strong>CSTR-013</strong></td>
+<td>2,412</td>
+<td>ICG 合并后原约束失效</td>
+<td>约束丢失</td>
+<td><strong>复核</strong>:是否需重挂</td>
+</tr>
+</tbody></table></div>
+<h4 id="heading-134">B. 与 SDC/时钟约束相关的</h4>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>次数</th>
+<th>内容</th>
+<th>影响</th>
+<th>处置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>UIC-105</strong></td>
+<td>20,973</td>
+<td>offset latency 目标不是 ICG/时钟终点,被丢弃</td>
+<td>相关目标的 offset 未生效，timing model 与脚本预期不一致；影响随路径角色而变</td>
+<td><strong>复核</strong>：筛选合法目标并比较具体路径时序</td>
+</tr>
+<tr>
+<td><strong>UIC-090</strong></td>
+<td>936</td>
+<td>各模式缺少 SCAN_CLK/OCC_SCAN_CLK 等时钟定义</td>
+<td>相应命令未命中预期时钟；覆盖范围待核对</td>
+<td><strong>知会</strong> DFT</td>
+</tr>
+<tr>
+<td><strong>UIC-028</strong></td>
+<td>6,415(显示 20)</td>
+<td>时钟 latency 为 -6.95e-310 垃圾值</td>
+<td>分析噪声</td>
+<td><strong>复核</strong>:清理 SDC</td>
+</tr>
+</tbody></table></div>
+<h4 id="heading-135">C. 与工艺/库数据相关的</h4>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>次数</th>
+<th>内容</th>
+<th>影响</th>
+<th>处置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>NDM-102/FRAM-054</strong></td>
+<td>69+69</td>
+<td>frame-view 旧 techfile 与 13M 不一致</td>
+<td>库单元几何信息可能不全</td>
+<td>跟踪(与 ZRT-643 疑似同源,见第 6 节)</td>
+</tr>
+<tr>
+<td><strong>ZRT-643</strong></td>
+<td>972</td>
+<td>pin access route guide 缺宏信息被忽略</td>
+<td>IO 区布线引导丢失,路由自算</td>
+<td>跟踪;Route 出问题再查 frame-view</td>
+</tr>
+<tr>
+<td><strong>ZRT-026</strong></td>
+<td>21</td>
+<td>各层 pitch 小于 up/down via 需求</td>
+<td>via 占两格,资源轻微损失</td>
+<td>跟踪(工具自适应)</td>
+</tr>
+<tr>
+<td><strong>ZRT-539</strong></td>
+<td>30(抑制 7,295)</td>
+<td>CKBD8BWP6T20P96CPDLVT 引脚内连接被上层 via 阻挡</td>
+<td>该时钟 buffer 连接多绕</td>
+<td>跟踪;CTS 后抽查</td>
+</tr>
+<tr>
+<td><strong>ZRT-800/833</strong></td>
+<td>48/36</td>
+<td>fat/span 阈值无效(≤ minWidth)</td>
+<td>tech file 数据瑕疵</td>
+<td>跟踪;Route 异常布线宽度时回查</td>
+</tr>
+<tr>
+<td><strong>ZRT-727</strong></td>
+<td>6</td>
+<td>M1 DPT track 无 mask 信息</td>
+<td>DPT 层信息缺失</td>
+<td>跟踪</td>
+</tr>
+<tr>
+<td><strong>NEX-001</strong></td>
+<td>3</td>
+<td>M0 pitch 无效</td>
+<td>工艺文件瑕疵</td>
+<td>跟踪</td>
+</tr>
+<tr>
+<td><strong>LGL-050</strong></td>
+<td>126</td>
+<td>BOUNDARY_N* 单元缺 supply pin</td>
+<td>边界单元无电源结构</td>
+<td>跟踪</td>
+</tr>
+<tr>
+<td><strong>LGL-071</strong></td>
+<td>144</td>
+<td>EEQVZ 等价引脚变体 cell 被 dont_use</td>
+<td>legalize 少一个减位移手段</td>
+<td><strong>知会</strong>:与 dont_use 审查一起确认</td>
+</tr>
+<tr>
+<td><strong>LGL-336</strong></td>
+<td>6,068</td>
+<td>PPNN 单元调为多高度</td>
+<td>常规处理</td>
+<td>跟踪</td>
+</tr>
+</tbody></table></div>
+<h4 id="heading-136">D. 与放置/布线质量相关的</h4>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>次数</th>
+<th>内容</th>
+<th>影响</th>
+<th>处置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ZRT-763</strong></td>
+<td>474</td>
+<td>cell 重叠摆放(SRAM 附近 + HFS buffer)</td>
+<td>后续 legalize 已清零(0% 失败率)</td>
+<td>跟踪;确认每次都能清掉</td>
+</tr>
+<tr>
+<td><strong>NEX-020</strong></td>
+<td>5</td>
+<td>&gt;1000 pin 时钟 net 跳过 RDE 提取(dma_ep_clk_ts1、dma_ep_cg_clk、net266969)</td>
+<td>拥塞模型不含超宽 net</td>
+<td>跟踪</td>
+</tr>
+</tbody></table></div>
+<h4 id="heading-137">E. 工具内部/配置类(按实际影响复核)</h4>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>次数</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FLW-2542</td>
+<td>16</td>
+<td>postLboTimerUpdate 有 error 但继续(GRF-014 引起)</td>
+</tr>
+<tr>
+<td>FLW-2892</td>
+<td>16</td>
+<td>scoped option 恢复不一致(ropt.rbuf_subtree_crit_range)</td>
+</tr>
+<tr>
+<td>NDMUI-441/010/669</td>
+<td>6/10/3</td>
+<td>弃用选项 / frame cell 无逻辑模型 / 属性持久化提示</td>
+</tr>
+<tr>
+<td>SEL-003</td>
+<td>6</td>
+<td>dont_use 名单里 6 个 cell 名匹配不到</td>
+</tr>
+<tr>
+<td>ATTR-12</td>
+<td>20(抑制 48,820)</td>
+<td>库属性写设计级覆盖</td>
+</tr>
+<tr>
+<td>ZRT-704</td>
+<td>4</td>
+<td>非默认布线代价确认(M4-M7 ×3,有意)</td>
+</tr>
+</tbody></table></div>
+<h4 id="heading-138">F. 待确认项</h4>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>抑制量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>OPT-069</strong></td>
+<td>8,116,876</td>
+<td>文本未在 log 中打印,<span class="tag tag-pending">待确认</span></td>
+</tr>
+</tbody></table></div>
+<hr>
+</div><a class="backlink" href="#top">↑ 返回顶部</a></section>
+<section id="chapter-5" class="chapter" data-chapter="5"><div class="chapter-head"><span class="chapter-number">05</span><div><p class="eyebrow">CHAPTER 05</p><h2>QoR 演进与关键指标</h2><p>区分优化器成本、全设计统计、单场景报告与路径组指标。</p></div></div><div class="chapter-body"><h3 id="heading-139">5.1 四个检查点(全设计口径)</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>initial QoR(行 17633)</th>
+<th>initial_opto 出口(行 26586)</th>
+<th>final_place 出口(行 32638)</th>
+<th><strong>最终(行 37162)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NSV</td>
+<td>130,884</td>
+<td>29,125</td>
+<td>60,108</td>
+<td><strong>30,821</strong></td>
+</tr>
+<tr>
+<td>TNS</td>
+<td>54,479</td>
+<td>6,535.6</td>
+<td>8,948.8</td>
+<td><strong>7,031.9</strong></td>
+</tr>
+<tr>
+<td>R2RTNS</td>
+<td>34,223</td>
+<td>260.3</td>
+<td>2,659.9</td>
+<td><strong>491.1</strong></td>
+</tr>
+<tr>
+<td>MaxTrnV</td>
+<td>1,685</td>
+<td>850</td>
+<td>8,351</td>
+<td><strong>978</strong></td>
+</tr>
+<tr>
+<td>MaxCapV</td>
+<td>1,778</td>
+<td>1,614</td>
+<td>4,317</td>
+<td><strong>2,020</strong></td>
+</tr>
+<tr>
+<td>WHV/NHV</td>
+<td>0/0</td>
+<td>0/0</td>
+<td>0/0</td>
+<td><strong>0.1421 / 14,644</strong></td>
+</tr>
+<tr>
+<td>Area / InstCnt</td>
+<td>140.5万/115.6万</td>
+<td>135.3万/104.4万</td>
+<td>135.2万/104.2万</td>
+<td><strong>135.4万/102.4万</strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>读法</strong>：initial_opto 的 NSV 相比起点下降约 77.7%；final_place 检查点反弹，final_opto 再次改善但未清零。末态出现 hold 统计，不能把前面的 0/0 直接解释成真实路径完全没有 hold 问题，也不能据此断定违例全部由 final_opto 新增。</p>
+<p><strong>口径提示</strong>：本表沿用日志中的非负成本/违例幅值；下一表的 slack/TNS 为带符号报告值。全设计、单场景与路径组统计不直接相加。最终全设计 NHV 为 14,644，原文另给最差 func cbest 场景 12,965、其中 reg2mem 11,551；三者层级不同。</p>
+<h3 id="heading-140">5.2 场景级终态(report_qor 权威)</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>WNS(ns)</th>
+<th>TNS(ns)</th>
+<th>违例数</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FuncTT tt setup</td>
+<td><strong>-0.7059</strong></td>
+<td>-7,022.8</td>
+<td>30,718</td>
+<td>最差(全局 WNS 所在)</td>
+</tr>
+<tr>
+<td>func ss cworst</td>
+<td>-0.5415</td>
+<td>-3,169.2</td>
+<td>23,399</td>
+<td></td>
+</tr>
+<tr>
+<td>func ss rcworst</td>
+<td>-0.5388</td>
+<td>-3,096.8</td>
+<td>22,766</td>
+<td></td>
+</tr>
+<tr>
+<td>func ss m40c</td>
+<td>-0.5461</td>
+<td>-3,209.0</td>
+<td>24,097</td>
+<td></td>
+</tr>
+<tr>
+<td>shift ss setup</td>
+<td>+8.96</td>
+<td>0</td>
+<td><strong>0</strong></td>
+<td>完全干净</td>
+</tr>
+<tr>
+<td>hold(4 个场景)</td>
+<td>-0.1421</td>
+<td>-392.0</td>
+<td>14,644</td>
+<td>最差 func cbest</td>
+</tr>
+</tbody></table></div>
+<h3 id="heading-141">5.3 路径组明细(问题定位)</h3>
+<ul>
+<li><strong>in2reg:第一矛盾源</strong>。FuncTT 下 TNS -6,398.6 / 22,613 条,逻辑级数最深 <strong>50 级</strong>;ss 三 corner 各 ~20,600-20,700 条</li>
+<li>reg2reg：相比初始状态已大幅收敛，但尚未 clean(FuncTT 8,446 条、TNS -495.8)</li>
+<li>mem2reg:次要(FuncTT 3,452 条)</li>
+<li>in2out:仅 68 条,但<strong>全局 WNS -0.7059 在此</strong>(5 级逻辑,0.77ns 时钟)</li>
+<li>hold 大头:<strong>reg2mem</strong>(func cbest 11,551 条,WHV -0.1421)</li>
+</ul>
+<h3 id="heading-142">5.4 拥塞演进</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>检查点</th>
+<th>平均利用</th>
+<th>峰值</th>
+<th>溢出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>initial_opto 中段 GR(行 19271-19275)</td>
+<td>V 27.9% / H 34.2%</td>
+<td>110.7% / 129.4%</td>
+<td>Initial 8.81% 格点,瓶颈层 M6(4.06%)/M8(3.76%)</td>
+</tr>
+<tr>
+<td>后续 GR 观察点(行 33819-33823，位于 final_opto 段；原文归在 final_place 拥塞分析中)</td>
+<td>V 49.7% / H 55.2%</td>
+<td><strong>344.8% / 252.1%</strong></td>
+<td>26.6% cell 被疏散</td>
+</tr>
+</tbody></table></div>
+<h3 id="heading-143">5.5 单元/面积/密度/HFS 账目</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>事件</th>
+<th>数值</th>
+<th>出处</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HFS 第 1 轮(initial_drc)</td>
+<td><strong>新增 165,033 / 删除 33,156；两项相减净 +131,877</strong> buffer/inv；调尺寸 28,595</td>
+<td>行 11497-11503</td>
+</tr>
+<tr>
+<td>HFS 第 2 轮(scan 后)</td>
+<td>净 +18,930,调尺寸 6,848(37.8%)</td>
+<td>行 ~19590-19960</td>
+</tr>
+<tr>
+<td>Phase 35 大回收</td>
+<td>InstCnt 118.4万 → 103.6万(-15万)</td>
+<td>行 26218-26221</td>
+</tr>
+<tr>
+<td>密度轨迹</td>
+<td>0.55 → 0.65 → 0.70</td>
+<td>行 5167/19387/31152</td>
+</tr>
+<tr>
+<td>DTDP 有效利用率</td>
+<td>0.7226(块级 0.6492)</td>
+<td>行 18072-18073</td>
+</tr>
+<tr>
+<td>legalize 规模</td>
+<td>115.8万 → 104.1万 → 101.7万 → 102.2万</td>
+<td>行 18151/30094/35369/36312</td>
+</tr>
+<tr>
+<td>ICG 合并</td>
+<td>104 排除(dont_touch)/ 4,802 唯一</td>
+<td>行 29611/29624</td>
+</tr>
+</tbody></table></div>
+<hr>
+</div><a class="backlink" href="#top">↑ 返回顶部</a></section>
+<section id="chapter-6" class="chapter" data-chapter="6"><div class="chapter-head"><span class="chapter-number">06</span><div><p class="eyebrow">CHAPTER 06</p><h2>风险清单与待确认事项汇总</h2><p>按原文优先级保留跟踪项，后续动作围绕证据展开。</p></div></div><div class="chapter-body"><blockquote>
+<p>按优先级排序。每条 = 来源(行号)+ 现状 + 建议动作。</p>
+</blockquote>
+<div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>项目</th>
+<th>优先级</th>
+<th>来源</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>in2reg 50 级逻辑 + 22k 违例</strong>:input delay 约束是否过紧 / 逻辑是否应重定时</td>
+<td>高</td>
+<td>行 26586+report_qor</td>
+<td><span class="tag tag-pending">待确认</span>优先查 SDC input_delay、RTL 级数与 cell/net delay；不能仅凭残余违例排除放置/布线因素</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>DFT-005 SI 短接</strong>:CDC 同步器 + 普通寄存器 + RAM 位系统性出现</td>
+<td>高</td>
+<td>行 8105-8129 等</td>
+<td><span class="tag tag-infer">推断</span>大概率有意(dont_touch wrapper),但 282 链全过不能替代 DFT 确认</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>SQM-1067 scan cell dont_use</strong>:单轮最多 1,890 次</td>
+<td>高</td>
+<td>行 14521</td>
+<td><span class="tag tag-pending">待确认</span>dont_use 是否故意;否则扫描覆盖率受损</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>CSTR-013 约束丢失</strong>:2,412 个被合并 ICG 的约束</td>
+<td>中</td>
+<td>行 26849+</td>
+<td><span class="tag tag-pending">待确认</span>约束是否需重挂</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>UIC-090 时钟缺失</strong>:func 模式无 SCAN_CLK/OCC_SCAN_CLK,dccapture 无 func 时钟</td>
+<td>中</td>
+<td>行 821+</td>
+<td><span class="tag tag-pending">待确认</span>DFT 是否有意</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>GRF-014</strong>:bap1_tck 无 master 路径(Error 级)</td>
+<td>中</td>
+<td>行 293</td>
+<td><span class="tag tag-pending">待确认</span>accapture SDC 建模缺口</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>UIC-028 垃圾 latency</strong>:-6.95e-310</td>
+<td>低</td>
+<td>行 1924+</td>
+<td><span class="tag tag-pending">待确认</span>SDC 中非法值来源</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>ZRT-643 × 972</strong>:route guide 丢宏信息,疑与 NDM-102 同源</td>
+<td>低</td>
+<td>行 18329</td>
+<td><span class="tag tag-infer">推断</span>Route 阶段 IO 区异常时回查 frame-view 与 derive_design_level_via_regions</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>LGL-071/EEQVZ + SQM-1067</strong>:dont_use 列表整体审查</td>
+<td>低</td>
+<td>行 18094</td>
+<td><span class="tag tag-pending">待确认</span>与 #3 合并处理</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>ccd.skip_path_groups 未匹配预期组</strong>：后续影响取决于阶段配置</td>
+<td>中</td>
+<td>行 1946-1954</td>
+<td><span class="tag tag-risk">条件性风险</span>若 CTS/PostCTS 沿用同一无效列表，预期组不会由该列表被 skip；需核对实际 CCD target/path group，再决定是否改用真实组名(in2reg/reg2out/in2out)</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>OPT-069 文本未明</strong>(抑制 811 万次)</td>
+<td>低</td>
+<td>行 37341</td>
+<td><span class="tag tag-pending">待确认</span>需其它日志/文档确认</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>hold 14,644 条(reg2mem 为主)</strong></td>
+<td>低</td>
+<td>行 37158</td>
+<td>CTS/PostCTS 阶段重点处理；比较前后同场景、同口径的 hold 报告，并按项目门限持续跟踪</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>UIC-105 offset 未生效</strong>：20,973 条</td>
+<td>中(本次整理补入)</td>
+<td>行 1787 / UIC-105 消息</td>
+<td><span class="tag tag-pending">待确认</span>筛选合法目标，核对 launch/capture 角色及实际时序影响；不固定套用 setup/hold ±0.1ns</td>
+</tr>
+</tbody></table></div>
+<hr>
+</div><a class="backlink" href="#top">↑ 返回顶部</a></section>
+<section id="chapter-7" class="chapter" data-chapter="7"><div class="chapter-head"><span class="chapter-number">07</span><div><p class="eyebrow">CHAPTER 07</p><h2>复习速查 FAQ</h2><p>十个复习问题，集中校正最容易记错的结论。</p></div></div><div class="chapter-body"><details class="faq" open><summary>Q1:为什么优化器单独考核 R2R(reg2reg)成本?</summary><div class="faq-answer"><p>在时序约束正确的前提下，R2R 更能直接反映实现质量，因为起点和终点都在片内。但它仍受 clock period、uncertainty、generated clock、multicycle/false path、derate 和 scenario 影响，不能视为“纯实现问题”。本次 R2R-COST 从 21,538 降至约 260，说明大幅改善；最终全设计 R2RTNS 为 491.1，FuncTT reg2reg 仍有 8,446 条违例、TNS -495.8，不能据此称为 clean 或自动判定 place 合格。</p>
+</div></details><details class="faq" ><summary>Q2:为什么 ICG 合并放在 final_place 而不是 initial?</summary><div class="faq-answer"><p><span class="tag tag-fact">日志事实</span>本流程在 initial_opto 后执行 Clock Gate Merging，随后进行 timing/congestion-driven placement。<span class="tag tag-explain">解释</span>这一安排便于在逻辑相对稳定后整理门控拓扑，再优化位置。它是 CTS 前的 clock-gating topology 整理，不代表 CTS 时钟树已建立或定稿；也不是所有工具流程的强制顺序。成本相近不构成等价性或约束完整性的证明，仍需检查 CSTR-013。</p>
+</div></details><details class="faq" ><summary>Q3:为什么 GR 阶段 M1 几乎没走线(线长 0.77μm)?</summary><div class="faq-answer"><p><span class="tag tag-fact">日志事实</span>原文记录 M1 线长 0.77μm、每格容量 0.83 轨道，并设置 cell 布线层 M2–M11 与 M1 引脚内连接规则。<span class="tag tag-explain">解释</span>应结合这些规则理解 M1 在本流程中的 pin access 角色。DPT、引脚占用等可能影响资源，但各因素对该数值的具体贡献需结合 route report 确认；GR 不能代替 detail route 的连接结果。</p>
+</div></details><details class="faq" ><summary>Q4:CCD 为什么在本 log 里“动了 0 个 balance point”?</summary><div class="faq-answer"><p><span class="tag tag-fact">日志事实</span>原文记录三轮 CCD(行 20166/23073/23239)，其中 round 2 明确输出 0 balance points、0 clock latencies(行 23097)。这说明该处 skew 调整计数为 0，不能推断所有轮次均无任何动作。<code>ccd.skip_path_groups</code> 的三个名字未匹配预期组；若 CTS/PostCTS 仍沿用同一无效配置，这些预期组不会由该列表排除，但是否实际优化 IO 路径仍取决于 CCD target/path group 和阶段选项。</p>
+</div></details><details class="faq" ><summary>Q5:UIC-105(20,973 条)到底意味着什么?</summary><div class="faq-answer"><p><code>set_clock_latency -offset -0.1</code> 未成功作用于部分目标，实际 timing model 与脚本预期不一致。日志要求目标符合 clock-sink pin 条件，应核对实际对象与版本规则，不能只按是否 ICG 判断。对 setup/hold 的影响方向和大小取决于 launch/capture、关联时钟、early/late 设置及共同路径等，不能固定背成 ±0.1ns，也不能仅凭“测试时钟较慢”判为无害。应筛选合法目标，并对受影响路径比较修正前后的完整时钟路径与 slack。</p>
+</div></details><details class="faq" ><summary>Q6:为什么最终 WNS -0.7059 在 FuncTT(typical corner)而不是 ss corner?</summary><div class="faq-answer"><p><span class="tag tag-fact">日志事实</span>FuncTT 的 in2out 组有 68 条违例，WNS -0.7059ns；原文记录该路径涉及 0.77ns 时钟、5 级逻辑，ss 三 corner 的 WNS 约 -0.54ns。<span class="tag tag-infer">推断</span>这可作为优先检查 IO constraints 的线索，不能证明 IO constraint 就是根因。需对照各 scenario 的 input/output delay、时钟周期、不确定性、OCV/derate、RC 与 library timing，以及具体最差路径。</p>
+</div></details><details class="faq" ><summary>Q7:为什么 place 结束有 14,644 条 hold 违例? 后面怎么处理?</summary><div class="faq-answer"><p><span class="tag tag-fact">日志事实</span>末态全设计 NHV 14,644、最差 hold slack -0.1421ns；原文给出 func cbest 场景 12,965 条，其中 reg2mem 11,551 条。此前成本栏为 0 不代表此前绝无 hold 风险，单靠汇总数也不能锁定出现原因。CTS/PostCTS 阶段重点处理 hold，结合传播时钟、数据路径优化等措施，并持续跟踪至布线后。当前先检查约束与主要路径群体；不能假设“建树完成就自动清零”，应按项目签核条件评估。</p>
+</div></details><details class="faq" ><summary>Q8:WNS 显示正值但 NSV 却有几万，矛盾吗?</summary><div class="faq-answer"><p>先检查指标定义。日志优化器表中的正值可能表示违例幅值/成本，不能直接当成带符号的 slack。本笔记保留日志原数值用于趋势比较，最终时序结论优先核对 <code>report_qor.rpt.gz</code>；上传文本给出的 FuncTT WNS 为 -0.7059ns、NSV 为 30,718。不同场景、path group、全设计汇总和成本函数不可直接混算；若有冲突，需回查原始报告。</p>
+</div></details><details class="faq" ><summary>Q9:为什么 0.55 的初始密度参数最后升到 0.70?</summary><div class="faq-answer"><p><span class="tag tag-fact">日志事实</span>原文记录 max_density 0.55 → 0.65 → 0.70，以及对 26.6% movable cells 的局部密度调整。这是不同阶段参数与局部操作的记录，不代表全芯片实际利用率相同变化，也不能单凭上限升高断言更可布。后续 GR 峰值 V 344.8% / H 252.1% 提示局部热点；应结合拥塞图、固定单元、宏周边空间及可用布线资源分析。</p>
+</div></details><details class="faq" ><summary>Q10:这份 log 里哪些数字最该盯?</summary><div class="faq-answer"><ol>
+<li><strong>R2RTNS 趋势</strong>：34,223 → 260.3 → 2,659.9 → 491.1；大幅改善，但非零。</li>
+<li><strong>NSV 构成</strong>：最终全设计 30,821；结合 in2reg、reg2reg、mem2reg 等组判断定位方向，不直接相加或自动归因。</li>
+<li><strong>MaxTrnV / MaxCapV</strong>：978 / 2,020，仍有 DRV 存量。</li>
+<li><strong>局部峰值利用率</strong>：V 344.8% / H 252.1%；复查对应层和区域，不能与平均利用率混淆。</li>
+<li><strong>hold 群体</strong>：全设计 14,644，以 reg2mem 为主要检查对象，在 CTS/PostCTS 持续对比。</li>
+<li><strong>消息台账</strong>：DFT-005 / SQM-1067 / CSTR-013，以及 UIC-105、GRF-014 等建模问题。</li>
+</ol>
+</div></details></div><a class="backlink" href="#top">↑ 返回顶部</a></section><section id="appendix" class="chapter"><div class="chapter-head"><span class="chapter-number">↗</span><div><p class="eyebrow">REFERENCE INDEX</p><h2>附：行号速查表</h2><p>用于返回原始 Ic2Place.log 定位；本页不包含原始日志文件。</p></div></div><div class="chapter-body"><div class="table-wrap" tabindex="0" role="region" aria-label="数据表格，可横向滚动"><table>
+<thead>
+<tr>
+<th>内容</th>
+<th>行号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>9 场景激活</td>
+<td>278-286</td>
+</tr>
+<tr>
+<td>GRF-014 首发</td>
+<td>293-294</td>
+</tr>
+<tr>
+<td>max_transition 收紧</td>
+<td>307-392 / 803-820</td>
+</tr>
+<tr>
+<td>UIC-090 洪水</td>
+<td>821+</td>
+</tr>
+<tr>
+<td>set_clock_latency -offset</td>
+<td>1787</td>
+</tr>
+<tr>
+<td>set_qor_strategy</td>
+<td>1912-1987</td>
+</tr>
+<tr>
+<td>ccd.skip_path_groups</td>
+<td>1807 / 1946-1954</td>
+</tr>
+<tr>
+<td>compile_fusion 五段定义</td>
+<td>2119-2208</td>
+</tr>
+<tr>
+<td>SQM-1067 文本</td>
+<td>2232-2241</td>
+</tr>
+<tr>
+<td>initial_place</td>
+<td>5097-8447</td>
+</tr>
+<tr>
+<td>DFT-005 / DFT-029 / 282 链</td>
+<td>8105 / 8244 / 8246-8250</td>
+</tr>
+<tr>
+<td>initial_drc + HFS</td>
+<td>11373-11630</td>
+</tr>
+<tr>
+<td>initial_opto 起</td>
+<td>14515</td>
+</tr>
+<tr>
+<td>55min 时序更新</td>
+<td>14525 / 17411</td>
+</tr>
+<tr>
+<td>initial QoR(130,884)</td>
+<td>17413-17633</td>
+</tr>
+<tr>
+<td>CCD round1(15,294 边界)</td>
+<td>20166-20224</td>
+</tr>
+<tr>
+<td>CCD round2(0 skew)</td>
+<td>23073-23107</td>
+</tr>
+<tr>
+<td>Optimization (4)/(5)</td>
+<td>23143-26303</td>
+</tr>
+<tr>
+<td>initial_opto 出口(29,125)</td>
+<td>26366-26586</td>
+</tr>
+<tr>
+<td>ICG 合并(4,802 唯一)</td>
+<td>26814-29671</td>
+</tr>
+<tr>
+<td>T&amp;C 放置 + 344%</td>
+<td>30013-32395 / 33819-33823</td>
+</tr>
+<tr>
+<td>final_place 出口(60,108)</td>
+<td>32637-32638</td>
+</tr>
+<tr>
+<td>final_opto 四轮</td>
+<td>32863-36736</td>
+</tr>
+<tr>
+<td><strong>最终 QoR(30,821)</strong></td>
+<td>37142-37162</td>
+</tr>
+<tr>
+<td>消息总台账</td>
+<td>37269-37384</td>
+</tr>
+</tbody></table></div>
+</div><a class="backlink" href="#top">↑ 返回顶部</a></section></main></div>
+<footer class="footer"><div class="shell"><p><strong>Place Log · 纠错复习版</strong><br>整理于 2026.09.16 · 来源：上传解析文本与本次对话纠错</p><p>全部样式与交互内嵌 · 无外部字体或网络资源<br>可直接打开 .html；打印前会自动展开全部 FAQ。</p></div></footer><div class="toast" role="status" aria-live="polite" hidden></div>
+<script>
+(()=>{
+ const toast=document.querySelector('.toast');let timer;
+ function notify(s){toast.textContent=s;toast.hidden=false;clearTimeout(timer);timer=setTimeout(()=>toast.hidden=true,2200)}
+ document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{const text=button.closest('.code-wrap').querySelector('code').textContent;try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const area=document.createElement('textarea');area.value=text;area.style.cssText='position:fixed;left:-9999px';document.body.append(area);area.select();const ok=document.execCommand('copy');area.remove();if(!ok)throw Error('copy');}notify('代码已复制');}catch(e){notify('请选中代码后使用 Ctrl / ⌘ + C 复制');}}));
+ const faq=document.querySelector('#chapter-7 .chapter-body');const tools=document.createElement('div');tools.className='faq-tools';const toggle=document.createElement('button');toggle.type='button';toggle.textContent='展开全部问答';tools.append(toggle);faq.prepend(tools);toggle.addEventListener('click',()=>{const items=[...faq.querySelectorAll('details')];const open=!items.every(d=>d.open);items.forEach(d=>d.open=open);toggle.textContent=open?'折叠全部问答':'展开全部问答';toggle.setAttribute('aria-expanded',String(open))});
+ let printState=[];window.addEventListener('beforeprint',()=>{printState=[...document.querySelectorAll('details')].map(d=>[d,d.open]);printState.forEach(([d])=>d.open=true)});window.addEventListener('afterprint',()=>{printState.forEach(([d,v])=>d.open=v);printState=[]});document.querySelector('.print').addEventListener('click',()=>window.print());
+ const headings=[...document.querySelectorAll('main>section[id]')];const links=[...document.querySelectorAll('.side a,.nav-links a')];let queued=false;
+ function update(){queued=false;let id='source-note';for(const section of headings){if(section.getBoundingClientRect().top<=140)id=section.id;else break}links.forEach(a=>{const current=a.getAttribute('href')==='#'+id;a.classList.toggle('active',current);if(current)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current')})}
+ window.addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update)}},{passive:true});update();
+})();
+</script></body></html>
