@@ -1,0 +1,12 @@
+---
+cssclasses:
+  - qor-native-images
+  - qor-wide-images
+---
+
+
+
+![[Pasted image 20260917175943.png]]
+
+
+![[Pasted image 20260917182635.png]]
