@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07-Project/dma_ep_ss_top/相关知识/03.CTS.log.md",
+                "file": "07-Project/dma_ep_ss_top/笔记/920.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "03.CTS.log"
+              "title": "920"
             }
           }
         ]
@@ -191,20 +191,25 @@
   },
   "active": "6e3eeeeacbab43c3",
   "lastOpenFiles": [
-    "07-Project/dma_ep_ss_top/笔记/9018.md",
-    "07-Project/dma_ep_ss_top/相关知识/03.CTS.log.md",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918170633.png",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918170340.png",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918170022.png",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918165830.png",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918155236.png",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918155104.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920182111.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920181804.png",
+    "07-Project/dma_ep_ss_top/笔记/920 1.md",
+    "07-Project/dma_ep_ss_top/笔记/920.md",
+    "03-PT/ECO/fix_eco_timing.md",
+    "10-SDC/set_false_path.md",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920144321.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920144316.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920144147.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920141411.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920140909.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920140820.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920140416.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920140211.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260920140013.png",
+    "07-Project/dma_ep_ss_top/笔记/918.md",
+    "07-Project/dma_ep_ss_top/笔记/917.md",
     "07-Project/dma_ep_ss_top/相关知识/02.PLACE.log.md",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918140444.png",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918134855.png",
-    "07-Project/dma_ep_ss_top/相关知识/附件/Pasted image 20260918134739.png",
-    "07-Project/dma_ep_ss_top/笔记/9017.md",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260918123354.png",
+    "07-Project/dma_ep_ss_top/相关知识/03.CTS.log.md",
     "07-Project/dma_ep_ss_top/笔记/附件",
     "07-Project/dma_ep_ss_top/笔记",
     "07-Project/dma_ep_ss_top/qor分析/sum.md",
@@ -223,7 +228,6 @@
     "07-Project/dma_ep_ss_top/qor分析",
     "07-Project/dma_ep_ss_top",
     "07-Project",
-    "03-PT/ECO/fix_eco_timing.md",
     "03-PT/ECO/fix_eco_timing.html",
     "00-Home/Home.md",
     "07-项目经验/dma_ep_ss_top/相关知识/02.PLACE.log.md",
@@ -232,9 +236,6 @@
     "07-项目经验/dma_ep_ss_top/相关知识/PLACE.LOG.md",
     "07-项目经验/dma_ep_ss_top/相关知识/TSMC 标准单元库.md",
     "07-项目经验/dma_ep_ss_top/相关知识/ECC.md",
-    "07-项目经验/dma_ep_ss_top/qor分析/run3：8313_grouppath2.md",
-    "07-项目经验/dma_ep_ss_top/qor分析/run1：8313.md",
-    "04-PT/ECO/fix_eco_timing.md",
-    "07-项目经验/dma_ep_ss_top/qor分析/run4 ：8313_grouppath3.md"
+    "07-项目经验/dma_ep_ss_top/qor分析/run3：8313_grouppath2.md"
   ]
 }
