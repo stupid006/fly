@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07-Project/dma_ep_ss_top/run/9018v2.md",
+                "file": "07-Project/dma_ep_ss_top/相关知识/ai辅助阅读.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "9018v2"
+              "title": "ai辅助阅读"
             }
           },
           {
@@ -201,13 +201,15 @@
   },
   "active": "6e3eeeeacbab43c3",
   "lastOpenFiles": [
-    "07-Project/dma_ep_ss_top/暂时.md",
+    "07-Project/dma_ep_ss_top/相关知识/02.PLACE.log.md",
+    "07-Project/dma_ep_ss_top/笔记/920 1.md",
+    "07-Project/dma_ep_ss_top/笔记/923.md",
     "07-Project/dma_ep_ss_top/run/9018v2.md",
+    "07-Project/dma_ep_ss_top/暂时.md",
     "10-SDC/set_false_path.md",
     "07-Project/dma_ep_ss_top/run/附件/Pasted image 20260924104325.png",
     "07-Project/dma_ep_ss_top/run/附件/Pasted image 20260924104145.png",
     "07-Project/dma_ep_ss_top/附件/Pasted image 20260924094637.png",
-    "07-Project/dma_ep_ss_top/笔记/923.md",
     "07-Project/dma_ep_ss_top/相关知识/03.CTS.log.md",
     "07-Project/dma_ep_ss_top/笔记/preview (1).html",
     "07-Project/dma_ep_ss_top/笔记/set_clock_latency_中文讲解.html",
@@ -217,11 +219,9 @@
     "07-Project/dma_ep_ss_top/附件/Pasted image 20260923103517.png",
     "07-Project/dma_ep_ss_top/附件/Pasted image 20260923103502.png",
     "07-Project/dma_ep_ss_top/附件",
-    "07-Project/dma_ep_ss_top/笔记/920 1.md",
     "07-Project/dma_ep_ss_top/笔记/920  921.md",
     "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260923095513.png",
     "07-Project/dma_ep_ss_top/笔记/918.md",
-    "07-Project/dma_ep_ss_top/相关知识/02.PLACE.log.md",
     "07-Project/dma_ep_ss_top/相关知识/ai辅助阅读.md",
     "07-Project/dma_ep_ss_top/相关知识/ICC2_Placement_逐页双栏伴读.html",
     "07-Project/dma_ep_ss_top/相关知识/ICC2_Running_CTS_逐页双栏详解.html",
