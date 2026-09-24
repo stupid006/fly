@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FC set_clock_balance_points 中文讲解</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#657084; --line:#dfe5ee;
+  --blue:#2f5fd0; --bluebg:#eef4ff; --green:#18794e; --greenbg:#ecfdf3;
+  --red:#b42318; --redbg:#fef3f2; --orange:#b54708; --orangebg:#fff7ed;
+  --code:#111827;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Segoe UI","Microsoft YaHei","PingFang SC",Arial,sans-serif;
+  line-height:1.75;
+}
+.container{max-width:1080px;margin:0 auto;padding:34px 20px 70px}
+.hero,.card{
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  box-shadow:0 8px 24px rgba(16,24,40,.05);
+}
+.hero{
+  padding:30px 34px; margin-bottom:22px;
+  background:linear-gradient(135deg,#edf4ff,#fff 72%);
+}
+h1{margin:0 0 8px;font-size:34px;line-height:1.25}
+h2{font-size:24px;margin:0 0 14px}
+h3{font-size:18px;margin:20px 0 8px}
+p{margin:8px 0}
+.sub{color:var(--muted)}
+.badge{
+  display:inline-block;margin-top:12px;padding:5px 11px;border-radius:999px;
+  background:var(--bluebg);color:var(--blue);font-weight:700;font-size:13px
+}
+.card{padding:26px 30px;margin:18px 0}
+.note,.good,.warn,.bad{
+  border-radius:12px;padding:14px 16px;margin:14px 0;border-left:4px solid
+}
+.note{background:var(--bluebg);border-color:var(--blue)}
+.good{background:var(--greenbg);border-color:var(--green)}
+.warn{background:var(--orangebg);border-color:var(--orange)}
+.bad{background:var(--redbg);border-color:var(--red)}
+code{
+  font-family:Consolas,Menlo,monospace;background:#f0f2f5;padding:2px 6px;border-radius:6px
+}
+pre{
+  background:var(--code);color:#eef2f7;padding:16px 18px;border-radius:12px;
+  overflow:auto;line-height:1.55;font-size:14px
+}
+pre code{background:transparent;padding:0;color:inherit}
+table{width:100%;border-collapse:collapse;margin:14px 0 4px}
+th,td{border:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+th{background:#f8fafc}
+.flow{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:18px 0
+}
+.box{
+  border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;background:#fbfcfe
+}
+.arrow{font-size:26px;color:var(--muted)}
+.small{font-size:13px;color:var(--muted)}
+.k{font-weight:700;color:#1f3f89}
+ul{padding-left:22px}
+.footer{color:var(--muted);font-size:13px;margin-top:28px;text-align:center}
+@media(max-width:720px){
+  h1{font-size:27px}.hero,.card{padding:22px}
+  .flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<section class="hero">
+  <h1>FC：set_clock_balance_points 中文翻译与讲解</h1>
+  <div class="sub">根据 fc_shell man page（Version X-2025.06-SP1）整理</div>
+  <div class="badge">重点：用户手工指定用 -delay；-offset 是工具内部 CCD 使用</div>
+</section>
+
+<section class="card">
+  <h2>1. 这条命令到底是干什么的？</h2>
+  <p><code>set_clock_balance_points</code> 用来告诉 CTS：</p>
+  <ul>
+    <li>哪些 clock pin / port 要作为<strong>显式平衡点</strong>；</li>
+    <li>哪些点要<strong>排除在 clock balancing 之外</strong>；</li>
+    <li>某个 balance point 希望使用多少<strong>balance delay</strong>。</li>
+  </ul>
+
+  <div class="flow">
+    <div class="box"><b>用户手工约束</b><br><code>-delay</code><br><span class="small">告诉 CTS 我想怎么 balance</span></div>
+    <div class="arrow">→</div>
+    <div class="box"><b>CTS</b><br>根据 balance point / delay<br>构造时钟树</div>
+  </div>
+
+  <div class="flow">
+    <div class="box"><b>place_opt + CCD</b><br>工具自动计算 useful skew</div>
+    <div class="arrow">→</div>
+    <div class="box"><b>工具内部</b><br><code>-offset</code><br><span class="small">用户不要手工设置</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>2. 语法</h2>
+<pre><code>set_clock_balance_points
+    [-rise]
+    [-fall]
+    [-early]
+    [-late]
+    [-consider_for_balancing true | false]
+    [-offset offset_delay_applied_at_clock_sink_pins]
+    [-delay delay_value]
+    [-modes mode_list]
+    [-corners corner_list]
+    [-scenarios scenario_list]
+    [-clock clock_list]
+    -balance_points port_pin_list</code></pre>
+</section>
+
+<section class="card">
+  <h2>3. 最重要的两个参数：-offset 和 -delay</h2>
+
+  <h3><code>-offset</code></h3>
+  <p>man page 明确说明：这是工具在 <code>place_opt</code> 的 concurrent clock and data optimization（CCD）过程中，为 clock sink 自动生成的 offset delay。</p>
+  <div class="bad"><b>原文结论：</b> This option is used only by the tool.<br>
+  也就是：<b>这个选项只给工具自己用，用户不要手工设置。</b></div>
+
+  <h3><code>-delay</code></h3>
+  <p>这是用户自己指定 balance delay 的接口。</p>
+  <div class="good"><b>用户想手工告诉 CTS 某个点怎么 balance，应使用 <code>-delay</code>。</b></div>
+
+  <table>
+    <tr><th>参数</th><th>谁使用</th><th>用途</th></tr>
+    <tr><td><code>-offset</code></td><td>工具 / CCD</td><td>place_opt 中由 concurrent clock and data optimization 自动推导</td></tr>
+    <tr><td><code>-delay</code></td><td>用户</td><td>手工给 balance point 指定 balance delay</td></tr>
+  </table>
+</section>
+
+<section class="card">
+  <h2>4. -consider_for_balancing</h2>
+
+  <h3><code>-consider_for_balancing true</code></h3>
+  <p>这个点是一个 <b>balance point</b>，要参与显式 balancing。</p>
+  <p>如果只写 <code>true</code> 而没有写 <code>-delay</code>，工具默认 <code>delay = 0</code>。</p>
+
+  <h3><code>-consider_for_balancing false</code></h3>
+  <p>这个点变成 <b>ignore point</b>，即从 balancing 中排除。</p>
+
+  <div class="warn">
+    <b>不能这样写：</b>
+<pre><code>set_clock_balance_points     -consider_for_balancing false     -delay 0.05     -balance_points ...</code></pre>
+    因为 <code>false</code> 表示“不参与 balancing”，而 <code>-delay</code> 又是在给它指定 balance delay，逻辑冲突，工具会报错。
+  </div>
+</section>
+
+<section class="card">
+  <h2>5. rise / fall、early / late 默认行为</h2>
+  <table>
+    <tr><th>参数组</th><th>如果都不写</th></tr>
+    <tr><td><code>-rise</code> / <code>-fall</code></td><td>默认同时作用于 rise 和 fall</td></tr>
+    <tr><td><code>-early</code> / <code>-late</code></td><td>默认同时作用于 early 和 late</td></tr>
+  </table>
+  <p>所以一个最简单的：</p>
+<pre><code>set_clock_balance_points     -delay 0.05     -balance_points [get_pins U1/CK]</code></pre>
+  <p>如果不再加别的限定，它会同时作用于 rise/fall 和 early/late。</p>
+</section>
+
+<section class="card">
+  <h2>6. MCMM：这个约束作用到哪些 scenario？</h2>
+  <p>Balance delay 是按 scenario 管理的。</p>
+  <ul>
+    <li><code>-scenarios</code>：直接指定 scenario；</li>
+    <li><code>-modes</code>：指定 mode，对应 mode 下的 scenario；</li>
+    <li><code>-corners</code>：指定 corner；</li>
+    <li><code>-modes</code> + <code>-corners</code>：取同时满足两者的 scenario。</li>
+  </ul>
+  <div class="note"><b>如果这些都不写，默认只作用于 current scenario。</b><br>
+  如果当前没有 current scenario，工具会报错。</div>
+</section>
+
+<section class="card">
+  <h2>7. -clock 与 -balance_points</h2>
+
+  <h3><code>-clock clock_list</code></h3>
+  <p>指定这条 balance constraint 属于哪个 clock。对于 CTS，generated clock 被认为属于 master clock network，因此这里要求使用 <b>non-generated clock</b>。</p>
+
+  <h3><code>-balance_points port_pin_list</code></h3>
+  <p>指定真正要施加 balance point 的 port / pin。</p>
+
+<pre><code>set_clock_balance_points     -rise     -early     -delay 2.0     -clock clk1     -balance_points gck/CP</code></pre>
+
+  <p>含义：</p>
+  <div class="note">
+    对 clock <b>clk1</b>，在 <b>gck/CP</b> 上建立一个 balance point，作用于 <b>rise + early</b>，其 balance delay 为 <b>2.0</b>。
+  </div>
+</section>
+
+<section class="card">
+  <h2>8. Balance point 和 Ignore point</h2>
+  <table>
+    <tr><th>类型</th><th>写法</th><th>含义</th></tr>
+    <tr><td>Balance point</td><td><code>-consider_for_balancing true</code> 或使用 <code>-delay</code></td><td>这个点要参与 clock balancing</td></tr>
+    <tr><td>Ignore point</td><td><code>-consider_for_balancing false</code></td><td>这个点不参与 clock balancing</td></tr>
+  </table>
+
+  <p>一个 pin / port 不能在同一个适用条件下既是 balance point，又是 exclude / ignore point。</p>
+</section>
+
+<section class="card">
+  <h2>9. Hierarchical pin 与 jump pin</h2>
+
+  <h3>Hierarchical pin</h3>
+  <p>Balance point 可以设置在 hierarchical pin 上。</p>
+  <p>如果这个 hierarchical balance point 连到 dangling / black box，在 <code>synthesize_clock_trees</code> 时，工具会在它附近插入一个 <b>guide buffer</b>，再把约束移动到 guide buffer 的 input pin。</p>
+
+  <h3>Jump pin</h3>
+  <p>Jump pin 是出现在 generated clock source-latency network 中的 register clock pin。</p>
+  <div class="warn">如果 balance constraint 施加在 jump pin 上，clock network update / synthesis 时会被忽略。</div>
+</section>
+
+<section class="card">
+  <h2>10. 重复设置与 early / late 关系</h2>
+  <ul>
+    <li>同一个 object + clock 上已有约束时，新约束可能覆盖或合并旧约束；发生覆盖会给 warning。</li>
+    <li>如果只指定 early 或 late，工具会把对应另一边的值复制过去。</li>
+    <li>early value 不能大于 late value；如果发生这种情况，工具会 warning，并把 late 调整为 early。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>11. 查看与删除</h2>
+<pre><code># 查看当前 balance points
+report_clock_balance_points
+
+# 删除 balance point constraints
+remove_clock_balance_points ...</code></pre>
+</section>
+
+<section class="card">
+  <h2>12. 三个官方示例怎么理解</h2>
+
+  <h3>示例 1：建立 balance point</h3>
+<pre><code>set_clock_balance_points -rise -early -delay 2.0     -clock clk1 -balance_points gck/CP</code></pre>
+  <p>解释：对 <code>clk1</code>，在 <code>gck/CP</code> 上建立 rise + early 的 balance point，delay 为 2.0。</p>
+
+  <h3>示例 2：重复设置</h3>
+  <p>再次对相同 object / clock / edge / analysis 设置 constraint 时，旧 constraint 会被覆盖，并产生 UIC-044 warning。</p>
+
+  <h3>示例 3：建立 ignore point</h3>
+<pre><code>set_clock_balance_points     -consider_for_balancing false     -clock clk1     -balance_points mux/A</code></pre>
+  <p>解释：把 <code>mux/A</code> 从 clock balancing 中排除。</p>
+</section>
+
+<section class="card">
+  <h2>13. 你现在真正需要记住的</h2>
+
+  <div class="good">
+    <b>① 用户自己指定 balance delay：用 <code>-delay</code></b>
+  </div>
+
+  <div class="bad">
+    <b>② <code>-offset</code> 是 CCD / 工具内部使用，不要手工写</b>
+  </div>
+
+  <div class="note">
+    <b>③ <code>-consider_for_balancing true</code> = balance point</b><br>
+    <b>④ <code>-consider_for_balancing false</code> = ignore point</b>
+  </div>
+
+  <p>可以把整条命令理解成：</p>
+<pre><code>set_clock_balance_points
+        │
+        ├── -delay        → 用户告诉 CTS 这个点怎么 balance
+        ├── -offset       → CCD / 工具内部的 offset
+        ├── true          → 这个点参与 balancing
+        └── false         → 这个点忽略 balancing</code></pre>
+</section>
+
+<section class="card">
+  <h2>14. 和你前面学的 CCD 串起来</h2>
+  <p>前面 PPT 里提到的 useful skew，重点要区分“工具内部产生”和“用户手工指定”：</p>
+
+  <div class="flow">
+    <div class="box"><b>place_opt + CCD</b><br>工具计算 useful skew</div>
+    <div class="arrow">→</div>
+    <div class="box"><code>-offset</code><br><span class="small">工具内部保存 / 传递</span></div>
+  </div>
+
+  <div class="flow">
+    <div class="box"><b>用户自己干预 CTS</b><br>希望指定 balance point delay</div>
+    <div class="arrow">→</div>
+    <div class="box"><code>-delay</code><br><span class="small">用户可用接口</span></div>
+  </div>
+
+  <div class="warn">
+    这也是为什么培训 PPT 里看到 <code>-offset</code> 时容易误会：PPT 在解释 CCD 的内部机制，而 man page 明确区分了“工具内部接口”和“用户接口”。
+  </div>
+</section>
+
+<div class="footer">
+  FC set_clock_balance_points 中文讲解 · Based on Synopsys FC X-2025.06-SP1 man page
+</div>
+
+</div>
+</body>
+</html>

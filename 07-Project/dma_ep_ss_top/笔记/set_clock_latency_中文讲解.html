@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fusion Compiler：set_clock_latency 中文讲解</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#ffffff; --text:#162033; --muted:#657086; --line:#dfe5ee;
+  --blue:#2f5fd0; --bluebg:#edf4ff; --green:#157347; --greenbg:#ecfdf3;
+  --red:#b42318; --redbg:#fef3f2; --orange:#b54708; --orangebg:#fff7ed;
+  --purple:#6f42c1; --purplebg:#f5f0ff; --code:#111827;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Segoe UI","Microsoft YaHei","PingFang SC",Arial,sans-serif;
+  line-height:1.75;
+}
+.container{max-width:1100px;margin:0 auto;padding:30px 20px 70px}
+.hero,.card{
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  box-shadow:0 8px 24px rgba(16,24,40,.05);
+}
+.hero{
+  padding:30px 34px; margin-bottom:22px;
+  background:linear-gradient(135deg,#edf4ff,#fff 68%);
+}
+h1{margin:0 0 8px;font-size:34px;line-height:1.25}
+h2{font-size:24px;margin:0 0 14px}
+h3{font-size:18px;margin:20px 0 8px}
+p{margin:8px 0}
+.sub{color:var(--muted)}
+.badge{
+  display:inline-block;margin-top:12px;padding:5px 11px;border-radius:999px;
+  background:var(--bluebg);color:var(--blue);font-weight:700;font-size:13px
+}
+.card{padding:26px 30px;margin:18px 0}
+.note,.good,.warn,.bad,.purple{
+  border-radius:12px;padding:14px 16px;margin:14px 0;border-left:4px solid
+}
+.note{background:var(--bluebg);border-color:var(--blue)}
+.good{background:var(--greenbg);border-color:var(--green)}
+.warn{background:var(--orangebg);border-color:var(--orange)}
+.bad{background:var(--redbg);border-color:var(--red)}
+.purple{background:var(--purplebg);border-color:var(--purple)}
+code{
+  font-family:Consolas,Menlo,monospace;background:#f0f2f5;padding:2px 6px;border-radius:6px
+}
+pre{
+  background:var(--code);color:#eef2f7;padding:16px 18px;border-radius:12px;
+  overflow:auto;line-height:1.55;font-size:14px
+}
+pre code{background:transparent;padding:0;color:inherit}
+table{width:100%;border-collapse:collapse;margin:14px 0 4px}
+th,td{border:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+th{background:#f8fafc}
+.flow{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:18px 0
+}
+.box{
+  border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;background:#fbfcfe
+}
+.arrow{font-size:26px;color:var(--muted)}
+.small{font-size:13px;color:var(--muted)}
+.toc a{color:var(--blue);text-decoration:none}
+.toc li{margin:4px 0}
+summary{cursor:pointer;font-weight:700}
+details{border-top:1px solid var(--line);padding:10px 0}
+.footer{color:var(--muted);font-size:13px;margin-top:28px;text-align:center}
+.eq{
+  text-align:center;font-size:20px;font-weight:700;margin:16px 0;
+  padding:12px;border:1px dashed #b9c3d3;border-radius:12px;background:#fafcff
+}
+@media(max-width:720px){
+  h1{font-size:27px}.hero,.card{padding:22px}
+  .flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}
+  table{font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<section class="hero">
+  <h1>Fusion Compiler：set_clock_latency 中文翻译与讲解</h1>
+  <div class="sub">基于 fc_shell man page · Version X-2025.06-SP1</div>
+  <div class="badge">核心：Source Latency + Network Latency = Register 看到的总 Clock Latency</div>
+</section>
+
+<section class="card toc">
+  <h2>快速目录</h2>
+  <ul>
+    <li><a href="#what">1. 这条命令是干什么的</a></li>
+    <li><a href="#source-network">2. Source Latency 和 Network Latency</a></li>
+    <li><a href="#ideal-prop">3. Pre-CTS 与 Post-CTS</a></li>
+    <li><a href="#args">4. 主要参数逐个解释</a></li>
+    <li><a href="#offset">5. -offset 与 CCD 的关系</a></li>
+    <li><a href="#pins">6. 给 pin/port 设置 latency 会怎样</a></li>
+    <li><a href="#generated">7. Generated Clock</a></li>
+    <li><a href="#mcmm">8. MCMM</a></li>
+    <li><a href="#examples">9. 官方示例翻译</a></li>
+    <li><a href="#compare">10. 和 set_clock_balance_points 的区别</a></li>
+  </ul>
+</section>
+
+<section class="card" id="what">
+  <h2>1. set_clock_latency 是干什么的？</h2>
+  <div class="note"><b>Specifies the latency of a clock network.</b><br>翻译：指定时钟网络的 latency（延迟）。</div>
+  <p>你可以把它理解成：<b>告诉 STA，“这个 clock 从某个起点走到某个位置，需要多少时间”。</b></p>
+  <div class="eq">Total Clock Latency = Source Latency + Network Latency</div>
+  <div class="flow">
+    <div class="box"><b>真实时钟源</b><br>PLL / 外部时钟</div>
+    <div class="arrow">→</div>
+    <div class="box"><b>Clock Definition Point</b><br>create_clock 定义的位置</div>
+  </div>
+  <div class="small" style="text-align:center">↑ 这一段叫 Source Latency</div>
+  <div class="flow">
+    <div class="box"><b>Clock Definition Point</b></div>
+    <div class="arrow">→</div>
+    <div class="box"><b>Register / SRAM Clock Pin</b></div>
+  </div>
+  <div class="small" style="text-align:center">↑ 这一段叫 Network Latency</div>
+</section>
+
+<section class="card" id="source-network">
+  <h2>2. Source Latency 和 Network Latency</h2>
+  <h3>Source Latency</h3>
+<pre><code>set_clock_latency 0.5 -source [get_clocks CLK]</code></pre>
+  <p>表示从真正的 clock waveform origin 到设计里的 clock definition point 之间有 0.5 的延迟。</p>
+  <div class="note">
+    常见用途：
+    <ul>
+      <li>芯片外部 PLL / clock board delay</li>
+      <li>clock generation circuit 不在当前 block 内</li>
+      <li>generated clock 的 master → generated clock definition point 建模</li>
+    </ul>
+  </div>
+  <h3>Network Latency</h3>
+  <p>如果不写 <code>-source</code>，默认就是 network latency。</p>
+<pre><code>set_clock_latency 1.0 [get_clocks CLK]</code></pre>
+  <p>表示从 clock definition point 到 register clock pin 的 clock tree 延迟，先假设为 1.0。</p>
+  <div class="good"><b>最常见理解：</b> pre-CTS 阶段 clock tree 还没真正建好，就用 network latency 先“估一个未来 clock tree 延迟”。</div>
+</section>
+
+<section class="card" id="ideal-prop">
+  <h2>3. Pre-CTS 与 Post-CTS</h2>
+  <h3>Pre-CTS</h3>
+  <p>时钟树还没有真实 buffer / route，因此一般是 ideal clock。</p>
+<pre><code>set_clock_latency 1.0 [get_clocks CLK]</code></pre>
+  <div class="flow">
+    <div class="box">CLK</div><div class="arrow">→</div>
+    <div class="box">假设 network latency = 1.0</div>
+  </div>
+  <h3>Post-CTS</h3>
+  <p>CTS 后有真实 clock tree，就通常切到 propagated clock：</p>
+<pre><code>set_propagated_clock [get_clocks CLK]</code></pre>
+  <div class="flow">
+    <div class="box">CLK</div><div class="arrow">→</div>
+    <div class="box">BUF + INV + Route RC + 实际 Clock Tree</div>
+  </div>
+  <div class="warn"><b>关键区别：</b><br>Pre-CTS：主要依赖 ideal clock + set_clock_latency。<br>Post-CTS：主要依赖 propagated clock 的真实延迟。</div>
+</section>
+
+<section class="card" id="args">
+  <h2>4. 主要参数逐个解释</h2>
+  <h3><code>-rise</code> / <code>-fall</code></h3>
+<pre><code>set_clock_latency 1.2 -rise [get_clocks CLK1]
+set_clock_latency 0.9 -fall [get_clocks CLK1]</code></pre>
+  <h3><code>-early</code> / <code>-late</code></h3>
+<pre><code>set_clock_latency 0.8 -source -early [get_clocks CLK1]
+set_clock_latency 0.9 -source -late  [get_clocks CLK1]</code></pre>
+  <div class="note"><b>early</b> = clock 较早到时的分析值；<b>late</b> = clock 较晚到时的分析值。</div>
+  <h3><code>-min</code> / <code>-max</code></h3>
+  <p>指定 minimum / maximum operating condition 的 latency。OCV 下主要使用 min-early 和 max-late。</p>
+  <h3><code>-clock</code></h3>
+<pre><code>set_clock_latency 0.1     -clock [get_clocks CLK1]     [get_pins U1/CK]</code></pre>
+  <div class="warn">工具不会在 UI 层检查 CLK1 是否真的经过 U1/CK；如果根本不经过，这条约束可能没有效果，但也不报错。</div>
+  <h3><code>-dynamic</code></h3>
+<pre><code>set_clock_latency 3 -source -early     -dynamic 0.5 [get_clocks CLK1]</code></pre>
+  <p>表示 source latency 中的动态部分，只能与 <code>-source</code> 一起使用，主要用于 CRP/CRPR 与 zero-cycle path。</p>
+</section>
+
+<section class="card" id="offset">
+  <h2>5. -offset 与 CCD 的关系</h2>
+  <div class="purple">man page：<code>-offset</code> 用于 clock network sink 或 ICG clock pin 上的 offset latency。</div>
+  <div class="flow">
+    <div class="box"><b>place_opt + CCD</b><br>计算 useful skew</div>
+    <div class="arrow">→</div>
+    <div class="box"><code>set_clock_latency -offset</code><br>记录某个 sink 的 latency adjustment</div>
+  </div>
+  <p>例如 CCD 希望某个 FF clock 晚 50ps：</p>
+<pre><code>set_clock_latency 0.05 -offset [get_pins FF2/CK]</code></pre>
+  <div class="note">这里不是普通 network latency，而是针对某个 clock sink / ICG pin 的局部 offset。</div>
+  <div class="bad"><b>不要把它和普通用户 network latency 混在一起。</b> 你前面的 Synopsys CCD 培训资料把它作为 useful-skew 优化中的工具内部机制。</div>
+</section>
+
+<section class="card" id="pins">
+  <h2>6. 给 pin / port 设置 network latency 会怎样？</h2>
+  <div class="note">如果 <code>set_clock_latency</code> 施加在 pin 或 port 上，会影响这个 pin/port transitive fanout 中的所有 register clock pins。</div>
+  <div class="flow">
+    <div class="box">U1/CKIN</div><div class="arrow">→</div>
+    <div class="box">FF1/CK、FF2/CK、FF3/CK ...</div>
+  </div>
+<pre><code>set_clock_latency 0.5 [get_pins U1/CKIN]</code></pre>
+  <div class="bad"><b>更关键：</b>直接给 pin/port 设置 network latency，会让受影响的 registers 变成 ideal clock。</div>
+  <table>
+    <tr><th>命令</th><th>含义</th></tr>
+    <tr><td><code>set_propagated_clock</code></td><td>使用真实 clock tree 延迟</td></tr>
+    <tr><td><code>set_clock_latency</code> network</td><td>使用 ideal network latency</td></tr>
+  </table>
+</section>
+
+<section class="card" id="generated">
+  <h2>7. Generated Clock 的 source latency</h2>
+  <div class="flow">
+    <div class="box">Master Clock</div><div class="arrow">→</div>
+    <div class="box">Generated Clock Definition Point</div>
+  </div>
+  <p>如果 master clock 已经 propagated，而且 generated clock 没有人为 source latency，工具会自动计算 generated clock 的 source latency。</p>
+  <div class="note">如果 master clock 还是 ideal，master clock 有 source latency，但 generated clock 没有用户指定 source latency，那么 generated clock 默认 source latency = 0。</div>
+</section>
+
+<section class="card" id="mcmm">
+  <h2>8. MCMM：Latency 是 per-scenario 管理的</h2>
+  <p>可以使用 <code>-modes</code>、<code>-corners</code>、<code>-scenarios</code>。</p>
+<pre><code>set_clock_latency 1     [get_clocks CLK]     -corners [get_corners corner1]</code></pre>
+  <div class="warn">如果这些都不写，默认只作用于 current scenario。</div>
+</section>
+
+<section class="card" id="examples">
+  <h2>9. 官方示例翻译</h2>
+
+  <details open>
+    <summary>示例 1：分别设置 rise / fall network latency</summary>
+<pre><code>set_clock_latency 1.2 -rise [get_clocks CLK1]
+set_clock_latency 0.9 -fall [get_clocks CLK1]</code></pre>
+    <p>CLK1 的 rise latency = 1.2，fall latency = 0.9。</p>
+  </details>
+
+  <details>
+    <summary>示例 2：设置 early / late source latency</summary>
+<pre><code>set_clock_latency 0.8 -source -early [get_clocks CLK1]
+set_clock_latency 0.9 -source -late  [get_clocks CLK1]</code></pre>
+    <p>CLK1 的 early source latency = 0.8，late source latency = 0.9。</p>
+  </details>
+
+  <details>
+    <summary>示例 3：source latency + dynamic component</summary>
+<pre><code>set_clock_latency 3 -source -early -dynamic 0.5 [get_clocks CLK1]
+set_clock_latency 5 -source -late  -dynamic 0.5 [get_clocks CLK1]</code></pre>
+    <p>early / late source latency 分别是 3 和 5，其中 dynamic component 都是 0.5。</p>
+  </details>
+
+  <details>
+    <summary>示例 4：给 clock source port 指定相对 clock</summary>
+<pre><code>set_clock_latency 3 -source -early -dynamic 0.5     -clock [get_clocks CLK1] [get_ports CLK]</code></pre>
+    <p>给 source port CLK 设置 source latency，并明确它是相对于 CLK1。</p>
+  </details>
+
+  <details>
+    <summary>示例 5：不同 corner 使用不同 latency</summary>
+<pre><code>set_clock_latency 4 -source [get_clocks CLK1]     -corners [get_corners {corner1}]
+
+set_clock_latency 5 -source [get_clocks CLK1]     -corners [get_corners {corner2 corner3}]
+
+set_clock_latency 1 [get_clocks CLK1]
+
+set_clock_latency 2 [get_clocks CLK1]     -corners [get_corners {corner2}]
+
+set_clock_latency 3 [get_clocks CLK1]     -corners [get_corners {corner3}]</code></pre>
+    <p>同一个 clock 在不同 corner 下可以有不同 source latency 和 network latency。</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2>10. 怎么查看 / 删除</h2>
+<pre><code># 查看 clock source/network latency
+report_clocks -skew
+
+# 删除 set_clock_latency
+remove_clock_latency ...</code></pre>
+</section>
+
+<section class="card" id="compare">
+  <h2>11. 和 set_clock_balance_points 的区别</h2>
+  <table>
+    <tr><th>命令</th><th>主要作用</th><th>核心意义</th></tr>
+    <tr><td><code>set_clock_latency</code></td><td>STA / timing model</td><td>描述 clock arrival / propagation 应该假设多少 latency</td></tr>
+    <tr><td><code>set_clock_balance_points</code></td><td>CTS balancing</td><td>描述这个 clock point 应该怎样参与 balancing</td></tr>
+  </table>
+
+  <div class="flow">
+    <div class="box"><b>place_opt CCD</b><br>算 useful skew</div>
+    <div class="arrow">→</div>
+    <div class="box"><code>set_clock_latency -offset</code><br>pre-CTS timing 记录 sink adjustment</div>
+  </div>
+
+  <div class="flow">
+    <div class="box">Useful-skew intent</div>
+    <div class="arrow">→</div>
+    <div class="box"><code>set_clock_balance_points</code><br>CTS 中实现 balancing target</div>
+  </div>
+
+  <div class="good"><b>一句话记忆：</b><br><code>set_clock_latency</code> 更像描述“clock 到了多少”；<br><code>set_clock_balance_points</code> 更像告诉 CTS“这个 clock point 应该怎么 balance”。</div>
+</section>
+
+<section class="card">
+  <h2>12. 最后只记这 6 句话</h2>
+  <ol>
+    <li><b>Source latency</b>：真正时钟源 → clock definition point。</li>
+    <li><b>Network latency</b>：clock definition point → register clock pin。</li>
+    <li>Pre-CTS 常用 ideal clock + <code>set_clock_latency</code> 做估算。</li>
+    <li>Post-CTS 通常切到 <code>set_propagated_clock</code>，使用真实 clock tree latency。</li>
+    <li><code>-offset</code> 是 clock sink / ICG pin 的局部 offset，CCD 会用它表达 useful-skew adjustment。</li>
+    <li>给 pin/port 直接设 network latency 时要小心，它会让受影响 register 变成 ideal。</li>
+  </ol>
+</section>
+
+<div class="footer">
+  FC set_clock_latency 中文讲解 · Based on Synopsys X-2025.06-SP1 man page
+</div>
+
+</div>
+</body>
+</html>
