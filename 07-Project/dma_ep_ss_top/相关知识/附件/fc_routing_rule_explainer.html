@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FC Routing Rule 参数讲解</title>
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --accent:#2563eb;
+    --accent2:#7c3aed;
+    --good:#059669;
+    --warn:#d97706;
+    --bad:#dc2626;
+    --code:#111827;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.7;
+  }
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:32px 20px 64px;
+  }
+  .hero{
+    background:linear-gradient(135deg,#0f172a,#1e3a8a 65%,#312e81);
+    color:#fff;
+    border-radius:24px;
+    padding:36px;
+    box-shadow:0 18px 50px rgba(15,23,42,.18);
+  }
+  .hero h1{margin:0 0 10px;font-size:34px}
+  .hero p{margin:0;color:#dbeafe}
+  .hero .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .chip{
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.2);
+    padding:7px 12px;
+    border-radius:999px;
+    font-size:14px;
+  }
+
+  .section{margin-top:28px}
+  .section h2{font-size:24px;margin:0 0 14px}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 8px 28px rgba(15,23,42,.05);
+  }
+  .card h3{margin:0 0 8px;font-size:18px}
+  .sub{color:var(--muted);font-size:14px}
+  code{
+    font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;
+    background:#eef2ff;
+    color:#3730a3;
+    padding:2px 6px;
+    border-radius:6px;
+  }
+  pre{
+    background:var(--code);
+    color:#e5e7eb;
+    border-radius:14px;
+    padding:16px;
+    overflow:auto;
+    line-height:1.55;
+  }
+
+  .mode-tabs{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .mode-tabs button{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:9px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .mode-tabs button.active{
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+  }
+  .mode-panel{display:none}
+  .mode-panel.active{display:block}
+
+  .layers{
+    display:flex;
+    flex-direction:column-reverse;
+    gap:7px;
+    max-width:520px;
+    margin:16px auto 8px;
+  }
+  .layer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:#fff;
+    font-weight:600;
+  }
+  .allowed{background:#ecfdf5;border-color:#a7f3d0}
+  .discouraged{background:#fffbeb;border-color:#fde68a}
+  .blocked{background:#fef2f2;border-color:#fecaca}
+  .pinonly{background:#eff6ff;border-color:#bfdbfe}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    border-radius:16px;
+    overflow:hidden;
+  }
+  th,td{
+    padding:14px 12px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    vertical-align:top;
+  }
+  th{background:#f8fafc}
+  tr:last-child td{border-bottom:none}
+
+  details{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:12px;
+  }
+  summary{
+    cursor:pointer;
+    font-weight:700;
+  }
+  .tag{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    margin-left:8px;
+  }
+  .green{background:#d1fae5;color:#065f46}
+  .yellow{background:#fef3c7;color:#92400e}
+  .red{background:#fee2e2;color:#991b1b}
+  .purple{background:#ede9fe;color:#5b21b6}
+
+  .flow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .flow .box{
+    padding:12px 16px;
+    border-radius:12px;
+    background:#fff;
+    border:1px solid var(--border);
+    font-weight:700;
+  }
+  .arrow{color:var(--muted);font-size:20px}
+
+  .note{
+    border-left:4px solid var(--accent);
+    background:#eff6ff;
+    border-radius:10px;
+    padding:14px 16px;
+    margin-top:14px;
+  }
+
+  @media (max-width:900px){
+    .grid{grid-template-columns:1fr}
+    .hero h1{font-size:28px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>Fusion Compiler Routing Rule 参数讲解</h1>
+    <p>把这组参数理解成两件事：<b>“怎么走”</b> + <b>“在哪些 metal layer 上走”</b>。</p>
+    <div class="chips">
+      <span class="chip">NDR / Default Rule</span>
+      <span class="chip">Min / Max Routing Layer</span>
+      <span class="chip">soft / allow_pin_connection / hard</span>
+      <span class="chip">soft cost</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>1. 先看整体逻辑</h2>
+    <div class="flow">
+      <div class="box">选择 net</div><div class="arrow">→</div>
+      <div class="box">选择 routing rule</div><div class="arrow">→</div>
+      <div class="box">限制可用层范围</div><div class="arrow">→</div>
+      <div class="box">决定越界是否允许</div>
+    </div>
+    <div class="note">
+      <b>最重要的区分：</b><br>
+      <code>-rule / -default_rule / -no_rule</code> 决定“采用什么布线规则”；<br>
+      <code>-min_routing_layer / -max_routing_layer</code> 决定“希望在哪些层走”；<br>
+      <code>soft / allow_pin_connection / hard</code> 决定“越界时到底有多严格”。
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>2. Routing Rule：怎么走</h2>
+    <div class="grid">
+      <div class="card">
+        <h3><code>-rule rule</code></h3>
+        <p>给 net 指定一个<b>非默认布线规则 NDR</b>。</p>
+        <p class="sub">常见用途：clock、特殊高速 net、需要加宽/加 spacing 的 net。</p>
+      </div>
+      <div class="card">
+        <h3><code>-default_rule</code></h3>
+        <p>强制 net 使用<b>默认 routing rule</b>。</p>
+        <p class="sub">也就是不使用指定的 NDR。</p>
+      </div>
+      <div class="card">
+        <h3><code>-no_rule</code></h3>
+        <p>移除当前 routing rule，让工具后续自行决定使用 default 或 nondefault rule。</p>
+        <p class="sub">注意：它不是“禁止 routing rule”，而是清掉当前显式规则。</p>
+      </div>
+    </div>
+    <div class="note">
+      <code>-rule</code>、<code>-default_rule</code>、<code>-no_rule</code> 三者互斥，不能同时指定。
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>3. Min / Max Routing Layer：在哪些层走</h2>
+    <div class="grid">
+      <div class="card">
+        <h3><code>-min_routing_layer M4</code></h3>
+        <p>设置该 net 的最低 routing layer 为 M4。</p>
+        <p class="sub">但到底能不能跑到 M1~M3，要看 <code>-min_layer_mode</code>。</p>
+      </div>
+      <div class="card">
+        <h3><code>-max_routing_layer M8</code></h3>
+        <p>设置该 net 的最高 routing layer 为 M8。</p>
+        <p class="sub">但到底能不能跑到 M9 以上，要看 <code>-max_layer_mode</code>。</p>
+      </div>
+      <div class="card">
+        <h3>组合起来</h3>
+        <p><code>min=M4</code> + <code>max=M8</code></p>
+        <p>理想 routing 范围就是：</p>
+        <p><b>M4 ~ M8</b></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>4. 最关键：soft / allow_pin_connection / hard</h2>
+
+    <div class="mode-tabs">
+      <button class="active" onclick="showMode('soft',this)">soft</button>
+      <button onclick="showMode('pin',this)">allow_pin_connection</button>
+      <button onclick="showMode('hard',this)">hard</button>
+      <button onclick="showMode('extract',this)">extract_only</button>
+      <button onclick="showMode('unknown',this)">unknown</button>
+    </div>
+
+    <div id="soft" class="mode-panel active card">
+      <h3>soft：尽量别越界，但必要时可以</h3>
+      <p>例如 <code>-min_routing_layer M4 -min_layer_mode soft</code>：</p>
+      <div class="layers">
+        <div class="layer discouraged"><span>M1</span><span>不推荐，但允许</span></div>
+        <div class="layer discouraged"><span>M2</span><span>不推荐，但允许</span></div>
+        <div class="layer discouraged"><span>M3</span><span>不推荐，但允许</span></div>
+        <div class="layer allowed"><span>M4</span><span>正常使用</span></div>
+        <div class="layer allowed"><span>M5</span><span>正常使用</span></div>
+        <div class="layer allowed"><span>M6+</span><span>正常使用</span></div>
+      </div>
+      <p><b>本质：</b>越界会增加 routing cost，而不是绝对禁止。</p>
+    </div>
+
+    <div id="pin" class="mode-panel card">
+      <h3>allow_pin_connection：主干不越界，pin 附近可以例外</h3>
+      <p>例如 <code>min layer = M4</code>，standard cell pin 本身在低层：</p>
+      <div class="layers">
+        <div class="layer pinonly"><span>M1</span><span>仅 pin connection / 特殊 DRC</span></div>
+        <div class="layer pinonly"><span>M2</span><span>仅 pin connection / 特殊 DRC</span></div>
+        <div class="layer pinonly"><span>M3</span><span>仅 pin connection / 特殊 DRC</span></div>
+        <div class="layer allowed"><span>M4</span><span>主干正常 routing</span></div>
+        <div class="layer allowed"><span>M5+</span><span>主干正常 routing</span></div>
+      </div>
+      <p><b>直观理解：</b>可以在 pin 附近“下去接一下”，接完尽快升回合法层。</p>
+    </div>
+
+    <div id="hard" class="mode-panel card">
+      <h3>hard：绝对不准越界</h3>
+      <p>例如 <code>-min_routing_layer M4 -min_layer_mode hard</code>：</p>
+      <div class="layers">
+        <div class="layer blocked"><span>M1</span><span>禁止</span></div>
+        <div class="layer blocked"><span>M2</span><span>禁止</span></div>
+        <div class="layer blocked"><span>M3</span><span>禁止</span></div>
+        <div class="layer allowed"><span>M4</span><span>允许</span></div>
+        <div class="layer allowed"><span>M5+</span><span>允许</span></div>
+      </div>
+      <p><b>特点：</b>最严格，但也更容易因为 pin access / congestion / DRC 造成 routing 困难。</p>
+    </div>
+
+    <div id="extract" class="mode-panel card">
+      <h3>extract_only：只影响 extraction，不强制 routing</h3>
+      <p>这些 min/max layer 约束主要用于 RC extraction 相关处理，在 global route optimization 时不作为实际 routing 强约束。</p>
+      <p><b>重点：</b>它和 <code>soft/hard</code> 的思路不同，它不是“越界严不严”，而是“这个 layer constraint 主要拿来做 extraction”。</p>
+    </div>
+
+    <div id="unknown" class="mode-panel card">
+      <h3>unknown：net 自己不显式设置</h3>
+      <p>实际使用全局 app option：</p>
+      <pre>route.common.net_min_layer_mode
+route.common.net_max_layer_mode</pre>
+      <p>也就是：<b>net 没有自己的特殊规则 → 跟随全局设置。</b></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>5. soft cost：违反 soft 到底有多“贵”</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>值</th>
+          <th>含义</th>
+          <th>直观理解</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>low</code></td><td>越界代价低</td><td>工具比较容易选择越界</td></tr>
+        <tr><td><code>medium</code></td><td>中等代价</td><td>有必要时会越界</td></tr>
+        <tr><td><code>high</code></td><td>越界代价高</td><td>工具会强烈避免，但仍不是绝对禁止</td></tr>
+        <tr><td><code>unknown</code></td><td>未显式指定</td><td>由工具/默认设置决定</td></tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <b>关键：</b><code>soft + high</code> 仍然不是 <code>hard</code>。<br>
+      一个是“非常不想越界”，一个是“完全禁止越界”。
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>6. user-generated 标志</h2>
+    <div class="grid">
+      <div class="card">
+        <h3><code>-min_layer_is_user true|false</code></h3>
+        <p><code>true</code>：最低层约束来自用户。</p>
+        <p><code>false</code>：最低层约束由工具产生。</p>
+        <p class="sub">默认值：true</p>
+      </div>
+      <div class="card">
+        <h3><code>-max_layer_is_user true|false</code></h3>
+        <p><code>true</code>：最高层约束来自用户。</p>
+        <p><code>false</code>：最高层约束由工具产生。</p>
+        <p class="sub">默认值：true</p>
+      </div>
+      <div class="card">
+        <h3>为什么要区分？</h3>
+        <p>工具可以知道这个限制是人为要求，还是内部算法自动生成的约束。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>7. <code>-clear</code>：全部先清空</h2>
+    <div class="card">
+      <p><code>-clear</code> 会重置这些 net 上已有的：</p>
+      <ul>
+        <li>routing rule</li>
+        <li>min / max routing layer</li>
+        <li>min / max layer mode</li>
+        <li>min / max soft cost</li>
+      </ul>
+      <p>如果和其他参数一起写：</p>
+      <pre>... -clear -min_routing_layer M4</pre>
+      <p>执行顺序相当于：</p>
+      <p><b>先清空旧值 → 再设置 min routing layer = M4</b></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>8. 参数快速对照</h2>
+
+    <details open>
+      <summary>-rule / -default_rule / -no_rule <span class="tag purple">Routing Rule</span></summary>
+      <p>决定 net 使用指定 NDR、默认规则，还是清除当前 rule 让工具自己决定。</p>
+    </details>
+
+    <details>
+      <summary>-min_routing_layer / -max_routing_layer <span class="tag green">Layer Range</span></summary>
+      <p>定义期望的最低层和最高层。例如 M4~M8。</p>
+    </details>
+
+    <details>
+      <summary>-min_layer_mode / -max_layer_mode <span class="tag yellow">Strictness</span></summary>
+      <p>决定超出 min/max layer 时，是允许、有限允许，还是完全禁止。</p>
+    </details>
+
+    <details>
+      <summary>-min_layer_mode_soft_cost / -max_layer_mode_soft_cost <span class="tag yellow">Cost</span></summary>
+      <p>只有 soft 模式下有意义，用于控制越界惩罚程度。</p>
+    </details>
+
+    <details>
+      <summary>-clear <span class="tag red">Reset</span></summary>
+      <p>清除当前 routing rule、layer constraint、mode 和 soft cost，再根据后续参数重新设置。</p>
+    </details>
+  </section>
+
+  <section class="section">
+    <h2>9. 最后用一句话记</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>soft</h3>
+        <p><b>尽量别越界</b></p>
+      </div>
+      <div class="card">
+        <h3>allow_pin_connection</h3>
+        <p><b>主干别越界，pin 附近可例外</b></p>
+      </div>
+      <div class="card">
+        <h3>hard</h3>
+        <p><b>绝对不准越界</b></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>10. 示例</h2>
+    <div class="card">
+      <pre># 示例含义：
+# 让目标 net 正常从 M4 开始走
+# 但 pin connection 时允许临时使用更低层
+
+set_routing_rule \
+    -min_routing_layer M4 \
+    -min_layer_mode allow_pin_connection \
+    [get_nets MY_NET]</pre>
+      <p>这类设置通常比直接 <code>hard</code> 更灵活，因为真实设计中 pin access 往往需要低层金属。</p>
+    </div>
+  </section>
+</div>
+
+<script>
+function showMode(id, btn){
+  document.querySelectorAll('.mode-panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.mode-tabs button').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

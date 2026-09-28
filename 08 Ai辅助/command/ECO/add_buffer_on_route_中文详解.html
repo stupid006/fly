@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fusion Compiler - add_buffer_on_route 中文详解</title>
+<style>
+:root{
+  --bg:#f7f8fb; --panel:#ffffff; --panel2:#f2f5f9; --text:#1f2937;
+  --muted:#667085; --accent:#2563eb; --accent2:#059669; --warn:#d97706;
+  --danger:#dc2626; --border:#d8dee8; --code:#f5f7fa;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:Inter,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.72;
+}
+main section, .hero, aside{
+  box-shadow:0 1px 3px rgba(16,24,40,.06), 0 1px 2px rgba(16,24,40,.04);
+}
+header{
+  position:sticky; top:0; z-index:20;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.header-inner{
+  max-width:1500px; margin:auto; padding:14px 22px;
+  display:flex; gap:16px; align-items:center; justify-content:space-between;
+}
+.brand{font-weight:800;font-size:18px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;background:#17324c;color:var(--accent);font-size:12px;margin-left:8px}
+.search{
+  min-width:320px; max-width:520px; width:38%;
+  background:#ffffff;border:1px solid var(--border);color:var(--text);
+  border-radius:10px;padding:10px 12px;outline:none;
+}
+.layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:22px;padding:22px}
+aside{
+  position:sticky; top:76px; height:calc(100vh - 98px); overflow:auto;
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;padding:16px;
+}
+aside h3{font-size:14px;color:var(--accent);margin:0 0 10px}
+aside a{display:block;color:#344054;text-decoration:none;padding:6px 8px;border-radius:8px;font-size:14px}
+aside a:hover{background:var(--panel2);color:#111827}
+main{min-width:0}
+.hero{
+  background:linear-gradient(135deg,#ffffff,#f3f7ff);
+  border:1px solid var(--border); border-radius:18px;padding:28px;margin-bottom:20px
+}
+.hero h1{margin:0 0 10px;font-size:32px}
+.hero p{margin:6px 0;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+.card{background:#ffffff;border:1px solid var(--border);border-radius:14px;padding:15px}
+.card b{display:block;color:var(--accent2);margin-bottom:5px}
+section{
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:16px;padding:22px;margin:0 0 18px;
+}
+section h2{margin-top:0;font-size:24px;border-bottom:1px solid var(--border);padding-bottom:10px}
+h3{color:var(--accent);margin-top:22px}
+p,li{color:#344054}
+.muted{color:var(--muted)}
+.note,.warn,.key{
+  border-radius:12px;padding:12px 14px;margin:12px 0;
+  border-left:4px solid var(--accent);background:#eef4ff
+}
+.warn{border-left-color:var(--warn);background:#fff7e8}
+.key{border-left-color:var(--accent2);background:#ecfdf3}
+code{
+  font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;
+  background:#eef2f6;padding:2px 5px;border-radius:6px;color:#1d4ed8
+}
+pre{
+  background:var(--code); border:1px solid var(--border); border-radius:12px;
+  padding:14px; overflow:auto; color:#1f2937;
+}
+details{
+  border:1px solid var(--border);border-radius:12px;margin:10px 0;background:#ffffff
+}
+summary{
+  cursor:pointer;padding:13px 15px;font-weight:700;color:#1f2937
+}
+details .content{padding:0 15px 15px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{border-bottom:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}
+th{color:#1d4ed8;background:#f7f9fc}
+.flow{
+  display:grid;grid-template-columns:repeat(7,auto);align-items:center;gap:8px;
+  overflow:auto;padding:12px 0
+}
+.node{white-space:nowrap;border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:#f8fafc}
+.arrow{color:var(--accent);font-weight:900}
+.pill{display:inline-block;background:#eef2f7;border:1px solid #d0d5dd;border-radius:999px;padding:3px 8px;margin:2px;font-size:12px}
+.footer{color:var(--muted);font-size:13px;padding:12px 3px 30px}
+.hidden{display:none!important}
+@media(max-width:1000px){
+  .layout{grid-template-columns:1fr}
+  aside{position:relative;top:auto;height:auto}
+  .cards{grid-template-columns:1fr 1fr}
+  .search{min-width:0;width:48%}
+}
+@media(max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .header-inner{align-items:flex-start;flex-direction:column}
+  .search{width:100%}
+  .layout{padding:12px}
+  .hero{padding:18px}
+}
+
+/* Notes */
+.note-toggle{border:1px solid var(--border);background:#fff;color:#1f2937;border-radius:10px;padding:9px 13px;font-weight:700;cursor:pointer}.note-toggle:hover{background:#f7f9fc}.note-drawer{position:fixed;top:0;right:0;width:min(430px,92vw);height:100vh;background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 28px rgba(16,24,40,.12);z-index:100;transform:translateX(102%);transition:transform .22s ease;display:flex;flex-direction:column}.note-drawer.open{transform:translateX(0)}.note-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px;border-bottom:1px solid var(--border)}.note-head h3{margin:0;color:#1f2937;font-size:18px}.note-close{border:0;background:#f2f4f7;width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:20px;color:#475467}.note-body{padding:16px 18px 10px;flex:1;display:flex;flex-direction:column;min-height:0}.note-tip{color:var(--muted);font-size:13px;margin-bottom:10px}#noteArea{width:100%;flex:1;min-height:320px;resize:none;border:1px solid var(--border);border-radius:12px;padding:14px;font:15px/1.65 "Segoe UI","Microsoft YaHei",system-ui,sans-serif;color:#1f2937;background:#fbfcfe;outline:none}#noteArea:focus{border-color:#84adff;box-shadow:0 0 0 3px rgba(37,99,235,.08)}.note-meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;margin-top:8px}.note-actions{display:flex;gap:8px;padding:12px 18px 18px}.note-btn{flex:1;border:1px solid var(--border);background:#fff;color:#344054;border-radius:10px;padding:9px 10px;cursor:pointer;font-weight:600}.note-btn:hover{background:#f7f9fc}.note-btn.primary{background:#2563eb;color:#fff;border-color:#2563eb}.note-btn.danger{color:#b42318;background:#fff6f5;border-color:#fecdca}.note-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.20);z-index:90;opacity:0;pointer-events:none;transition:opacity .22s ease}.note-backdrop.show{opacity:1;pointer-events:auto}@media(max-width:640px){.note-toggle{width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">Fusion Compiler · add_buffer_on_route <span class="badge">X-2025.06-SP1</span></div>
+    <input id="search" class="search" placeholder="搜索参数，例如 repeater / blockage / voltage..." />
+    <button id="noteToggle" class="note-toggle" type="button">📝 我的笔记</button>
+  </div>
+</header>
+
+<div class="layout">
+<aside>
+  <h3>目录</h3>
+  <a href="#overview">命令概览</a>
+  <a href="#syntax">完整语法</a>
+  <a href="#common">最常用参数</a>
+  <a href="#args">参数详解</a>
+  <a href="#behavior">命令行为</a>
+  <a href="#rules">合法性规则</a>
+  <a href="#examples">官方示例</a>
+  <a href="#summary">学习总结</a>
+</aside>
+
+<main>
+  <div class="hero" id="overview">
+    <h1>add_buffer_on_route 中文详解</h1>
+    <p>作用：沿指定 net 的已有物理 route 插入 buffer / inverter repeater。</p>
+    <div class="key"><b>最重要：</b>新 buffer 会被放置，但<strong>不会自动 legalize</strong>；原 net 和新生成的 net 也<strong>不会自动 reroute</strong>。</div>
+    <div class="cards">
+      <div class="card"><b>按位置插</b><code>-location {x y layer}</code></div>
+      <div class="card"><b>按间距插</b><code>-repeater_distance</code></div>
+      <div class="card"><b>避开阻塞</b><code>-respect_blockages</code></div>
+      <div class="card"><b>吸附到 site</b><code>-snap_to_sites</code></div>
+    </div>
+  </div>
+
+  <section id="syntax">
+    <h2>1. 完整语法</h2>
+<pre>status add_buffer_on_route
+    list_of_nets
+    [-lib_cell buffer_lib_cell | buffer_lib_cell]
+    [-net_prefix prefix]
+    [-cell_prefix prefix]
+    [-location coordinate_list]
+    [-user_specified_buffers user_specified_buffer_list]
+    [-max_distance_to_route length]
+    [-detect_layer]
+    [-user_specified_bus_buffers user_specified_bus_buffer_list]
+    [-bus_cell_prefix bus_cell_prefix_list]
+    [-repeater_distance length | -repeater_distance_length_ratio length_ratio]
+    [-first_distance length | -first_distance_length_ratio length_ratio]
+    [-last_distance length]
+    [-scaled_by_layer layer_scale_list]
+    [-scaled_by_width]
+    [-only_global_routed_nets]
+    [-respect_blockages [-allow_insertion_over_cell cell_list]
+      | [-dont_allow_insertion_over_cell cell_list]]
+    [-max_distance_for_incomplete_route length]
+    [-snap_to_sites]
+    [-punch_port]
+    [-respect_gas_station supply_net]
+    [-max_distance_route_to_gas_station length]
+    [-respect_voltage_areas]
+    [-voltage_area_specific_lib_cells voltage_area_specific_lib_cell_list]
+    [-allow_physical_feedthrough_buffer voltage_areas]
+    [-on_top_hierarchy]
+    [-honor_net_hierarchy]
+    [-max_distance_to_spare_cell length | -not_spare_cell_aware]
+    [-select_mv_buffers mv_aware_lib_cell_list]
+    [-min_buffer_distance length]
+    [-layer_cutting_distance layer_cutting_distance_list]
+    [-verbose]</pre>
+  </section>
+
+  <section id="common">
+    <h2>2. 最常用参数先看这里</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>参数</th><th>作用</th><th>你可以怎么理解</th></tr>
+        <tr><td><code>-lib_cell</code></td><td>指定要插入的 buffer / inverter lib cell</td><td>“插什么 cell”</td></tr>
+        <tr><td><code>-location</code></td><td>指定 route 附近的目标坐标</td><td>“我想在这里附近插”</td></tr>
+        <tr><td><code>-detect_layer</code></td><td>不写 layer，由工具找最近 routing shape</td><td>“层我不指定，你找”</td></tr>
+        <tr><td><code>-repeater_distance</code></td><td>沿整条 route 按固定物理间距插 repeater</td><td>“每隔多少距离插一个”</td></tr>
+        <tr><td><code>-first_distance</code></td><td>driver 到第一个 buffer 的距离</td><td>控制第一段</td></tr>
+        <tr><td><code>-last_distance</code></td><td>最后一个 buffer 到 load 的距离</td><td>控制最后一段</td></tr>
+        <tr><td><code>-respect_blockages</code></td><td>不在 blockage / soft macro / hard macro 内插</td><td>避障</td></tr>
+        <tr><td><code>-snap_to_sites</code></td><td>把新 buffer 吸附到最近 placement site</td><td>接近合法行，但不等于完整 legalize</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="args">
+    <h2>3. 参数详解</h2>
+
+    <details open data-search>
+      <summary>list_of_nets</summary>
+      <div class="content">
+        <p>指定需要插 buffer 的 net。若使用 <code>-user_specified_buffers</code> 或 <code>-location</code>，这里必须只指定<strong>一条 net</strong>。</p>
+      </div>
+    </details>
+
+    <details open data-search>
+      <summary>-lib_cell buffer_lib_cell</summary>
+      <div class="content">
+        <p>指定作为 repeater 使用的 library cell。必须是 buffer 或 inverter。</p>
+        <p>如果给 inverter，工具会根据需要插入成对 inverter，保证逻辑功能不发生反相变化。</p>
+        <div class="warn">不能与 <code>-user_specified_buffers</code> 或 <code>-user_specified_bus_buffers</code> 同时使用。</div>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-net_prefix / -cell_prefix</summary>
+      <div class="content">
+        <p><code>-net_prefix</code>：新生成 net 的前缀，默认 <code>eco_net</code>。</p>
+        <p><code>-cell_prefix</code>：新 buffer instance 的前缀，默认 <code>eco_cell</code>。</p>
+        <p><code>-cell_prefix</code> 不能与 <code>-user_specified_buffers</code> 同时使用。</p>
+      </div>
+    </details>
+
+    <details open data-search>
+      <summary>-location coordinate_list</summary>
+      <div class="content">
+        <p>指定 buffer 或 inverter pair 的中心位置。格式：</p>
+<pre>{x1 y1 layer1 x2 y2 layer2 ...}</pre>
+        <p>例如：</p>
+<pre>add_buffer_on_route -location {100 200 METAL3} net1 -lib_cell lib/BUF</pre>
+        <p>表示希望在坐标 <code>(100,200)</code> 附近、<code>METAL3</code> 上的 route 插 buffer。</p>
+        <p>这些位置必须在 route 的一定范围内，允许距离由 <code>-max_distance_to_route</code> 控制。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-detect_layer</summary>
+      <div class="content">
+        <p>不在坐标中指定 layer，由工具寻找最近的 routing shape。</p>
+<pre>-location {100 200} -detect_layer</pre>
+        <div class="warn">如果两个不同 metal layer 上的 route 与目标坐标距离相同，工具会报错。手册明确建议：条件允许时，最好显式写 layer。</div>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-user_specified_buffers</summary>
+      <div class="content">
+        <p>同时指定 buffer 名称、lib cell、坐标与 layer：</p>
+<pre>{name1 lib_cell1 x1 y1 layer1
+ name2 lib_cell2 x2 y2 layer2 ...}</pre>
+        <p>可以混合 buffer 与 inverter，但 inverter 在每条 branch 上必须成对出现。</p>
+        <p>不能与 <code>-lib_cell</code> 或 <code>-voltage_area_specific_lib_cells</code> 一起使用。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-max_distance_to_route</summary>
+      <div class="content">
+        <p>指定用户给出的坐标距离真实 route 最多允许多远。默认值是 <strong>5 × reference cell height</strong>。</p>
+        <p>只能和 <code>-location</code> 或 <code>-user_specified_buffers</code> 搭配。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-user_specified_bus_buffers / -bus_cell_prefix</summary>
+      <div class="content">
+        <p>用于 bus 多个 bit 的 buffer / inverter pair 插入。bus buffer pattern 由 <code>create_eco_bus_buffer_pattern</code> 创建。</p>
+        <p>附近各 bit 的 route 需要平行，并且物理环境要一致，例如 VA、blockage、macro 条件一致。</p>
+      </div>
+    </details>
+
+    <details open data-search>
+      <summary>-repeater_distance</summary>
+      <div class="content">
+        <p>指定沿 route 插入相邻 buffer 的距离，作用于整条物理 route。</p>
+<pre>Driver ──100── BUF ──100── BUF ──100── BUF ── Load</pre>
+        <p>例如：</p>
+<pre>add_buffer_on_route -repeater_distance 100 net1 -lib_cell lib/BUF</pre>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-repeater_distance_length_ratio</summary>
+      <div class="content">
+        <p>用总 route length 的比例表示 repeater spacing，范围 <code>0.0 ~ 1.0</code>。</p>
+        <p>例如 <code>0.4</code> 表示间距相当于总 route 长度的 40%。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-first_distance / -first_distance_length_ratio</summary>
+      <div class="content">
+        <p><code>-first_distance</code>：driver pin 到第一个 buffer 的绝对距离。</p>
+        <p><code>-first_distance_length_ratio</code>：用总 route 长度的比例表示第一段距离。</p>
+<pre>Driver ── first_distance ── BUF1 ── repeater_distance ── BUF2</pre>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-last_distance</summary>
+      <div class="content">
+        <p>指定最后一个 buffer 到 load pin 的距离。</p>
+<pre>... BUF2 ── last_distance ── Load</pre>
+        <p>需与 <code>-repeater_distance</code> 或 <code>-repeater_distance_length_ratio</code> 搭配。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-scaled_by_layer</summary>
+      <div class="content">
+        <p>根据不同 routing layer 缩放 repeater spacing：</p>
+<pre>{{METAL2 0.9} {METAL3 0.8}}</pre>
+        <p>公式：</p>
+<pre>D = d × L_M</pre>
+        <p><code>d</code>：原 repeater distance；<code>D</code>：缩放后的距离；<code>L_M</code>：layer scaling factor。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-scaled_by_width</summary>
+      <div class="content">
+        <p>按实际 route width 缩放间距：</p>
+<pre>D = d × w_M / w_R</pre>
+        <p>其中 <code>w_M</code> 是该层默认宽度，<code>w_R</code> 是实际 route width。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-only_global_routed_nets</summary>
+      <div class="content">
+        <p>允许在只有 global route、尚未进行 track assignment 或 detail route 的 net 上插 buffer。</p>
+        <p>与 <code>-scaled_by_width</code> 互斥。</p>
+      </div>
+    </details>
+
+    <details open data-search>
+      <summary>-respect_blockages</summary>
+      <div class="content">
+        <p>禁止 buffer 插到 placement blockage、soft macro 或 hard macro 内。</p>
+        <p><code>-allow_insertion_over_cell</code> 可指定例外 macro；<code>-dont_allow_insertion_over_cell</code> 用于指定明确禁止的 macro。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-max_distance_for_incomplete_route</summary>
+      <div class="content">
+        <p>net 未完全 route 完时，规定工具的最大搜索距离。默认是一倍 repeater height。</p>
+      </div>
+    </details>
+
+    <details open data-search>
+      <summary>-snap_to_sites</summary>
+      <div class="content">
+        <p>把新加入的 buffer 吸附到最近 placement site。</p>
+        <div class="warn"><strong>注意：</strong><code>-snap_to_sites</code> 不等于完整 placement legalization。</div>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-punch_port</summary>
+      <div class="content">
+        <p>物理 route topology 与逻辑 hierarchy connection 不一致时，允许工具创建 hierarchical port 来连接 buffer 后方 loads。</p>
+        <p>与 <code>-respect_voltage_areas</code>、<code>-voltage_area_specific_lib_cells</code>、<code>-respect_gas_station</code> 互斥。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-respect_gas_station / -max_distance_route_to_gas_station</summary>
+      <div class="content">
+        <p>multi-voltage / low-power 场景使用。buffer 仅允许加入指定 supply net 对应的 gas station。</p>
+        <p><code>-max_distance_route_to_gas_station</code> 控制 route 与 gas station 允许的最大距离。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-respect_voltage_areas</summary>
+      <div class="content">
+        <p>要求插入的 buffer 遵守 voltage area hierarchy，并且物理位置位于对应 hierarchy 内。</p>
+        <p>启用后 buffer 不能插到 core area 外。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-voltage_area_specific_lib_cells</summary>
+      <div class="content">
+        <p>针对不同 voltage area 使用不同 buffer cell：</p>
+<pre>{VA1 lib/BUF1 DEFAULT_VA lib/BUF2}</pre>
+        <p>未明确指定的 VA 使用 <code>-lib_cell</code> 提供的默认 cell。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-allow_physical_feedthrough_buffer</summary>
+      <div class="content">
+        <p>允许在指定 primary voltage area 中添加 physical-only feedthrough buffer。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-on_top_hierarchy / -honor_net_hierarchy</summary>
+      <div class="content">
+        <p><code>-on_top_hierarchy</code>：把 buffer 加到 net 的最高层 hierarchy。</p>
+        <p><code>-honor_net_hierarchy</code>：在给定 net 当前 hierarchy 内插 buffer。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-max_distance_to_spare_cell / -not_spare_cell_aware</summary>
+      <div class="content">
+        <p>freeze-silicon mode 使用。前者限制新 buffer 与兼容 spare cell 的最大搜索距离；默认 5 个 site height。</p>
+        <p>后者关闭 spare-cell-aware 功能。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-select_mv_buffers</summary>
+      <div class="content">
+        <p>开启 MV-aware buffer 选择，为每个 voltage area 指定 single-rail / dual-rail buffer。</p>
+<pre>{VA1 lib/BUFS1 lib/BUFD1 VA2 lib/BUFS2 lib/BUFD2}</pre>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-min_buffer_distance</summary>
+      <div class="content">
+        <p>控制 blockage 附近新增 buffer 与前一个 buffer / driver 的最小距离。</p>
+        <p>默认值为 <strong>50% × repeater_distance</strong>。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-layer_cutting_distance</summary>
+      <div class="content">
+        <p>按 layer 指定 repeater 输入侧和输出侧的 route cutting spacing：</p>
+<pre>{{layer1 cutting_distance_in_1 cutting_distance_out_1}
+ {layer2 cutting_distance_in_2 cutting_distance_out_2}}</pre>
+        <p>优先级高于 <code>eco.add_buffer_on_route.route_cutting_space</code>，不支持 global route shapes。</p>
+      </div>
+    </details>
+
+    <details data-search>
+      <summary>-verbose</summary>
+      <div class="content"><p>显示更详细的执行信息。</p></div>
+    </details>
+  </section>
+
+  <section id="behavior">
+    <h2>4. 命令到底做了什么</h2>
+    <div class="flow">
+      <div class="node">已有 route</div><div class="arrow">→</div>
+      <div class="node">寻找目标 route 位置</div><div class="arrow">→</div>
+      <div class="node">切开原 net</div><div class="arrow">→</div>
+      <div class="node">插入 buffer</div>
+    </div>
+    <div class="flow">
+      <div class="node">生成新 net</div><div class="arrow">→</div>
+      <div class="node">buffer 被放置</div><div class="arrow">→</div>
+      <div class="node">后续 legalize</div><div class="arrow">→</div>
+      <div class="node">后续 ECO route</div>
+    </div>
+    <div class="key">
+      <b>手册原意：</b>新 buffer 会被 placed，但不 legalized；原 net 和新建 net 都不会 reroute。
+    </div>
+    <p>新 buffer 会尽量靠近输入 net 的原 route，新 net 也会尽可能沿原 route。刚插入的新 buffer 可通过 collection <code>abor_new_buffers</code> 查询。</p>
+  </section>
+
+  <section id="rules">
+    <h2>5. 使用限制 / 合法性规则</h2>
+    <ul>
+      <li>目标 net 不能是 PG net 或 tie net。</li>
+      <li>net 可以是 incomplete route，但已有 routing segments 必须彼此连通。</li>
+      <li>对于未接上的 load pin，在搜索范围内必须有且只有一根候选 wire。</li>
+      <li>lib cell 不能是 sequential cell。</li>
+      <li>lib cell 必须满足 buffer / inverter 定义。</li>
+      <li>命令遵守 <code>design.eco_freeze_silicon_mode</code>；开启时插入 cell 会带 <code>is_fs_eco_add=true</code>。</li>
+      <li>该命令不依赖 scenario-specific 信息。</li>
+    </ul>
+  </section>
+
+  <section id="examples">
+    <h2>6. 官方示例</h2>
+
+    <details open data-search><summary>例 1：固定间距 + 第一段距离</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 \
+    -first_distance 80 net1 -lib_cell lib/BUF</pre>
+<p>第一颗 buffer 距 driver 80，之后按 100 的 route distance 插。</p>
+    </div></details>
+
+    <details data-search><summary>例 2：再控制最后一段</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 \
+    -first_distance 80 -last_distance 50 net1 -lib_cell lib/BUF</pre>
+    </div></details>
+
+    <details open data-search><summary>例 3：指定坐标，自动找 layer</summary><div class="content">
+<pre>add_buffer_on_route -location {100 200} -detect_layer net1 \
+    -lib_cell lib/BUF</pre>
+    </div></details>
+
+    <details open data-search><summary>例 4：坐标 + layer 都明确指定</summary><div class="content">
+<pre>add_buffer_on_route -location {100 200 METAL3} net1 \
+    -lib_cell lib/BUF</pre>
+    </div></details>
+
+    <details data-search><summary>例 5：用户指定多个 buffer</summary><div class="content">
+<pre>add_buffer_on_route n1 \
+    -user_specified_buffers {eco1 bufbd2 70 10 eco2 bufbd4 140 10} \
+    -detect_layer</pre>
+    </div></details>
+
+    <details data-search><summary>例 6：bus buffer</summary><div class="content">
+<pre>add_buffer_on_route [get_nets data*] \
+    -user_specified_bus_buffers "bpuLT bufx8 x1 y1 bpuBR bufx8 x2 y2"</pre>
+    </div></details>
+
+    <details data-search><summary>例 7：按 route length 比例</summary><div class="content">
+<pre>add_buffer_on_route \
+    -repeater_distance_length_ratio 0.4 \
+    -first_distance_length_ratio 0.2 \
+    net1 -lib_cell lib/BUF</pre>
+    </div></details>
+
+    <details data-search><summary>例 8：按 layer / width 缩放</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 \
+    -scaled_by_width -scaled_by_layer {{METAL2 0.9} {METAL3 0.8}} \
+    net1 -lib_cell lib/BUF</pre>
+    </div></details>
+
+    <details data-search><summary>例 9：吸附到 site</summary><div class="content">
+<pre>add_buffer_on_route -location {100 200 METAL3} net1 \
+    -lib_cell lib/BUF -snap_to_sites</pre>
+    </div></details>
+
+    <details data-search><summary>例 10：跨 hierarchy 时 punch port</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 h1/net1 \
+    -lib_cell lib/BUF -punch_port</pre>
+    </div></details>
+
+    <details data-search><summary>例 11：遵守 voltage area</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 h1/net1 \
+    -lib_cell lib/BUF -respect_voltage_areas</pre>
+    </div></details>
+
+    <details data-search><summary>例 12：允许 physical-only feedthrough buffer</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 h1/net1 \
+    -lib_cell lib/BUF -respect_voltage_areas \
+    -allow_physical_feedthrough_buffer {VA1 VA2}</pre>
+    </div></details>
+
+    <details data-search><summary>例 13：不同 VA 使用不同 lib cell</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 net1 \
+    -lib_cell lib/BUF0 \
+    -voltage_area_specific_lib_cells {va1 lib/BUF1 DEFAULT_VA lib/BUF2}</pre>
+    </div></details>
+
+    <details data-search><summary>例 14：Gas Station</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 net1 \
+    -lib_cell lib/BUF -respect_gas_station vdd1 \
+    -max_distance_route_to_gas_station 10</pre>
+    </div></details>
+
+    <details data-search><summary>例 15：MV-aware buffer</summary><div class="content">
+<pre>add_buffer_on_route -repeater_distance 100 net1 \
+    -lib_cell lib/BUF \
+    -select_mv_buffers {VA1 lib/BUFS1 lib/BUFD1 VA2 lib/BUFS2 lib/BUFD2}</pre>
+    </div></details>
+
+    <details data-search><summary>例 16：保持 net hierarchy</summary><div class="content">
+<pre>add_buffer_on_route -location {35 66 M3} m_1/net1 \
+    -lib_cell lib/BUF -honor_net_hierarchy</pre>
+    </div></details>
+  </section>
+
+  <section id="summary">
+    <h2>7. 学习总结</h2>
+    <p>如果你当前主要是在做 routing ECO、长线修 transition / capacitance / timing，先掌握两种模式即可：</p>
+<pre># 1) 手动指定插入位置
+add_buffer_on_route \
+    -location {X Y Layer} \
+    $net \
+    -lib_cell $buffer
+
+# 2) 根据 route length 自动按间距插入
+add_buffer_on_route \
+    -repeater_distance 100 \
+    $net \
+    -lib_cell $buffer</pre>
+
+    <div class="key">
+      <b>和普通 insert_buffer 的理解区别：</b><br>
+      <code>add_buffer_on_route</code> 的核心是“沿<strong>已有物理 route</strong>做 ECO”，位置选择与 net 切分和 route 几何有关，而不只是对逻辑网表简单插 cell。
+    </div>
+
+    <p>
+      推荐优先记：
+      <span class="pill">-lib_cell</span>
+      <span class="pill">-location</span>
+      <span class="pill">-detect_layer</span>
+      <span class="pill">-repeater_distance</span>
+      <span class="pill">-first_distance</span>
+      <span class="pill">-last_distance</span>
+      <span class="pill">-respect_blockages</span>
+      <span class="pill">-snap_to_sites</span>
+    </p>
+  </section>
+
+  <div class="footer">
+    来源：Synopsys Fusion Compiler Command Reference · add_buffer_on_route · Version X-2025.06-SP1。<br>
+    本 HTML 为中文学习整理版，命令与参数名保留原文。
+  </div>
+</main>
+</div>
+
+
+<div id="noteBackdrop" class="note-backdrop"></div>
+<aside id="noteDrawer" class="note-drawer" aria-label="学习笔记">
+  <div class="note-head"><h3>📝 我的学习笔记</h3><button id="noteClose" class="note-close" type="button">×</button></div>
+  <div class="note-body">
+    <div class="note-tip">可以记命令、踩坑、自己的理解。内容会自动保存在当前浏览器本地。</div>
+    <textarea id="noteArea" placeholder="例如：\n- -location 中的 layer 用来匹配 routing shape\n- add_buffer_on_route 插完不会自动 reroute\n- 找不到新 cell 时先查 $abor_new_buffers"></textarea>
+    <div class="note-meta"><span id="noteStatus">已就绪</span><span id="noteCount">0 字</span></div>
+  </div>
+  <div class="note-actions"><button id="noteExport" class="note-btn primary" type="button">导出 TXT</button><button id="noteClear" class="note-btn danger" type="button">清空笔记</button></div>
+</aside>
+<script>
+const input = document.getElementById('search');
+input.addEventListener('input', function(){
+  const q = this.value.trim().toLowerCase();
+  document.querySelectorAll('[data-search]').forEach(el=>{
+    const hit = !q || el.innerText.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !hit);
+    if(q && hit) el.open = true;
+  });
+});
+
+const NOTE_KEY='fc_add_buffer_on_route_notes_v1';
+const noteDrawer=document.getElementById('noteDrawer'),noteBackdrop=document.getElementById('noteBackdrop'),noteToggle=document.getElementById('noteToggle'),noteClose=document.getElementById('noteClose'),noteArea=document.getElementById('noteArea'),noteStatus=document.getElementById('noteStatus'),noteCount=document.getElementById('noteCount'),noteExport=document.getElementById('noteExport'),noteClear=document.getElementById('noteClear');
+function openNotes(){noteDrawer.classList.add('open');noteBackdrop.classList.add('show');setTimeout(()=>noteArea.focus(),120)}
+function closeNotes(){noteDrawer.classList.remove('open');noteBackdrop.classList.remove('show')}
+function updateCount(){noteCount.textContent=noteArea.value.replace(/\s/g,'').length+' 字'}
+function saveNotes(){try{localStorage.setItem(NOTE_KEY,noteArea.value);noteStatus.textContent='已自动保存'}catch(e){noteStatus.textContent='本地保存不可用，请导出 TXT'}updateCount()}
+function loadNotes(){try{noteArea.value=localStorage.getItem(NOTE_KEY)||''}catch(e){noteArea.value=''}updateCount()}
+let noteTimer=null;noteArea.addEventListener('input',()=>{noteStatus.textContent='正在保存…';clearTimeout(noteTimer);noteTimer=setTimeout(saveNotes,250)});
+noteToggle.addEventListener('click',openNotes);noteClose.addEventListener('click',closeNotes);noteBackdrop.addEventListener('click',closeNotes);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNotes()});
+noteExport.addEventListener('click',()=>{const blob=new Blob([noteArea.value||''],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='add_buffer_on_route_学习笔记.txt';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);noteStatus.textContent='已导出 TXT'});
+noteClear.addEventListener('click',()=>{if(confirm('确定要清空这份笔记吗？')){noteArea.value='';saveNotes();noteStatus.textContent='笔记已清空'}});
+loadNotes();
+</script>
+</body>
+</html>
