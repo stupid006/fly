@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PrimeTime ECO：fix_eco_drc / fix_eco_timing 参数详解</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#182230; --muted:#667085; --line:#e4e7ec;
+  --blue:#3157d5; --blue2:#eef3ff; --green:#067647; --green2:#ecfdf3;
+  --orange:#b54708; --orange2:#fff6ed; --red:#b42318; --red2:#fef3f2;
+  --purple:#6941c6; --purple2:#f4f3ff; --shadow:0 8px 26px rgba(16,24,40,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+  line-height:1.72;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:26px 20px 70px}
+.hero{
+  background:linear-gradient(135deg,#fff 0%,#f2f5ff 100%);
+  border:1px solid var(--line);border-radius:22px;padding:30px 32px;box-shadow:var(--shadow)
+}
+h1{margin:0 0 12px;font-size:34px;line-height:1.25}
+h2{font-size:25px;margin:0 0 14px}
+h3{font-size:19px;margin:20px 0 9px}
+h4{font-size:16px;margin:14px 0 6px}
+p{margin:8px 0 12px}
+.sub{color:var(--muted);font-size:15px}
+.badges{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.badge{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
+.sticky{position:sticky;top:0;z-index:20;background:rgba(245,247,251,.92);backdrop-filter:blur(10px);padding:12px 0}
+.nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:7px;display:flex;gap:5px;flex-wrap:wrap;box-shadow:0 4px 15px rgba(16,24,40,.05)}
+.nav a{text-decoration:none;color:#344054;padding:7px 10px;border-radius:9px;font-size:13px}
+.nav a:hover{background:var(--blue2);color:var(--blue)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:23px;margin:17px 0;box-shadow:0 5px 18px rgba(16,24,40,.045)}
+.kicker{font-size:11px;letter-spacing:.09em;font-weight:800;color:var(--blue);text-transform:uppercase;margin-bottom:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.callout{border-left:4px solid var(--blue);background:#f7f9ff;padding:13px 15px;border-radius:10px;margin:13px 0}
+.callout.good{border-left-color:var(--green);background:var(--green2)}
+.callout.warn{border-left-color:var(--orange);background:var(--orange2)}
+.callout.bad{border-left-color:var(--red);background:var(--red2)}
+.callout.purple{border-left-color:var(--purple);background:var(--purple2)}
+.flow{white-space:pre-wrap;font-family:Consolas,"SFMono-Regular",monospace;background:#fbfcff;border:1px dashed #c9d2ea;border-radius:13px;padding:16px;overflow:auto;line-height:1.55}
+pre{background:#101828;color:#f8fafc;border-radius:12px;padding:15px;overflow:auto;line-height:1.55;font-size:13px}
+code{font-family:Consolas,"SFMono-Regular",monospace}
+.inline-code{background:#f2f4f7;border:1px solid #eaecf0;padding:1px 5px;border-radius:5px;font-family:Consolas,monospace}
+table{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}
+th{background:#f8f9fb;position:sticky;top:58px;z-index:2}
+tr:hover td{background:#fcfcfd}
+.tag{display:inline-block;font-size:11px;font-weight:750;padding:2px 7px;border-radius:999px}
+.t-core{background:#eef3ff;color:#3157d5}.t-adv{background:#f4f3ff;color:#6941c6}.t-warn{background:#fff4e5;color:#b54708}.t-key{background:#ecfdf3;color:#067647}
+details{border:1px solid var(--line);border-radius:12px;padding:0 14px;background:#fff;margin:10px 0}
+summary{cursor:pointer;font-weight:750;padding:13px 0}
+details[open] summary{color:var(--blue)}
+.small{font-size:12.5px;color:var(--muted)}
+.searchbox{display:flex;gap:8px;margin:12px 0}
+.searchbox input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
+.btn{border:0;border-radius:9px;background:var(--blue);color:#fff;padding:9px 12px;cursor:pointer;font-weight:700}
+.btn.secondary{background:#eef2f6;color:#344054}
+.param-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+.param-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.param-name{font-family:Consolas,monospace;font-weight:800;color:#253b80}
+.param-meta{font-size:11px;color:var(--muted)}
+.mini-grid{display:grid;grid-template-columns:140px 1fr;gap:7px 12px;font-size:13.5px;margin-top:8px}
+.mini-grid b{color:#344054}
+textarea{width:100%;min-height:190px;border:1px solid var(--line);border-radius:12px;padding:13px;font:inherit;resize:vertical}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+.hidden{display:none!important}
+.version{background:#fff9eb;border:1px solid #fedf89;border-radius:12px;padding:13px 15px;margin-top:14px;color:#7a2e0e}
+@media(max-width:860px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  h1{font-size:27px}
+  .hero{padding:23px 20px}
+  .mini-grid{grid-template-columns:1fr}
+  th{position:static}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="hero">
+  <div class="kicker">PrimeTime ECO · Practical Study Page</div>
+  <h1>fix_eco_drc / fix_eco_timing 参数详解</h1>
+  <div class="sub">
+    把 Noise / DRC / Setup / Hold、ECO 顺序、两条核心命令的参数与实际使用思路放在同一页。
+    重点是：看到一个参数时，你要知道“它控制哪一层行为”“默认是什么”“什么时候不该用”。
+  </div>
+  <div class="badges">
+    <span class="badge">白底</span>
+    <span class="badge">可折叠</span>
+    <span class="badge">参数搜索</span>
+    <span class="badge">带工程建议</span>
+    <span class="badge">带 Unfixable Reason</span>
+    <span class="badge">带笔记区</span>
+  </div>
+  <div class="version">
+    <b>版本提醒：</b>你提供的两个 command reference 文本标注为 <b>U-2022.12-SP5</b>；
+    前面阅读的 PrimeTime User Guide 是 <b>V-2023.12</b>。
+    本页把两者内容合并讲解，但实际在你当前 PT 版本里跑之前，仍应以当前版本
+    <code>man fix_eco_drc</code> / <code>man fix_eco_timing</code> 为最终准绳。
+  </div>
+</section>
+
+<div class="sticky">
+  <nav class="nav">
+    <a href="#bigpicture">总流程</a>
+    <a href="#return">何时回 FC</a>
+    <a href="#drc">fix_eco_drc</a>
+    <a href="#timing">fix_eco_timing</a>
+    <a href="#methods">Methods</a>
+    <a href="#physical">Physical Mode</a>
+    <a href="#pba">PBA</a>
+    <a href="#unfix">Unfixable</a>
+    <a href="#recipes">推荐脚本</a>
+    <a href="#notes">笔记</a>
+  </nav>
+</div>
+
+<section id="bigpicture" class="card">
+  <div class="kicker">01 · Big Picture</div>
+  <h2>先建立 ECO 的总脑图</h2>
+  <div class="flow">PrimeTime Signoff
+        │
+        ├────────────── DRC / Noise ──────────────┐
+        │      max_transition / max_capacitance   │
+        │      max_fanout / noise / delta_delay   │
+        │                                         ▼
+        │                                  fix_eco_drc
+        │                                         │
+        │                                         ▼
+        │                                   update_timing
+        │                                         │
+        └────────────── Timing ───────────────────┤
+                                                 ▼
+                                            Setup ECO
+                                                 │
+                                                 ▼
+                                             Hold ECO
+                                                 │
+                                                 ▼
+                                      write_changes / implement
+                                                 │
+                                                 ▼
+                                      FC/ICC2 + route + StarRC
+                                                 │
+                                                 ▼
+                                           回 PrimeTime</div>
+
+  <div class="grid3">
+    <div class="callout warn"><b>DRC</b><br/>“电气负担不合法”：slew、cap、fanout 等超限。</div>
+    <div class="callout purple"><b>Noise / SI</b><br/>“旁边的 net 干扰我”：noise bump 或 delta delay。</div>
+    <div class="callout good"><b>Timing</b><br/>Setup 数据太晚；Hold 数据太早。</div>
+  </div>
+
+  <div class="callout">
+    <b>Guide 推荐的核心顺序：</b><br/>
+    DRC/Noise → Setup → Hold。原因是 DRC fixing 优先级高，可能改变 setup/hold；
+    Setup fixing 可以引入一些 hold；Hold fixing则要尽量保护 setup 与 DRC。
+  </div>
+</section>
+
+<section id="return" class="card">
+  <div class="kicker">02 · Iteration Strategy</div>
+  <h2>DRC 修完，要不要立刻回 FC/ICC2？</h2>
+
+  <div class="grid2">
+    <div>
+      <h3>修改量小：可以先留在 PT 继续</h3>
+      <div class="flow">fix_eco_drc
+     ↓
+update_timing
+     ↓
+fix_eco_timing -type setup
+     ↓
+fix_eco_timing -type hold
+     ↓
+write_changes</div>
+      <p>适合：少量 resize、少量 buffer，不会明显扰动物理 placement / routing。</p>
+    </div>
+    <div>
+      <h3>修改量大：建议先物理实现再回来</h3>
+      <div class="flow">PT: fix_eco_drc
+     ↓
+write_changes
+     ↓
+FC/ICC2: implement / legalize / route_eco
+     ↓
+StarRC: re-extract
+     ↓
+PT: re-signoff
+     ↓
+Setup / Hold ECO</div>
+      <p>适合：大量 buffer、大量 net 拆分、明显影响 legalization / routing 的情况。</p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <b>为什么不能机械地“一次全修完”？</b><br/>
+    DRC 修复本身可能改变 cell delay、slew、load 与 net topology，所以原来的 setup/hold 数值可能已经不再代表修后真实状态。
+    如果物理扰动明显，重新 route + parasitic extraction 后再判断 timing 更可信。
+  </div>
+</section>
+
+<section id="drc" class="card">
+  <div class="kicker">03 · fix_eco_drc</div>
+  <h2>fix_eco_drc：先解决电气规则 / Noise / SI 问题</h2>
+
+  <div class="callout">
+    <b>这个命令的角色：</b>
+    通过 cell sizing、buffer insertion、inverter pair 等 ECO 手段，处理
+    max_transition、max_capacitance、max_fanout、noise、crosstalk delta delay，
+    Guide 还包括 cell EM。默认思路是先把 DRC/Noise 处理，再进入 timing fixing。
+  </div>
+
+  <h3>你给的例子里最重要的用法</h3>
+  <pre><code># 只用 sizing 修 max transition
+fix_eco_drc -type max_transition -verbose \
+    -methods size_cell
+
+# 用 buffer 修 max transition
+fix_eco_drc -type max_transition -verbose \
+    -methods insert_buffer \
+    -buffer_list {BUFX1 BUFX2 BUFX3}
+
+# Physically aware
+fix_eco_drc -type max_transition -verbose \
+    -methods insert_buffer \
+    -buffer_list {BUFX1 BUFX2 BUFX3} \
+    -physical_mode open_site
+
+# Noise
+fix_eco_drc -type noise -verbose \
+    -methods {size_cell insert_buffer} \
+    -buffer_list {BUFX1 BUFX2 BUFX3} \
+    -physical_mode open_site
+
+# Delta delay
+fix_eco_drc -type delta_delay -verbose \
+    -delta_delay_threshold 0.05 \
+    -methods {size_cell insert_buffer} \
+    -buffer_list {BUFX1 BUFX2 BUFX3} \
+    -physical_mode open_site</code></pre>
+
+  <h3>核心参数解释</h3>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-type</span><span class="tag t-core">核心</span></div>
+    <div class="mini-grid">
+      <b>控制什么</b><span>指定这次 ECO 修哪一种 violation。</span>
+      <b>常见值</b><span><code>max_transition</code> / <code>max_capacitance</code> / <code>max_fanout</code> / <code>noise</code> / <code>delta_delay</code>。</span>
+      <b>怎么理解</b><span>不要把 DRC 看成一个模糊的大类；实际 fixing 是按具体 violation type 分开跑。</span>
+      <b>建议</b><span>先 report 清楚每类数量，再按变化量最大的 DRC 类型优先处理。</span>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-methods</span><span class="tag t-core">核心</span></div>
+    <div class="mini-grid">
+      <b>控制什么</b><span>允许工具用哪些物理/逻辑修改手段。</span>
+      <b>常见值</b><span><code>size_cell</code>、<code>insert_buffer</code>、<code>insert_buffer_at_load_pins</code>、<code>insert_buffer_at_driver_pins</code>、<code>insert_inverter_pair</code>。</span>
+      <b>工程含义</b><span>这是在告诉工具：“你可以怎么动我的网表”。</span>
+      <b>经验</b><span>先用侵入性较小的 sizing；如果 sizing 无法解决，再允许 buffer，通常比一开始就大规模插 buffer 更容易控制布局扰动。</span>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-buffer_list</span><span class="tag t-core">核心</span></div>
+    <div class="mini-grid">
+      <b>控制什么</b><span>限定 buffer / inverter insertion 可以使用哪些 library cells。</span>
+      <b>为什么重要</b><span>列表过弱会出现 unfixable reason <b>I</b>；列表过多、过杂又会增加搜索空间。</span>
+      <b>你的例子</b><span><code>{BUFX1 BUFX2 BUFX3}</code> 不够强时，命令可能修不掉 violation；文档示例建议扩大 buffer 范围。</span>
+      <b>建议</b><span>给出覆盖“小/中/较强驱动”的代表性集合，不要只给一个极小 buffer。</span>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-physical_mode open_site</span><span class="tag t-key">推荐理解</span></div>
+    <div class="mini-grid">
+      <b>控制什么</b><span>启用 physically aware fixing，并限制修改发生在已有可用空间的位置。</span>
+      <b>open_site</b><span>只有存在空闲 site / 足够空间时才 resize 或插 cell；尽量不移动周围已有 cell。</span>
+      <b>典型失败</b><span>unfixable reason <b>O</b>：没有 open free site。</span>
+      <b>意义</b><span>PT 的“修得动”更接近后续 FC/ICC2 真正“放得下”。</span>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-cell_type</span><span class="tag t-adv">进阶</span></div>
+    <div class="mini-grid">
+      <b>常见值</b><span><code>combinational</code> / <code>clock_network</code>。</span>
+      <b>默认思路</b><span>先修 data path / combinational；clock network 是更敏感的后手。</span>
+      <b>clock_network</b><span>可以在 clock tree 里 upsizing / 插 buffer 修 max transition/cap/fanout，但会改变 clock arrival/skew。</span>
+      <b>建议</b><span>先 data path，再 clock network；clock ECO 前确认已读入 clock physical data。</span>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-slack_lesser_than</span><span class="tag t-adv">筛选范围</span></div>
+    <div class="mini-grid">
+      <b>用途</b><span>只处理 slack 比某阈值更差的对象/路径。</span>
+      <b>Noise 示例</b><span><code>-type noise -slack_lesser_than -0.05</code>：只修 worse than -0.05 的较大 noise violation。</span>
+      <b>Delta delay</b><span>可用它限定只关注位于某 timing slack 范围内的 victim nets。</span>
+      <b>好处</b><span>减少“轻微 violation”带来的大量 ECO 修改。</span>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-delta_delay_threshold</span><span class="tag t-adv">SI</span></div>
+    <div class="mini-grid">
+      <b>只用于</b><span><code>-type delta_delay</code>。</span>
+      <b>作用</b><span>指定值得处理的 crosstalk delta delay cost 下限。</span>
+      <b>为什么需要</b><span>delta delay 本身不像 max_transition 那样有一个“required limit → slack”，所以需要显式 threshold。</span>
+      <b>示例</b><span><code>-delta_delay_threshold 0.05</code>：只处理 cost 大于 0.05 time units 的 victim nets。</span>
+    </div>
+  </div>
+
+  <div class="param-card">
+    <div class="param-head"><span class="param-name">-verbose</span><span class="tag t-key">强烈建议</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>显示更多 fixing 信息，尤其是 remaining / unfixable violation reasons。</span>
+      <b>为什么重要</b><span>你不是只想知道“修不掉”，而是要知道为什么修不掉，从而决定下一轮换方法、换 buffer、放宽 area、检查 dont_touch 或 physical site。</span>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <b>重要：</b>V-2023.12 Guide 明确说 <code>fix_eco_drc</code> 默认并不以 timing 为主要保护目标，
+    所以 DRC fixing 后必须重新看 setup/hold；不要假设 DRC 修完 timing 一定不会变。
+  </div>
+</section>
+
+<section id="timing" class="card">
+  <div class="kicker">04 · fix_eco_timing</div>
+  <h2>fix_eco_timing：控制“修谁、怎么修、修到什么程度、在哪里修”</h2>
+
+  <pre><code>fix_eco_timing
+    -type setup | hold
+    [-methods ...]
+    [-slack_lesser_than ...]
+    [-slack_greater_than ...]
+    [-group ...]
+    [-pba_mode none | path | exhaustive | ml_exhaustive]
+    [-from ...]
+    [-to ...]
+    [-setup_margin ...]
+    [-hold_margin ...]
+    [-buffer_list ...]
+    [-verbose]
+    [-ignore_drc]
+    [-cell_type combinational | sequential | clock_network]
+    [-physical_mode none | open_site | occupied_site | freeze_silicon]
+    [-path_selection_options ...]
+    [-timeout ...]
+    [-estimate_unfixable_reasons]
+    ...</code></pre>
+
+  <div class="searchbox">
+    <input id="paramSearch" placeholder="搜索参数，例如 pba、margin、buffer、physical、clock、ignore_drc..." oninput="filterParams()"/>
+    <button class="btn secondary" onclick="clearSearch()">清空</button>
+  </div>
+
+  <div id="paramList">
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-type setup | hold</span><span class="tag t-core">必选</span></div>
+    <div class="mini-grid">
+      <b>Setup</b><span>最大延迟问题：数据太晚，目标是降低 data path delay。</span>
+      <b>Hold</b><span>最小延迟问题：数据太早，目标是增加 data path delay。</span>
+      <b>注意</b><span>setup 与 hold 必须分开调用；推荐先 setup，再 hold。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-methods</span><span class="tag t-core">核心</span></div>
+    <div class="mini-grid">
+      <b>size_cell</b><span>换成逻辑等价但驱动强度不同的 cell。</span>
+      <b>size_cell_side_load</b><span>Setup 专用：除了 critical path sizing，还会调整 side-load cells，降低关键 driver 的寄生负载。</span>
+      <b>insert_buffer</b><span>在 driver pin、load pin 或 route 上寻找合适 buffer 位置。</span>
+      <b>insert_buffer_at_load_pins</b><span>只允许 load pin 侧 buffering。</span>
+      <b>insert_buffer_at_driver_pins</b><span>只允许 driver pin 侧 buffering。</span>
+      <b>insert_inverter_pair</b><span>插一对 inverter；不能与普通 insert_buffer 同时作为同一种方法组合使用。</span>
+      <b>remove_buffer</b><span>Setup fixing 可用，用于去掉拖慢 setup 的 buffer；不能用于 hold。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-slack_lesser_than</span><span class="tag t-core">选择谁修</span></div>
+    <div class="mini-grid">
+      <b>含义</b><span>只修 slack 比该值更差的路径。</span>
+      <b>默认</b><span>0，等价于默认针对负 slack violation。</span>
+      <b>例子</b><span><code>-slack_lesser_than -0.1</code>：只处理 worse than -0.1 的路径。</span>
+      <b>注意</b><span>它决定“选哪些 path”，不是“最终修到多少 slack”。最终目标由 margin 控制。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-slack_greater_than</span><span class="tag t-core">选择谁修</span></div>
+    <div class="mini-grid">
+      <b>含义</b><span>只考虑 slack 比该值更好的路径。</span>
+      <b>典型用途</b><span>忽略极端糟糕、可能由约束错误或结构性问题导致的 violation。</span>
+      <b>组合</b><span>可与 <code>-slack_lesser_than</code> 一起定义一个 slack 区间。</span>
+      <b>例子</b><span><code>-slack_greater_than -2.0</code>：不碰 worse than -2.0 的超大 violation。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-group</span><span class="tag t-core">范围</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>只修指定 path group。</span>
+      <b>例子</b><span><code>-group {SYSCLK* IOCLK}</code></span>
+      <b>什么时候用</b><span>某些 clock group 特别差，想分批 ECO，或避免工具把修改预算花在优先级低的 group。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-from / -to</span><span class="tag t-core">范围</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>限制 startpoint / endpoint。</span>
+      <b>与 report_timing 类似</b><span>但该命令里对象限定为 pins / ports，不是 nets / cells。</span>
+      <b>什么时候用</b><span>只想 ECO 某个 block interface、某一批 endpoints、某个 SRAM interface。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-setup_margin</span><span class="tag t-core">目标 slack</span></div>
+    <div class="mini-grid">
+      <b>Setup fixing 时</b><span>正值 = overfix 到正 slack；负值 = underfix，只改善到允许的负 slack。</span>
+      <b>Hold fixing 时</b><span>它变成“必须保护的 setup margin”。</span>
+      <b>例子</b><span><code>-type setup -setup_margin 0.1</code>：目标是让被选中的 setup path 尽量达到 +0.1。</span>
+      <b>关键</b><span>margin 不决定选哪些 path；路径选择由 slack_lesser/greater 等控制。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-hold_margin</span><span class="tag t-core">目标 slack</span></div>
+    <div class="mini-grid">
+      <b>Hold fixing 时</b><span>正值 = overfix 到正 hold slack；负值 = underfix。</span>
+      <b>Setup fixing 时</b><span>它变成“必须保护的 hold margin”。</span>
+      <b>例子</b><span><code>-type setup -setup_margin 0.2 -hold_margin 0.1</code>：修 setup 的同时保护至少 0.1 hold margin。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-buffer_list</span><span class="tag t-core">核心</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>指定插 buffer / inverter pair 时允许使用的 library cell base names。</span>
+      <b>无默认 list</b><span>要用 insertion 方法，必须给可用 cell list。</span>
+      <b>Hold 建议</b><span>覆盖所需 delay 范围，不要塞一堆极其相似的 buffer，避免 runtime 增加却没收益。</span>
+      <b>Setup 建议</b><span>优先选择 drive 好、delay 短的 buffer。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-pba_mode</span><span class="tag t-core">分析精度</span></div>
+    <div class="mini-grid">
+      <b>none</b><span>默认，GBA；最快。</span>
+      <b>path</b><span>对 GBA 已抓到的路径做 PBA recalculation。</span>
+      <b>exhaustive</b><span>完整 exhaustive PBA 搜真正 worst path；更准、更慢。</span>
+      <b>ml_exhaustive</b><span>机器学习加速 exhaustive，前期大 TNS/大量 violation 更适合；接近 signoff 时结果/开销趋向 exhaustive。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-ignore_drc</span><span class="tag t-warn">慎用</span></div>
+    <div class="mini-grid">
+      <b>默认行为</b><span>存在 max_transition / max_capacitance / max_fanout 的 timing path，timing fixing 默认不会直接硬修。</span>
+      <b>加上后</b><span>允许 timing 优先，即使可能恶化 DRC。</span>
+      <b>建议</b><span>只放到 ECO 后期：已经尽量把 DRC 修完，但 DRC 保护成为剩余 timing 的阻碍时再考虑。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-cell_type</span><span class="tag t-adv">修改对象</span></div>
+    <div class="mini-grid">
+      <b>combinational</b><span>默认；修改 data path combinational cells。</span>
+      <b>sequential</b><span>通过 sizing sequential cell 修输入/输出相关 timing；只支持 size_cell。</span>
+      <b>clock_network</b><span>改 clock path 来改变 clock arrival；可能影响 skew，属于更敏感的后手。</span>
+      <b>建议</b><span>先 combinational；不够再考虑 sequential / clock_network。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-physical_mode</span><span class="tag t-core">物理可实现性</span></div>
+    <div class="mini-grid">
+      <b>none</b><span>默认，不使用 physical data。</span>
+      <b>open_site</b><span>只有现成空位才插/放大，保留已有 placement；后期 ECO 更稳。</span>
+      <b>occupied_site</b><span>允许暂时与邻近 cell overlap，只要密度允许后续 implementation tool 挪出空间；fix rate 更高但扰动更大。</span>
+      <b>freeze_silicon</b><span>只利用预定义 spare cells，不新插普通 cell、不任意 size。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-path_selection_options</span><span class="tag t-adv">高级范围控制</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>把一组 get_timing_paths 风格的选路参数交给 ECO，用更复杂条件定义 fixing scope。</span>
+      <b>互斥</b><span>不能同时与 <code>-from/-to/-group/-pba_mode/-slack_lesser_than/-slack_greater_than</code> 使用。</span>
+      <b>注意</b><span>因为只修被选中的 paths，修后 QoR 检查也要使用相同 path selection 条件。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-timeout</span><span class="tag t-adv">Runtime</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>限制命令总 wall-clock runtime。</span>
+      <b>不设置</b><span>工具不直接按总时间停，而会根据 QoR、fix rate、继续迭代的预期收益决定是否继续。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-verbose</span><span class="tag t-key">推荐</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>输出更详细 fixing 信息；DMSA 下可看到各 scenario violation 信息。</span>
+      <b>配合变量</b><span>设置 <code>eco_report_unfixed_reason_max_endpoints</code> 为正数后，可生成 Unfixable Violations 报告。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-estimate_unfixable_reasons</span><span class="tag t-key">预检查神器</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>只分析“为什么可能修不掉”，不真正修改设计。</span>
+      <b>什么时候用</b><span>正式 ECO 前先检查 buffer list、physical site、dont_touch、margin 是否会成为瓶颈。</span>
+      <b>建议</b><span>对于大规模 hold ECO，先跑一次能减少盲目尝试。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-load_cell_list</span><span class="tag t-adv">Hold 微调</span></div>
+    <div class="mini-grid">
+      <b>用途</b><span>Hold fixing 使用 load capacitance cell / dummy load，适合几 ps 量级的小 hold violation。</span>
+      <b>与 buffer_list 共用</b><span>工具可以小 violation 用 load cell，大 violation 用 buffer。</span>
+      <b>优点</b><span>比插完整 buffer 更细粒度、面积通常也更小。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-clock_fixes_per_change</span><span class="tag t-adv">Clock ECO</span></div>
+    <div class="mini-grid">
+      <b>仅作用于</b><span><code>-cell_type clock_network</code></span>
+      <b>默认</b><span>1。</span>
+      <b>含义</b><span>一次 clock tree 修改至少要能修多少 violating endpoints 才值得做。</span>
+      <b>值变大</b><span>修改数更少，倾向在更高层、更靠近 clock source 的位置做 ECO。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-clock_max_level_from_reg</span><span class="tag t-adv">Clock ECO</span></div>
+    <div class="mini-grid">
+      <b>仅作用于</b><span><code>-cell_type clock_network</code></span>
+      <b>默认</b><span>0，表示不限制。</span>
+      <b>例子</b><span>1 = 只允许在 register clock pin 的 immediate driver 层附近修改；2 = 再允许往上一层。</span>
+      <b>意义</b><span>限制 clock ECO 的影响范围，值越小越局部。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-target_violation_type endpoint | tns</span><span class="tag t-adv">Clock ECO</span></div>
+    <div class="mini-grid">
+      <b>endpoint</b><span>默认；不允许为了改善整体而进一步恶化已有 violating endpoint。</span>
+      <b>tns</b><span>允许个别 endpoint 变差，只要整体 TNS 改善；受 WNS 下限保护。</span>
+      <b>限制</b><span>用于 clock network fixing。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-wns_limit</span><span class="tag t-adv">Clock ECO</span></div>
+    <div class="mini-grid">
+      <b>配合</b><span><code>-target_violation_type tns</code></span>
+      <b>作用</b><span>规定允许牺牲 endpoint slack 时，WNS 最差不能低于多少。</span>
+      <b>默认</b><span>当前已有 WNS。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-current_library</span><span class="tag t-adv">搜索空间</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>sizing 时只从原 cell 所在 library 选替代 cell。</span>
+      <b>优点</b><span>候选更少，runtime 可能更好。</span>
+      <b>代价</b><span>可用替代 cell 变少，QoR/fix rate 可能下降。</span>
+    </div>
+  </div>
+
+  <div class="param-card searchable">
+    <div class="param-head"><span class="param-name">-power_attribute / -power_mode</span><span class="tag t-adv">功耗</span></div>
+    <div class="mini-grid">
+      <b>作用</b><span>Timing fixing 时不只考虑 area，也把 leakage / dynamic / total power 纳入选择。</span>
+      <b>默认</b><span>不指定时主要倾向最小化 area 影响。</span>
+      <b>注意</b><span>属于进阶 power-aware ECO，需要相应 power data / attribute。</span>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section id="methods" class="card">
+  <div class="kicker">05 · Fixing Methods</div>
+  <h2>Methods 不是“参数名字”，而是工具真正会做的动作</h2>
+  <table>
+    <tr><th>Method</th><th>主要用途</th><th>适合</th><th>风险 / 注意</th></tr>
+    <tr><td><code>size_cell</code></td><td>换 drive strength / 等价 cell</td><td>Setup、Hold、DRC</td><td>Upsize 可能增加 load/power/area；downsize 可能恶化 setup。</td></tr>
+    <tr><td><code>size_cell_side_load</code></td><td>调整 critical path + side loads</td><td>Setup</td><td>仅 setup；通过减 side-load cap 帮关键 driver。</td></tr>
+    <tr><td><code>insert_buffer</code></td><td>拆负载、改善 slew、增加/减少局部 delay</td><td>Setup、Hold、DRC、Noise</td><td>会改变 net topology，可能显著增加 physical disturbance。</td></tr>
+    <tr><td><code>insert_buffer_at_load_pins</code></td><td>只在 load 侧插</td><td>精细控制</td><td>比通用 insert_buffer 搜索范围窄。</td></tr>
+    <tr><td><code>insert_buffer_at_driver_pins</code></td><td>只在 driver 侧插</td><td>精细控制</td><td>同上。</td></tr>
+    <tr><td><code>insert_inverter_pair</code></td><td>用两级 inverter 保持逻辑极性</td><td>DRC / Timing 特殊场景</td><td>要给 inverter list；与普通 buffer insertion 有组合限制。</td></tr>
+    <tr><td><code>remove_buffer</code></td><td>删除拖慢 setup 的 buffer</td><td>Setup</td><td>不能造成新 DRC / worsening hold。</td></tr>
+  </table>
+
+  <div class="callout good">
+    <b>一个很好用的思路：</b>Setup ECO 如果要用 buffer，先尝试 sizing，再尝试 buffer insertion；
+    文档明确说明这样通常能减少 buffer 数量和 layout disturbance。
+  </div>
+</section>
+
+<section id="physical" class="card">
+  <div class="kicker">06 · Physical Awareness</div>
+  <h2>open_site / occupied_site 到底差在哪</h2>
+  <div class="grid2">
+    <div class="callout good">
+      <b>open_site</b><br/>
+      只有已经存在足够空间时才做修改。<br/>
+      优点：预测性好、扰动小。<br/>
+      缺点：高利用率区域容易 reason O —— “No open free site”。
+    </div>
+    <div class="callout warn">
+      <b>occupied_site</b><br/>
+      允许先产生 overlap，只要局部 density 允许后续 implementation tool 挪 cell 腾空间。<br/>
+      优点：fix rate 更高。<br/>
+      缺点：legalization / routing 扰动更大。
+    </div>
+  </div>
+
+  <div class="flow">ECO 早期 / violation 很多
+        ↓
+occupied_site（更 aggressive）
+        ↓
+收敛
+        ↓
+ECO 后期 / 想少扰动
+        ↓
+open_site（更 conservative）</div>
+
+  <div class="callout bad">
+    <b>不要混用逻辑 ECO 与 physical ECO：</b>
+    一旦同一个 PT session 已经加载 physical data 并用 open_site/occupied_site 做 fixing，
+    man page 建议后续继续保持 physically aware fixing，不要又切回 <code>-physical_mode none</code> 做 what-if 修改，
+    否则 physical database 与逻辑修改可能失去一致性。
+  </div>
+</section>
+
+<section id="pba" class="card">
+  <div class="kicker">07 · PBA</div>
+  <h2>none / path / exhaustive / ml_exhaustive</h2>
+  <table>
+    <tr><th>模式</th><th>怎么做</th><th>Runtime</th><th>建议场景</th></tr>
+    <tr><td><code>none</code></td><td>普通 GBA</td><td>最快</td><td>大量 violation、早期快速 ECO</td></tr>
+    <tr><td><code>path</code></td><td>对已收集路径进行 PBA recalculation</td><td>中</td><td>快速看 PBA 能释放多少 pessimism</td></tr>
+    <tr><td><code>ml_exhaustive</code></td><td>机器学习加速 exhaustive 搜索</td><td>中~高</td><td>大量 violation / 高 TNS，想比 exhaustive 更省 runtime</td></tr>
+    <tr><td><code>exhaustive</code></td><td> exhaustive PBA 搜 truly worst paths</td><td>最高</td><td>剩余少量难修路径、接近 signoff</td></tr>
+  </table>
+  <div class="callout">
+    <b>你之前问的重点：</b>ml_exhaustive 不是“AI 直接决定插哪个 buffer”，
+    而是用机器学习加速 PBA path search / violation identification，让 ECO 的 timing 判断更高效。
+  </div>
+</section>
+
+<section id="unfix" class="card">
+  <div class="kicker">08 · Unfixable Reasons</div>
+  <h2>看到修不掉，不要立刻换更大 buffer——先看 reason code</h2>
+
+  <table>
+    <tr><th>Code</th><th>含义</th><th>你下一步应该想到什么</th></tr>
+    <tr><td>A</td><td>可用 lib cell 超出 area limit</td><td>检查 <code>eco_alternative_area_ratio_threshold</code> / 是否允许更大 cell。</td></tr>
+    <tr><td>B</td><td>单级 delay 改善不足以修掉 timing</td><td>可考虑 underfix、分阶段修、换 fixing point。</td></tr>
+    <tr><td>C</td><td>violation 在 clock network</td><td>默认 data path ECO 不动 clock；必要时显式 clock_network。</td></tr>
+    <tr><td>D</td><td>高密度区域</td><td>物理空间不足；检查局部 utilization。</td></tr>
+    <tr><td>E</td><td>physical 信息缺失/不可用</td><td>查 LEF/DEF/physical DB 一致性。</td></tr>
+    <tr><td>H</td><td>逻辑与物理 hierarchy 不一致</td><td>先修数据库一致性，不是换 buffer 能解决。</td></tr>
+    <tr><td>I</td><td>给定 buffer_list 修不掉</td><td>扩大/调整 buffer delay/drive 范围。</td></tr>
+    <tr><td>L</td><td>可用物理面积限制候选 lib cell</td><td>空间问题，不只是 library 问题。</td></tr>
+    <tr><td>O</td><td>No open free site</td><td>open_site 没位置；看 filler / spacing / 周边布局。</td></tr>
+    <tr><td>P</td><td>DRC driver 是 port</td><td>port 不能像 cell 一样 resize；考虑 buffering。</td></tr>
+    <tr><td>Q</td><td>可能是 sequential driver（DRC 示例）或 clock fixing 下 launch/capture conflict</td><td>结合具体命令类型判断；clock ECO 要特别小心。</td></tr>
+    <tr><td>R</td><td>parasitics 没 location 或 location transform 失败</td><td>检查 parasitic location / mapping。</td></tr>
+    <tr><td>S</td><td>sizing 找遍替代 cell 也修不掉</td><td>换 buffer insertion 等方法。</td></tr>
+    <tr><td>T</td><td>timing margin 太紧</td><td>目标 constraint/保护 margin 限制了 fixing。</td></tr>
+    <tr><td>U</td><td>UPF 限制</td><td>isolation/retention/level shifter/always-on 等特殊 cell 限制。</td></tr>
+    <tr><td>V</td><td>dont_touch / invalid</td><td>检查 dont_touch 是否合理。</td></tr>
+    <tr><td>W</td><td>Timing fixing 会恶化 DRC</td><td>说明 DRC protection 卡住了 timing；后期才考虑 <code>-ignore_drc</code>。</td></tr>
+  </table>
+
+  <div class="callout good">
+    <b>推荐用法：</b><br/>
+    正式大修前先设置：
+    <pre><code>set_app_var eco_report_unfixed_reason_max_endpoints 50
+
+fix_eco_timing -type hold \
+    -buffer_list $HOLD_BUF_LIST \
+    -estimate_unfixable_reasons</code></pre>
+    先判断“为什么修不掉”，再决定是不是值得真正跑 ECO。
+  </div>
+</section>
+
+<section id="recipes" class="card">
+  <div class="kicker">09 · Practical Recipes</div>
+  <h2>我建议你实际按这几层跑</h2>
+
+  <details open>
+    <summary>Recipe A：常规 Physically Aware ECO</summary>
+    <pre><code># ---------- 0. 基线 ----------
+set_app_var timing_save_pin_arrival_and_slack true
+update_timing
+
+# report DRC / timing first
+report_constraint -max_transition -all_violators
+report_constraint -max_capacitance -all_violators
+report_constraint -max_fanout -all_violators
+report_timing -delay_type max
+report_timing -delay_type min
+
+# ---------- 1. DRC ----------
+fix_eco_drc -type max_transition \
+    -methods {size_cell insert_buffer} \
+    -buffer_list $DRV_BUF_LIST \
+    -physical_mode open_site \
+    -verbose
+
+# 按需要继续 cap / fanout / noise
+# fix_eco_drc -type max_capacitance ...
+# fix_eco_drc -type max_fanout ...
+# fix_eco_drc -type noise ...
+
+update_timing
+
+# ---------- 2. Setup ----------
+fix_eco_timing -type setup \
+    -physical_mode open_site \
+    -verbose
+
+update_timing
+
+# ---------- 3. Hold ----------
+fix_eco_timing -type hold \
+    -methods {size_cell insert_buffer} \
+    -buffer_list $HOLD_BUF_LIST \
+    -physical_mode open_site \
+    -pba_mode exhaustive \
+    -verbose
+
+# ---------- 4. 导出 ----------
+write_changes -format icctcl -output pt_eco.tcl</code></pre>
+  </details>
+
+  <details>
+    <summary>Recipe B：Setup violation 很多，先快后准</summary>
+    <pre><code># 前期大量 violation
+fix_eco_timing -type setup \
+    -pba_mode none \
+    -physical_mode open_site \
+    -verbose
+
+# 收敛后重新评估
+update_timing
+
+# 剩余关键 path 用更高精度
+fix_eco_timing -type setup \
+    -pba_mode ml_exhaustive \
+    -physical_mode open_site \
+    -verbose
+
+# 最后少量 hard path 再 exhaustive
+fix_eco_timing -type setup \
+    -pba_mode exhaustive \
+    -physical_mode open_site \
+    -verbose</code></pre>
+  </details>
+
+  <details>
+    <summary>Recipe C：Hold 先估计，再真修</summary>
+    <pre><code>set_app_var eco_report_unfixed_reason_max_endpoints 50
+
+# 先不改设计
+fix_eco_timing -type hold \
+    -buffer_list $HOLD_BUF_LIST \
+    -physical_mode open_site \
+    -estimate_unfixable_reasons
+
+# 看 reason I/O/T/V/W 等，再决定参数
+
+# 真正 fixing
+fix_eco_timing -type hold \
+    -methods {size_cell insert_buffer} \
+    -buffer_list $HOLD_BUF_LIST \
+    -physical_mode open_site \
+    -pba_mode exhaustive \
+    -verbose</code></pre>
+  </details>
+
+  <details>
+    <summary>Recipe D：DRC 修改非常大时，不要急着在 PT 继续修 timing</summary>
+    <div class="flow">PT
+fix_eco_drc
+   │
+   ├─ 如果 change 很少 → update_timing → Setup → Hold
+   │
+   └─ 如果 change 很多
+            ↓
+       write_changes
+            ↓
+          FC/ICC2
+   legalize + route_eco
+            ↓
+          StarRC
+      new parasitics
+            ↓
+       回 PrimeTime
+            ↓
+      重新看 Setup/Hold</div>
+  </details>
+</section>
+
+<section class="card">
+  <div class="kicker">10 · Fast Memory</div>
+  <h2>最后只记 8 句话也够用</h2>
+  <div class="grid2">
+    <div class="callout">1. DRC/Noise 用 <code>fix_eco_drc</code>，Timing 用 <code>fix_eco_timing</code>。</div>
+    <div class="callout">2. 顺序优先记：DRC/Noise → Setup → Hold。</div>
+    <div class="callout">3. <code>-methods</code> 决定“工具允许怎么改网表”。</div>
+    <div class="callout">4. <code>-buffer_list</code> 决定“插什么 cell”。</div>
+    <div class="callout">5. <code>-physical_mode</code> 决定“是否考虑真实能不能放得下”。</div>
+    <div class="callout">6. <code>-pba_mode</code> 决定“timing 判断的精度/runtime”。</div>
+    <div class="callout">7. <code>-margin</code> 决定“修到什么 slack”，不是决定“选谁修”。</div>
+    <div class="callout">8. 修不掉先看 unfixable reason，不要盲目重复跑。</div>
+  </div>
+</section>
+
+<section id="notes" class="card">
+  <div class="kicker">11 · Notes</div>
+  <h2>我的笔记</h2>
+  <p class="small">保存到当前浏览器 localStorage。适合你边看边写自己项目里的 buffer list、margin、scenario 习惯。</p>
+  <textarea id="notesBox" placeholder="例如：
+- 我们项目 DRV_BUF_LIST =
+- hold 常用 delay/buffer =
+- 哪些 scenario 先修 =
+- open_site 经常出现 O reason 的区域 =
+"></textarea>
+  <div style="margin-top:10px">
+    <button class="btn" onclick="saveNotes()">保存笔记</button>
+    <button class="btn secondary" onclick="clearNotes()">清空</button>
+    <span id="saveState" class="small" style="margin-left:10px"></span>
+  </div>
+</section>
+
+<section class="card">
+  <div class="kicker">Source Notes</div>
+  <h2>本页依据</h2>
+  <p>
+    1. 你提供的 <code>fix_eco_drc</code> 示例 / unfixable reason 文本（U-2022.12-SP5）。<br/>
+    2. 你提供的完整 <code>fix_eco_timing</code> Command Reference（U-2022.12-SP5）。<br/>
+    3. 前面上传的 PrimeTime User Guide V-2023.12，Chapter 21 ECO Flow。
+  </p>
+  <p class="small">
+    说明：本页的“工程建议”是基于上述文档行为做的流程化解释；版本相关默认值请以你当前安装版本的 man page 为准。
+  </p>
+</section>
+
+</div>
+
+<script>
+const KEY='pt_eco_detailed_notes_v2';
+
+function saveNotes(){
+  const v=document.getElementById('notesBox').value;
+  localStorage.setItem(KEY,v);
+  const s=document.getElementById('saveState');
+  s.textContent='已保存';
+  setTimeout(()=>s.textContent='',1400);
+}
+function clearNotes(){
+  document.getElementById('notesBox').value='';
+  localStorage.removeItem(KEY);
+  const s=document.getElementById('saveState');
+  s.textContent='已清空';
+  setTimeout(()=>s.textContent='',1400);
+}
+const saved=localStorage.getItem(KEY);
+if(saved!==null) document.getElementById('notesBox').value=saved;
+
+function filterParams(){
+  const q=document.getElementById('paramSearch').value.trim().toLowerCase();
+  document.querySelectorAll('.searchable').forEach(el=>{
+    el.classList.toggle('hidden', q && !el.innerText.toLowerCase().includes(q));
+  });
+}
+function clearSearch(){
+  document.getElementById('paramSearch').value='';
+  filterParams();
+}
+</script>
+</body>
+</html>

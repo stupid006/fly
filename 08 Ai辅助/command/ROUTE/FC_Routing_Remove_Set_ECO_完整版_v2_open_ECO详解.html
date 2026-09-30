@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FC remove_routes / remove_shapes / set_routing_rule / route_eco 中文详解</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --text:#1f2328; --muted:#667085;
+    --line:#dfe3e8; --blue:#2563eb; --blue2:#eff6ff; --green:#15803d;
+    --green2:#f0fdf4; --orange:#b45309; --orange2:#fff7ed; --red:#b91c1c; --red2:#fef2f2;
+    --purple:#7c3aed; --purple2:#f5f3ff; --code:#f7f8fa; --cyan:#0f766e; --cyan2:#f0fdfa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.62}
+  .wrap{max-width:1500px;margin:0 auto;padding:24px}
+  .hero{background:linear-gradient(135deg,#fff,#eef4ff);border:1px solid var(--line);border-radius:18px;padding:28px 30px;margin-bottom:20px;box-shadow:0 6px 20px rgba(0,0,0,.04)}
+  .hero h1{margin:0 0 8px;font-size:30px}
+  .hero p{margin:5px 0;color:var(--muted)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px}
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:10}
+  .tabbtn{border:1px solid var(--line);background:white;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:700}
+  .tabbtn.active{background:var(--blue);color:white;border-color:var(--blue)}
+  .tab{display:none}.tab.active{display:block}
+  .section{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 3px 12px rgba(0,0,0,.025)}
+  h2{font-size:23px;margin:0 0 14px}
+  h3{font-size:18px;margin:20px 0 10px}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .card{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff}
+  .card b{display:block;margin-bottom:5px}
+  .card.blue{background:var(--blue2);border-color:#bfdbfe}
+  .card.green{background:var(--green2);border-color:#bbf7d0}
+  .card.orange{background:var(--orange2);border-color:#fed7aa}
+  .card.red{background:var(--red2);border-color:#fecaca}
+  .card.purple{background:var(--purple2);border-color:#ddd6fe}
+  .card.cyan{background:var(--cyan2);border-color:#99f6e4}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .orig,.explain{border:1px solid var(--line);border-radius:12px;padding:16px}
+  .orig{background:#fbfbfc}.explain{background:#fff}
+  .label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800;margin-bottom:7px}
+  code,pre{font-family:"Cascadia Code","Consolas",monospace}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto;white-space:pre-wrap}
+  .param{border-top:1px dashed var(--line);padding:15px 0}.param:first-child{border-top:none}
+  .param-title{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .param-title code{font-size:15px;font-weight:800;color:#0f172a}
+  .tag{font-size:12px;border-radius:999px;padding:3px 8px;background:#eef2f7;color:#475467}
+  .flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+  .step{flex:1;min-width:170px;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
+  .arrow{display:flex;align-items:center;font-size:22px;color:#94a3b8}
+  .mini{font-size:13px;color:var(--muted)}
+  .warn{border-left:4px solid var(--orange);background:var(--orange2);padding:12px 14px;border-radius:8px;margin:12px 0}
+  .good{border-left:4px solid var(--green);background:var(--green2);padding:12px 14px;border-radius:8px;margin:12px 0}
+  .bad{border-left:4px solid var(--red);background:var(--red2);padding:12px 14px;border-radius:8px;margin:12px 0}
+  table{width:100%;border-collapse:collapse;margin:10px 0}
+  th,td{border:1px solid var(--line);padding:10px;vertical-align:top;text-align:left}
+  th{background:#f8fafc}
+  details{border:1px solid var(--line);border-radius:12px;background:white;margin:10px 0}
+  summary{cursor:pointer;padding:13px 15px;font-weight:800}
+  details .inside{padding:0 15px 15px}
+  .diagram{background:#fcfcfd;border:1px solid var(--line);border-radius:12px;padding:18px}
+  .lane{display:grid;grid-template-columns:150px 1fr;gap:12px;margin:8px 0;align-items:start}
+  .lane .name{font-weight:800}
+  .bar{padding:10px;border-radius:8px;border:1px solid var(--line);background:white}
+  .bar.keep{background:#eefdf3;border-color:#bbf7d0}
+  .bar.soft{background:#fff7ed;border-color:#fed7aa}
+  .bar.hard{background:#fef2f2;border-color:#fecaca}
+  .footer{color:var(--muted);font-size:13px;text-align:center;padding:8px 0 20px}
+  @media(max-width:900px){.summary{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.lane{grid-template-columns:1fr}.arrow{display:none}}
+  @media(max-width:560px){.summary{grid-template-columns:1fr}.wrap{padding:12px}.hero{padding:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<h1>Fusion Compiler：Remove Routes / Shapes → Set Rule → ECO Route</h1>
+<p>从“删整类 routing”到“精确删除具体 shape”，再到 routing rule 与 ECO reroute，一套串起来理解。</p>
+<div class="chips"><span class="chip">X-2025.06-SP1</span><span class="chip">remove_routes</span><span class="chip">remove_shapes</span><span class="chip">set_routing_rule</span><span class="chip">route_eco</span><span class="chip">ECO Routing Flow</span></div>
+</div>
+<div class="tabs"><button class="tabbtn active" onclick="showTab('remove',this)">① remove_routes</button><button class="tabbtn" onclick="showTab('shapes',this)">② remove_shapes</button><button class="tabbtn" onclick="showTab('compare',this)">③ routes vs shapes</button><button class="tabbtn" onclick="showTab('rule',this)">④ set_routing_rule</button><button class="tabbtn" onclick="showTab('eco',this)">⑤ route_eco</button><button class="tabbtn" onclick="showTab('combo',this)">⑥ 完整 ECO 流程</button></div>
+<!-- REMOVE ROUTES -->
+<div class="tab active" id="remove">
+<div class="section">
+<h2>一句话先抓住 <code>remove_routes</code></h2>
+<div class="summary">
+<div class="card red"><b>它不是“删 net”</b>它删除的是 net 上的 routing shapes：wire / via / fill / ring / stripe 等。</div>
+<div class="card blue"><b>必须指定 shape use</b>至少要带一个如 <code>-detail_route</code>、<code>-user_route</code> 等选项。</div>
+<div class="card orange"><b>可按 net / net type 筛选</b><code>-nets</code> 控具体 net，<code>-net_types</code> 控 signal/clock/power/ground 等。</div>
+<div class="card green"><b>ECO 典型用途</b>先删旧 detail route，再重新施加 routing rule，然后 <code>route_eco</code> 重走。</div>
+</div>
+<div class="warn"><b>最容易误解：</b><code>remove_routes</code> 不会删除逻辑连接，也不是 <code>disconnect_net</code>。它只是把物理走线 shape 从数据库里删掉，net 本身仍然存在。</div>
+</div>
+<div class="section">
+<h2>核心语法</h2>
+<pre>remove_routes
+  [-nets nets]
+  [-net_types list_of_net_types]
+  [-detail_route]
+  [-global_route]
+  [-user_route]
+  [-shield_route]
+  [-ring]
+  [-stripe]
+  [-lib_cell_pin_connect]
+  [-macro_pin_connect]
+  [-follow_pin]
+  [-core_wire]
+  [-zero_skew]
+  [-area_fill]
+  [-opc]
+  [-rdl]
+  [-keep_pg_pins_at_boundary]
+  [-keep_frozen_nets]</pre>
+<div class="bad"><b>必须注意：</b>man page 明确说这个命令至少要指定一个 <b>shape use option</b>。也就是说，单写 <code>remove_routes -nets $n</code> 是不完整的思路。</div>
+</div>
+<div class="section">
+<h2>先理解：它到底在删什么？</h2>
+<div class="diagram">
+<div class="lane"><div class="name">逻辑 Net</div><div class="bar keep">driver / load / connectivity 仍然保留</div></div>
+<div class="lane"><div class="name">Routing shapes</div><div class="bar hard">wire、via、detail route、user route、shield、ring、stripe... 可被删除</div></div>
+<div class="lane"><div class="name">删除后状态</div><div class="bar soft">逻辑还连着，但物理上可能变成 open，需要后续重新 route</div></div>
+</div>
+</div>
+<div class="section">
+<h2>筛选对象：<code>-nets</code> 与 <code>-net_types</code></h2>
+<div class="param">
+<div class="param-title"><code>-nets nets</code><span class="tag">指定具体 net</span></div>
+<div class="two">
+<div class="orig"><div class="label">MAN 原意</div>指定要删除 net shapes 的 nets。</div>
+<div class="explain"><div class="label">怎么理解</div>最适合 ECO：你已经知道哪几条 net 要重布，就只针对这些 net 删除指定 shape use。</div>
+</div>
+<pre>remove_routes -nets [get_nets n1] -detail_route</pre>
+</div>
+<div class="param">
+<div class="param-title"><code>-net_types list</code><span class="tag">按类型过滤</span></div>
+<p>可选：<code>analog_ground</code>、<code>analog_power</code>、<code>analog_signal</code>、<code>clock</code>、<code>power</code>、<code>ground</code>、<code>signal</code>、<code>tie_high</code>、<code>tie_low</code>。</p>
+<div class="warn">如果同时用了 <code>-nets</code> 和 <code>-net_types</code>，两者是<b>交集</b>。某个 net 即使在 <code>-nets</code> 里，但它不属于指定 net type，也会被忽略。</div>
+<pre># 只删除 n1/n2 中属于 signal 类型的 detail route
+remove_routes \
+    -nets [get_nets {n1 n2}] \
+    -net_types signal \
+    -detail_route</pre>
+</div>
+</div>
+<div class="section">
+<h2>Shape Use 选项：每一个到底删什么</h2>
+<table>
+<tr><th>选项</th><th>删除对象</th><th>常见理解</th></tr>
+<tr><td><code>-detail_route</code></td><td>shape_use = detail_route</td><td>最终 detail routing 的 wire/via，ECO 最常见</td></tr>
+<tr><td><code>-global_route</code></td><td>global route shapes</td><td>删除 global routing 结果</td></tr>
+<tr><td><code>-user_route</code></td><td>user route shapes</td><td>人为/用户生成的 routing</td></tr>
+<tr><td><code>-shield_route</code></td><td>shield route</td><td>shielding 相关走线</td></tr>
+<tr><td><code>-ring</code></td><td>ring shapes</td><td>常见于 PG ring</td></tr>
+<tr><td><code>-stripe</code></td><td>stripe shapes</td><td>常见于 PG stripe</td></tr>
+<tr><td><code>-lib_cell_pin_connect</code></td><td>lib cell pin connect</td><td>库 cell pin 附近连接 shape</td></tr>
+<tr><td><code>-macro_pin_connect</code></td><td>macro pin connect</td><td>macro pin 接出部分</td></tr>
+<tr><td><code>-follow_pin</code></td><td>follow pin shapes</td><td>standard cell rail / PG 常见</td></tr>
+<tr><td><code>-core_wire</code></td><td>core wire</td><td>PG core wire 类 shape</td></tr>
+<tr><td><code>-zero_skew</code></td><td>zero skew shapes</td><td>特殊 routing use</td></tr>
+<tr><td><code>-area_fill</code></td><td>area fill</td><td>routing fill</td></tr>
+<tr><td><code>-opc</code></td><td>OPC shapes</td><td>特殊用途 shape</td></tr>
+<tr><td><code>-rdl</code></td><td>RDL shapes</td><td>redistribution layer routing</td></tr>
+</table>
+</div>
+<div class="section">
+<h2><code>-keep_frozen_nets</code>：很重要</h2>
+<div class="two">
+<div class="orig"><div class="label">MAN 原意</div>保留 frozen nets 的 shapes。frozen net 指 <code>physical_status = locked</code> 的 net。</div>
+<div class="explain"><div class="label">实际意义</div>如果设计里有你明确 lock 住、不希望 ECO 过程中破坏的 routing，带这个选项可以避免它们被 <code>remove_routes</code> 删除。</div>
+</div>
+<pre>remove_routes \
+    -net_types signal \
+    -detail_route \
+    -keep_frozen_nets</pre>
+<div class="good">这和 <code>route_eco</code> 里 frozen net “router 不修改”的概念是对应的：一个负责删线时保护，一个负责重布时保护。</div>
+</div>
+<div class="section">
+<h2><code>-keep_pg_pins_at_boundary</code> 是干嘛的？</h2>
+<p>针对 PG routing。默认情况下，如果 cell boundary 上的 PG pin 被 PG net shape 覆盖，删除 PG route 时这些 pin 也会一起被移除。</p>
+<div class="good">加上 <code>-keep_pg_pins_at_boundary</code> 后，这些边界 PG pin 会被保留。</div>
+<div class="warn">而且 man page 特别强调：一旦保留下来，后续再次执行 <code>remove_routes</code> 时，因为这些 pin 已经不再被 PG route 覆盖，所以不会再被后续 remove 删除。</div>
+</div>
+<div class="section">
+<h2>最危险的情况：只写 shape use，不指定 net</h2>
+<pre>remove_routes -detail_route</pre>
+<div class="bad">
+        这不是“删当前选中的 net”。<br/>
+        man page 的行为是：删除所有可由 <code>-net_types</code> 表示的 net type 上的 detail-route shapes，<b>同时还会删除 no-net shapes</b>。
+      </div>
+<p>所以在 ECO 场景里，除非你真的想大范围清 route，否则建议明确带 <code>-nets</code> 或 <code>-net_types</code>。</p>
+</div>
+<div class="section">
+<h2>典型使用模板</h2>
+<details open="">
+<summary>模板 A：只删除某条 ECO net 的 detail route</summary>
+<div class="inside"><pre>set eco_nets [get_nets {n1 n2}]
+remove_routes -nets $eco_nets -detail_route</pre>
+<p>这是最像你实际 ECO 的写法。</p></div>
+</details>
+<details>
+<summary>模板 B：删除某条 net 的 detail + global route</summary>
+<div class="inside"><pre>remove_routes \
+    -nets [get_nets n1] \
+    -detail_route \
+    -global_route</pre>
+<p>相当于把该 net 的 routing 规划和 detail implementation 都清掉，后续重新 route 的变化更大。</p></div>
+</details>
+<details>
+<summary>模板 C：清 signal detail route，但保护 frozen nets</summary>
+<div class="inside"><pre>remove_routes \
+    -net_types signal \
+    -detail_route \
+    -keep_frozen_nets</pre></div>
+</details>
+</div>
+</div>
+<!-- SET ROUTING RULE -->
+<div class="tab" id="shapes">
+<div class="section">
+<h2>一句话先抓住 <code>remove_shapes</code></h2>
+<div class="summary">
+<div class="card blue"><b>操作对象</b>直接删除你明确指定的 shape objects。</div>
+<div class="card red"><b>不是按 net 类型删</b>它不关心 detail_route / signal / clock 这些高层语义，只认 shape collection。</div>
+<div class="card orange"><b>更像“手术刀”</b>适合只删一小段 wire/via/局部 geometry。</div>
+<div class="card green"><b>返回值</b>返回实际删除的 shape 数量。</div>
+</div>
+<div class="warn"><b>核心区别：</b><code>remove_shapes</code> 是 object-level 删除；<code>remove_routes</code> 是 routing-semantics-level 删除。</div>
+</div>
+<div class="section">
+<h2>核心语法</h2>
+<pre>remove_shapes
+  [-force]
+  [-verbose]
+  shape_list</pre>
+</div>
+<div class="section">
+<h2>参数解释</h2>
+<div class="param">
+<div class="param-title"><code>shape_list</code><span class="tag">真正的核心</span></div>
+<div class="two">
+<div class="orig"><div class="label">MAN 原意</div>指定要删除的 shapes，可以直接传入 <code>get_shapes</code> 得到的 collection。</div>
+<div class="explain"><div class="label">怎么理解</div>你先自己把具体 shape object 选出来，再交给 <code>remove_shapes</code>。工具不会像 <code>remove_routes</code> 那样再帮你根据 shape_use 或 net type 做二次语义筛选。</div>
+</div>
+<pre>set ss [get_shapes -of_objects [get_nets n1]]
+remove_shapes $ss</pre>
+</div>
+<div class="param">
+<div class="param-title"><code>-force</code><span class="tag">高风险</span></div>
+<div class="two">
+<div class="orig"><div class="label">MAN 原意</div>忽略 affected objects 的 locked status。若不带此选项且受影响对象被 locked，命令会报 Tcl error。</div>
+<div class="explain"><div class="label">怎么理解</div>默认行为是“看到 locked 就停”。加上 <code>-force</code> 后，工具会无视 locked 状态继续删，所以这是典型的危险开关。</div>
+</div>
+<div class="bad"><b>不要把 -force 当常规选项。</b>除非你明确知道 collection 中有哪些 locked 对象，以及为什么必须删除。</div>
+</div>
+<div class="param">
+<div class="param-title"><code>-verbose</code><span class="tag">调试/确认</span></div>
+<p>逐个显示被删掉的 shape，适合你想确认到底删了哪些对象。</p>
+<pre>remove_shapes -verbose $ss</pre>
+</div>
+</div>
+<div class="section">
+<h2>它删掉 shape 后，数据库发生什么？</h2>
+<p>man page 说明：被删除的 shape 会与其关联的 <b>net、port、terminal、layer、edit group</b> 等解除关联。</p>
+<div class="diagram">
+<div class="lane"><div class="name">普通 routing shape</div><div class="bar hard">shape 删除；对应物理 geometry 消失</div></div>
+<div class="lane"><div class="name">Terminal shape</div><div class="bar hard">shape 删除，同时 associated terminal 也删除</div></div>
+<div class="lane"><div class="name">Port shape</div><div class="bar soft">shape / associated terminal 删除，但 port 本身仍保留</div></div>
+</div>
+<div class="bad"><b>因此：</b>如果你的 <code>get_shapes</code> collection 取得太宽，不小心包含 terminal/port 相关 shape，后果不只是“少了一小段线”。</div>
+</div>
+<div class="section">
+<h2>一个最直观的例子</h2>
+<pre># net_A 上有很多 shape
+set all_shapes [get_shapes -of_objects [get_nets net_A]]
+
+# 但我只拿其中某一小段
+set target_shape [get_shapes -filter "name == PATH_18_1906"]
+
+# 只删这一段
+remove_shapes -verbose $target_shape</pre>
+<div class="diagram">
+<div class="lane"><div class="name">删除前</div><div class="bar keep">shape_1 ─ shape_2 ─ shape_3 ─ shape_4</div></div>
+<div class="lane"><div class="name">remove_shapes</div><div class="bar hard">只删除 shape_2</div></div>
+<div class="lane"><div class="name">删除后</div><div class="bar soft">shape_1 ─ [OPEN] ─ shape_3 ─ shape_4</div></div>
+</div>
+</div>
+<div class="section">
+<h2>什么时候它比 <code>remove_routes</code> 更合适？</h2>
+<table>
+<tr><th>场景</th><th>更适合的命令</th><th>原因</th></tr>
+<tr><td>整条 net 的 detail route 准备重走</td><td><code>remove_routes</code></td><td>按 net + shape_use 语义删除，更安全、更直接</td></tr>
+<tr><td>只想删 M6 上某一小段 wire</td><td><code>remove_shapes</code></td><td>可以精确到具体 shape object</td></tr>
+<tr><td>只想删某几个 via</td><td><code>remove_shapes</code></td><td>object-level 精准控制</td></tr>
+<tr><td>想清某条 net 的所有 detail_route</td><td><code>remove_routes</code></td><td>无需自己枚举所有 shapes</td></tr>
+</table>
+</div>
+</div>
+<div class="tab" id="compare">
+<div class="section">
+<h2><code>remove_routes</code> vs <code>remove_shapes</code></h2>
+<div class="summary">
+<div class="card red"><b>remove_routes</b>按 net / net type / shape_use 批量拆线。</div>
+<div class="card blue"><b>remove_shapes</b>按具体 shape object 精确删除。</div>
+<div class="card orange"><b>前者像“拆一类线”</b>更适合 reroute 某条 net。</div>
+<div class="card green"><b>后者像“手术刀”</b>更适合局部 geometry 修补。</div>
+</div>
+</div>
+<div class="section">
+<h2>对比表</h2>
+<table>
+<tr><th>维度</th><th>remove_routes</th><th>remove_shapes</th></tr>
+<tr><td>操作层级</td><td>Routing / Net 语义层级</td><td>Shape object 层级</td></tr>
+<tr><td>输入</td><td>net、net_type、shape_use</td><td>具体 shape collection</td></tr>
+<tr><td>是否自动按 shape_use 筛</td><td>是</td><td>否</td></tr>
+<tr><td>是否适合整条 net 重走</td><td>非常适合</td><td>一般不优先</td></tr>
+<tr><td>是否适合只删一小段 wire</td><td>不够精细</td><td>非常适合</td></tr>
+<tr><td>locked 行为</td><td><code>-keep_frozen_nets</code> 可保护 frozen net</td><td>默认遇 locked 报错；<code>-force</code> 可强删</td></tr>
+<tr><td>terminal / port 影响</td><td>通常按 routing shape use 删除</td><td>删 terminal shape 会连 terminal 一起删；port shape 删除后 port 本身可保留</td></tr>
+<tr><td>典型用途</td><td>Remove → Set Rule → route_eco</td><td>局部切线、局部删 via、精细修 route</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>最关键的思维差异</h2>
+<div class="flow">
+<div class="step">
+<b>remove_routes</b>
+<div class="mini">“我要把 net_A 的 detail route 全清掉。”</div>
+</div>
+<div class="arrow">VS</div>
+<div class="step">
+<b>remove_shapes</b>
+<div class="mini">“我要把 PATH_18_1906 这一段具体 shape 删掉。”</div>
+</div>
+</div>
+</div>
+<div class="section">
+<h2>同一条 net 上的例子</h2>
+<pre>net_A
+ ├─ shape_1   detail_route
+ ├─ shape_2   detail_route
+ ├─ shape_3   detail_route
+ ├─ shape_4   user_route
+ └─ shape_5   lib_cell_pin_connect</pre>
+<h3>如果用 remove_routes</h3>
+<pre>remove_routes \
+    -nets [get_nets net_A] \
+    -detail_route</pre>
+<p>结果：<code>shape_1/2/3</code> 被删；<code>shape_4/5</code> 保留。</p>
+<h3>如果用 remove_shapes</h3>
+<pre>set ss [get_shapes {shape_2 shape_4}]
+remove_shapes $ss</pre>
+<p>结果：只删 <code>shape_2</code> 和 <code>shape_4</code>，不关心它们分别是什么 shape_use。</p>
+</div>
+<div class="section">
+<h2>选择命令的小判断树</h2>
+<div class="diagram">
+<div class="lane"><div class="name">问题 1</div><div class="bar keep">我要整条 net / 一整类 route 重走？ → <b>remove_routes</b></div></div>
+<div class="lane"><div class="name">问题 2</div><div class="bar soft">我只想删某一小段 wire / via？ → <b>remove_shapes</b></div></div>
+<div class="lane"><div class="name">问题 3</div><div class="bar hard">我不确定 get_shapes 里到底有什么？ → 先 report / filter，别直接 remove_shapes -force</div></div>
+</div>
+</div>
+</div>
+<div class="tab" id="rule">
+<div class="section">
+<h2>一句话先抓住 <code>set_routing_rule</code></h2>
+<div class="summary">
+<div class="card blue"><b>它在干什么</b>给指定 net 绑定 routing rule / min layer / max layer / layer mode。</div>
+<div class="card green"><b>NDR</b>可通过 <code>-rule</code> 指定用 <code>create_routing_rule</code> 建好的 nondefault rule。</div>
+<div class="card orange"><b>Layer 约束</b>可以限制某 net 最低/最高在哪些金属层范围走。</div>
+<div class="card purple"><b>关键区别</b><code>soft</code> 是“尽量别越界”，<code>hard</code> 才是“绝对不许越界”。</div>
+</div>
+</div>
+<div class="section">
+<h2>核心语法</h2>
+<pre>set_routing_rule
+  [-rule rule | -default_rule | -no_rule]
+  [-min_routing_layer layer]
+  [-max_routing_layer layer]
+  [-min_layer_mode mode]
+  [-max_layer_mode mode]
+  [-min_layer_mode_soft_cost cost]
+  [-max_layer_mode_soft_cost cost]
+  [-min_layer_is_user true|false]
+  [-max_layer_is_user true|false]
+  [-clear]
+  [net_list]</pre>
+</div>
+<div class="section">
+<h2>三个 routing rule 状态</h2>
+<table>
+<tr><th>选项</th><th>实际含义</th><th>直观理解</th></tr>
+<tr><td><code>-rule WideMetal</code></td><td>明确给 net 绑定一个 NDR</td><td>“就用这个规则”</td></tr>
+<tr><td><code>-default_rule</code></td><td>明确指定默认 routing rule</td><td>“走默认线宽/间距”</td></tr>
+<tr><td><code>-no_rule</code></td><td>移除当前显式 rule，让工具自动决定</td><td>“我不指定，交给工具”</td></tr>
+</table>
+<div class="warn"><code>-rule</code>、<code>-default_rule</code>、<code>-no_rule</code> 三个互斥。</div>
+</div>
+<div class="section">
+<h2>Min / Max Routing Layer + Mode</h2>
+<table>
+<tr><th>Mode</th><th>是否允许越界</th><th>解释</th></tr>
+<tr><td><code>unknown</code></td><td>取全局 option</td><td>min 用 <code>route.common.net_min_layer_mode</code>，max 类似</td></tr>
+<tr><td><code>extract_only</code></td><td>routing 阶段不作为实际约束</td><td>主要给 extraction 使用</td></tr>
+<tr><td><code>soft</code></td><td>允许</td><td>越界会增加 cost</td></tr>
+<tr><td><code>allow_pin_connection</code></td><td>有限允许</td><td>pin connection 或极端拥塞修 DRC 时允许</td></tr>
+<tr><td><code>hard</code></td><td>不允许</td><td>严格禁止越界</td></tr>
+</table>
+<div class="good"><b>最好记：</b><code>soft</code> = “能破例，但有代价”；<code>hard</code> = “不能破例”。</div>
+</div>
+<div class="section">
+<h2><code>soft cost</code></h2>
+<table>
+<tr><th>值</th><th>意思</th></tr>
+<tr><td><code>low</code></td><td>越界惩罚较低</td></tr>
+<tr><td><code>medium</code></td><td>中等惩罚</td></tr>
+<tr><td><code>high</code></td><td>强烈不希望越界</td></tr>
+<tr><td><code>unknown</code></td><td>不在 net 上显式指定 cost</td></tr>
+</table>
+</div>
+<div class="section">
+<h2><code>-clear</code>：会清一整套 net-based routing constraint</h2>
+<pre>set_routing_rule -clear [get_nets n1]</pre>
+<div class="bad"><code>-clear</code> 不只是清 NDR，还会清 min/max routing layer、mode、soft cost 等。</div>
+</div>
+<div class="section">
+<h2>典型例子</h2>
+<pre># NDR
+set_routing_rule -rule WideMetal [get_nets B_CLK]
+
+# 主体希望在 M4~M8，pin connection 可破例
+set_routing_rule \
+    -min_routing_layer M4 \
+    -max_routing_layer M8 \
+    -min_layer_mode allow_pin_connection \
+    -max_layer_mode allow_pin_connection \
+    [get_nets critical_net]</pre>
+</div>
+</div>
+<!-- ROUTE ECO -->
+<div class="tab" id="eco">
+<div class="section">
+<h2>一句话先抓住 <code>route_eco</code></h2>
+<div class="summary">
+<div class="card blue"><b>使用时机</b>signal routing 已经完成之后。</div>
+<div class="card green"><b>第一件事</b>连接 open net。</div>
+<div class="card orange"><b>第二件事</b>修 ECO area 中的 routing DRC。</div>
+<div class="card red"><b>最大误区</b>指定 <code>-nets</code> 不代表修 DRC 时绝对只动这些 net。</div>
+</div>
+</div>
+<div class="section">
+<h2>核心语法</h2>
+<pre>route_eco
+  [-max_detail_route_iterations count]
+  [-nets nets]
+  [-cells cells]
+  [-shapes shapes]
+  [-open_net_driven true|false]
+  [-max_reported_nets limit]
+  [-reroute modified_nets_only |
+            modified_nets_first_then_others |
+            any_nets]
+  [-reuse_existing_global_route true|false]
+  [-utilize_dangling_wires true|false]</pre>
+</div>
+<div class="section">
+<h2><code>-reroute</code> 三种模式</h2>
+<table>
+<tr><th>模式</th><th>行为</th><th>改动倾向</th></tr>
+<tr><td><code>modified_nets_only</code></td><td>只动存在 open ECO change 的 nets</td><td>最小，但可能修不掉</td></tr>
+<tr><td><code>modified_nets_first_then_others</code></td><td>先只动 modified nets，不行再动其它 fully connected nets</td><td>折中，日常 ECO 很实用</td></tr>
+<tr><td><code>any_nets</code></td><td>允许自由 reroute 任意 net 修 DRC</td><td>最大，收敛能力强</td></tr>
+</table>
+</div><div class="section">
+<h2>重点展开：什么叫“只动存在 open ECO change 的 nets”？</h2>
+<div class="summary">
+<div class="card blue"><b>modified net</b>因为 ECO 操作而发生了物理连接变化、当前需要重新接通的 net。</div>
+<div class="card red"><b>open ECO change</b>ECO 改完后，这条 net 在物理 routing 上留下了“未完成连接 / open”。</div>
+<div class="card orange"><b>fully connected net</b>当前物理上已经完整连通，没有因为这次 ECO 留下 open。</div>
+<div class="card green"><b>modified_nets_only</b>只允许 router 修改前一类 net；其它已连通 net 当作冻结背景。</div>
+</div>
+<div class="good">
+<b>最简单的中文：</b><br/>
+    “只动存在 open ECO change 的 nets” ≈
+    <b>只允许重新布那些因为这次 ECO 被你改断、改开、或者拓扑发生变化而还没重新接好的 net。</b>
+</div>
+</div><div class="section">
+<h2>先区分三个概念：Modified / Open / DRC</h2>
+<table>
+<tr><th>状态</th><th>含义</th><th>是不是 modified net？</th></tr>
+<tr>
+<td><b>Modified + Open</b></td>
+<td>这次 ECO 改了连接或删了 routing，导致物理连接还没完成</td>
+<td><b>是，正是 modified_nets_only 主要允许修改的对象</b></td>
+</tr>
+<tr>
+<td><b>Fully connected + DRC</b></td>
+<td>net 本身是连通的，但与别的 wire 太近、short、via spacing 等有 DRC</td>
+<td>通常不是“open ECO change net”</td>
+</tr>
+<tr>
+<td><b>Fully connected + clean</b></td>
+<td>已经连通，也没有相关问题</td>
+<td>不是</td>
+</tr>
+</table>
+<div class="warn">
+<b>关键：</b>“open ECO change”不是“只要有 DRC 就算 open”。<br/>
+<b>Open</b>讲的是连接没完成；<b>DRC</b>讲的是几何规则不合法。两件事完全不同。
+  </div>
+</div><div class="section">
+<h2>例 1：插一个 Buffer，为什么会产生 open ECO change？</h2>
+<h3>ECO 前</h3>
+<pre>U1/Z  ==============================  U2/A
+             net_A 已经连通</pre>
+<h3>逻辑 ECO：中间插入 BUF1</h3>
+<pre>U1/Z  --------&gt; BUF1/A
+BUF1/Z --------&gt; U2/A</pre>
+<p>逻辑拓扑已经变成两段，但原来的物理 routing geometry 还是旧拓扑，所以工具需要重新把新连接接起来。</p>
+<div class="diagram">
+<div class="lane">
+<div class="name">ECO 前</div>
+<div class="bar keep">U1/Z ━━━━━━━━━━━━━━━━━ U2/A</div>
+</div>
+<div class="lane">
+<div class="name">插 Buffer 后</div>
+<div class="bar hard">U1/Z ── X ── BUF1/A     BUF1/Z ── X ── U2/A</div>
+</div>
+<div class="lane">
+<div class="name">Router 看到</div>
+<div class="bar soft">存在因为 ECO 新拓扑造成的 open，需要 reconnect</div>
+</div>
+</div>
+<p>这类 net 就是 man page 里说的 <b>nets with open ECO changes</b> 的典型例子。</p>
+</div><div class="section">
+<h2>例 2：你手工 remove 一段 shape，也会形成 open</h2>
+<pre># 原本 net_A 已经完整连通
+set ss [get_shapes ...]
+
+# 删除中间一段
+remove_shapes $ss</pre>
+<div class="diagram">
+<div class="lane">
+<div class="name">删除前</div>
+<div class="bar keep">Driver ━━━━━━━━━━━━━━━━━━━━━ Load</div>
+</div>
+<div class="lane">
+<div class="name">remove_shapes 后</div>
+<div class="bar hard">Driver ━━━━━━━ X     X ━━━━━━━ Load</div>
+</div>
+<div class="lane">
+<div class="name">结果</div>
+<div class="bar soft">逻辑 net 还存在，但 physical route 被切开 → open</div>
+</div>
+</div>
+<p>如果这条 net 正是本次 ECO 要修的对象，那么 route_eco 会把它视作需要重新连接的 modified/open net。</p>
+</div><div class="section">
+<h2>例 3：另一条 Net B 没被 ECO 改过，但它挡路</h2>
+<pre>Net A：ECO 后 open，需要从这里重新接
+Net B：本来就是完整连通的，但正好占着 A 想走的位置</pre>
+<div class="diagram">
+<div class="lane">
+<div class="name">Net A</div>
+<div class="bar hard">────── X         X ──────  ← open ECO net</div>
+</div>
+<div class="lane">
+<div class="name">Net B</div>
+<div class="bar keep">━━━━━━━━━━━━━━━━━━━━━━  ← fully connected</div>
+</div>
+<div class="lane">
+<div class="name">冲突</div>
+<div class="bar soft">A 如果绕回来，可能和 B spacing 不够；移动 B 才更容易修掉</div>
+</div>
+</div>
+<h3>如果用 <code>modified_nets_only</code></h3>
+<pre>route_eco \
+    -nets $eco_nets \
+    -reroute modified_nets_only</pre>
+<p>Router 的思路近似于：</p>
+<pre>Net A：可以动 ✅
+Net B：已经 fully connected，不许动 ❌
+
+我要在不碰 B 的情况下把 A 接起来并满足 DRC。</pre>
+<div class="bad">
+    如果周围空间太挤，A 根本没有合法路径，而 B 又不允许挪，
+    那么 <code>modified_nets_only</code> 就可能失败或留下 violation。
+  </div>
+</div><div class="section">
+<h2>这就是三种 <code>-reroute</code> 的本质差别</h2>
+<table>
+<tr>
+<th>模式</th>
+<th>第一步</th>
+<th>如果 modified net 自己修不掉</th>
+<th>对已有 routing 的保护程度</th>
+</tr>
+<tr>
+<td><code>modified_nets_only</code></td>
+<td>只动 open ECO modified nets</td>
+<td><b>不允许</b>借助其它 fully connected nets 重绕</td>
+<td>★★★★★ 最强</td>
+</tr>
+<tr>
+<td><code>modified_nets_first_then_others</code></td>
+<td>先只动 modified nets</td>
+<td>若还有 violation，再允许动其它 fully connected nets</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td><code>any_nets</code></td>
+<td>不强调先保护谁</td>
+<td>可以自由修改其它 nets 来修 DRC</td>
+<td>★★☆☆☆</td>
+</tr>
+</table>
+<div class="good">
+    所以你可以把它们背成：<br/>
+<b>only：</b>“只修我这次改坏的。”<br/>
+<b>first_then_others：</b>“先只修我改坏的，实在不行再挪邻居。”<br/>
+<b>any：</b>“谁挡路就可能重绕谁，优先把 routing 修合法。”
+  </div>
+</div><div class="section">
+<h2>为什么 Synopsys 说 <code>modified_nets_only</code> 只适合 very minor ECO？</h2>
+<p>因为它把周围已经完整连接的 routing 都当成几乎不能动的背景。</p>
+<div class="flow">
+<div class="step"><b>小 ECO</b><div class="mini">只插 1 个 buffer / 只删一小段 wire</div></div>
+<div class="arrow">→</div>
+<div class="step"><b>附近还有空 track</b><div class="mini">modified net 自己就能绕回来</div></div>
+<div class="arrow">→</div>
+<div class="step"><b>modified_nets_only 可行</b><div class="mini">变化最小</div></div>
+</div>
+<br/>
+<div class="flow">
+<div class="step"><b>较大 ECO</b><div class="mini">多个 cell / nets 被改</div></div>
+<div class="arrow">→</div>
+<div class="step"><b>局部拥塞</b><div class="mini">旧 routing 把路占满</div></div>
+<div class="arrow">→</div>
+<div class="step"><b>只动 modified nets 不够</b><div class="mini">需要挪其它 net 才能解 DRC</div></div>
+</div>
+</div><div class="section">
+<h2>跟你前面“remove 一段 shape”的问题串起来</h2>
+<pre># 1) 先保存 net
+set ss [get_shapes ...]
+set n  [get_nets -of_objects $ss]
+
+# 2) 删除其中一小段 route
+remove_shapes $ss
+
+# 此时：
+#   逻辑 net 仍存在
+#   物理连接被切开
+#   n 变成需要 ECO reconnect 的对象
+
+# 3) 如果需要，先给整条 net 新 routing rule
+set_routing_rule \
+    -min_routing_layer D6 \
+    -min_layer_mode hard \
+    $n
+
+# 4) ECO route
+route_eco \
+    -nets $n \
+    -reroute modified_nets_only</pre>
+<p>这时 <code>modified_nets_only</code> 的含义就是：</p>
+<div class="good">
+<b>“只允许 router 改我刚刚因为 ECO 切开的这条 net；周围那些原本完整连接的 nets 都尽量保持原样。”</b>
+</div>
+<div class="warn">
+    但 <code>set_routing_rule</code> 是作用于<b>整条 net</b>的，不是只作用于你删掉的那一小段 shape。
+    已经存在且未被删除的旧 shapes 通常不会因为你刚 set rule 就自动重走；真正重新生成的部分才会在 routing 时受当前 rule 约束。
+  </div>
+</div><div class="section">
+<h2>一个最容易混淆的问题：open net ≠ modified net ≠ DRC net</h2>
+<table>
+<tr><th>对象</th><th>连接状态</th><th>是不是这次 ECO 改出来的</th><th>modified_nets_only 会不会主动允许重绕</th></tr>
+<tr><td>Net A</td><td>Open</td><td>是</td><td><b>会</b></td></tr>
+<tr><td>Net B</td><td>Fully connected，但 spacing DRC</td><td>否</td><td><b>不会</b></td></tr>
+<tr><td>Net C</td><td>Fully connected</td><td>否</td><td>不会</td></tr>
+</table>
+<p>所以 man page 里说：</p>
+<div class="card purple">
+<b>“freezes all the fully connected nets”</b>
+    就是：先把那些已经完整接好的 net 当作不可动背景，只尝试靠 modified/open ECO nets 自己完成修复。
+  </div>
+</div>
+<div class="section">
+<h2>其它关键参数</h2>
+<div class="param">
+<div class="param-title"><code>-reuse_existing_global_route true</code></div>
+<p>尽量复用已有 global route，更符合增量 ECO 思路。</p>
+</div>
+<div class="param">
+<div class="param-title"><code>-utilize_dangling_wires true</code></div>
+<p>尽量复用 ECO 后留下的 dangling wires，默认 true。</p>
+</div>
+<div class="param">
+<div class="param-title"><code>-max_reported_nets</code></div>
+<p>只控制最后报告多少 changed nets，不限制实际修改多少。</p>
+</div>
+<div class="param">
+<div class="param-title"><code>-open_net_driven true</code></div>
+<p>不带 <code>-nets</code> 时，可让 DRC 修复聚焦 open net 邻域；带 <code>-nets</code> 时该选项被忽略。</p>
+</div>
+</div>
+<div class="section">
+<h2>推荐小 ECO 模板</h2>
+<pre>check_routes
+
+route_eco \
+    -nets $eco_nets \
+    -utilize_dangling_wires true \
+    -reuse_existing_global_route true \
+    -reroute modified_nets_first_then_others</pre>
+</div>
+</div>
+<!-- COMBO -->
+<div class="tab" id="combo">
+<div class="section"><h2>完整 ECO 流程：大多数情况用 remove_routes，局部修补可用 remove_shapes</h2>
+<div class="flow">
+<div class="step"><b>① 选择删除方式</b><div class="mini">整条 net：remove_routes<br/>局部 geometry：remove_shapes</div></div>
+<div class="arrow">→</div>
+<div class="step"><b>② set_routing_rule</b><div class="mini">定义 NDR、min/max layer、mode</div></div>
+<div class="arrow">→</div>
+<div class="step"><b>③ check_routes</b><div class="mini">更新 routing violation 信息</div></div>
+<div class="arrow">→</div>
+<div class="step"><b>④ route_eco</b><div class="mini">重新接通并修 DRC</div></div>
+</div>
+</div>
+<div class="section">
+<h2>为什么顺序是这个？</h2>
+<table>
+<tr><th>阶段</th><th>工具目的</th><th>数据库变化</th></tr>
+<tr><td>Remove</td><td>去掉旧 routing 几何</td><td>net 还在，但 wire/via 被删，可能形成 open</td></tr>
+<tr><td>Set</td><td>规定新 route 应遵循什么约束</td><td>更新 net-based routing constraints</td></tr>
+<tr><td>ECO Route</td><td>按照新约束真正重布</td><td>生成新的 route shapes，并修 DRC</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>一套完整 Tcl 示例</h2>
+<pre># ------------------------------------------------------------
+# Step 0 : ECO nets
+# ------------------------------------------------------------
+set eco_nets [get_nets {n1 n2}]
+
+# ------------------------------------------------------------
+# Step 1 : Remove old route
+# 只删 detail route，不删逻辑连接
+# ------------------------------------------------------------
+remove_routes \
+    -nets $eco_nets \
+    -detail_route \
+    -keep_frozen_nets
+
+# ------------------------------------------------------------
+# Step 2 : Set routing constraints
+# 主体希望走 M4~M8，但 pin connection 可以特殊越界
+# ------------------------------------------------------------
+set_routing_rule \
+    -min_routing_layer M4 \
+    -max_routing_layer M8 \
+    -min_layer_mode allow_pin_connection \
+    -max_layer_mode soft \
+    -max_layer_mode_soft_cost high \
+    $eco_nets
+
+# ------------------------------------------------------------
+# Step 3 : Update routing checks
+# ------------------------------------------------------------
+check_routes
+
+# ------------------------------------------------------------
+# Step 4 : ECO reroute
+# 先只动 modified nets；修不掉再允许动邻近其它 net
+# ------------------------------------------------------------
+route_eco \
+    -nets $eco_nets \
+    -reroute modified_nets_first_then_others \
+    -reuse_existing_global_route true \
+    -utilize_dangling_wires true</pre>
+</div>
+<div class="section">
+<h2>这三个命令之间最核心的关系</h2>
+<div class="summary">
+<div class="card red"><b>remove_routes</b>决定“旧线删什么”。</div>
+<div class="card orange"><b>set_routing_rule</b>决定“新线应该怎么走”。</div>
+<div class="card green"><b>route_eco</b>决定“现在真正把它重新走出来”。</div>
+<div class="card blue"><b>check_routes</b>负责把当前 routing violation 信息更新到最新。</div>
+</div>
+</div>
+<div class="section">
+<h2>局部 shape ECO 示例</h2>
+<pre># 1) 精确拿到目标 shape
+set target_shapes [get_shapes -filter "name =~ PATH_18_*"]
+
+# 2) 删除前先保存其所属 net
+set target_net [get_nets -of_objects $target_shapes]
+
+# 3) 建议先确认 collection
+sizeof_collection $target_shapes
+get_object_name $target_shapes
+get_object_name $target_net
+
+# 4) 删除指定 shape
+remove_shapes -verbose $target_shapes
+
+# 5) 如果该 net 需要新的 routing 约束
+set_routing_rule \
+    -min_routing_layer M4 \
+    -max_routing_layer M8 \
+    -min_layer_mode allow_pin_connection \
+    -max_layer_mode soft \
+    $target_net
+
+# 6) 重新 ECO route
+check_routes
+route_eco \
+    -nets $target_net \
+    -reroute modified_nets_first_then_others</pre>
+<div class="warn"><b>注意：</b>实际脚本里更稳妥的做法是，在删除 shape 前先把对应 net collection 保存到变量中，避免 shape 删除后再依赖已删除对象反查 net。</div>
+</div>
+<div class="section">
+<h2>你实际做 ECO 时的检查思路</h2>
+<table>
+<tr><th>动作</th><th>建议检查</th></tr>
+<tr><td>remove 前</td><td>确认 net 名、net type、准备删除的 shape use，避免范围过大</td></tr>
+<tr><td>set rule 后</td><td>确认 NDR / min-max layer / mode 是否真设到了目标 net</td></tr>
+<tr><td>route_eco 后</td><td>看 open、short、spacing、changed nets，以及 timing 是否受影响</td></tr>
+</table>
+<div class="bad"><b>尤其别直接用：</b><code>remove_routes -detail_route</code>，除非你明确就是想大范围清整个设计的 detail route。</div>
+</div>
+<div class="section">
+<h2>补充：为什么小 ECO 常用 modified_nets_first_then_others？</h2>
+<p>因为它先按照 <code>modified_nets_only</code> 的方式保护已有 routing；只有 modified/open ECO net 自己修不掉时，才逐步允许其它 fully connected nets 参与重绕。</p>
+<div class="good"><b>它本质上是：</b>“优先最小改动，但不为了最小改动把自己卡死。”</div>
+</div></div>
+<div class="footer">根据你提供的 Synopsys Fusion Compiler X-2025.06-SP1 man pages 整理：remove_routes / remove_shapes / set_routing_rule / route_eco。</div>
+</div>
+<script>
+function showTab(id, btn){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tabbtn').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

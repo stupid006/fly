@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "08 Ai辅助/Flow/01 Place/00.md",
+                "file": "07-Project/dma_ep_ss_top/笔记/929.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "00"
+              "title": "929"
             }
           },
           {
@@ -33,6 +33,20 @@
               },
               "icon": "lucide-file",
               "title": "暂时"
+            }
+          },
+          {
+            "id": "d76efe8dd318e96b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "07-Project/dma_ep_ss_top/run/9018v2.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "9018v2"
             }
           }
         ]
@@ -205,14 +219,31 @@
   },
   "active": "6e3eeeeacbab43c3",
   "lastOpenFiles": [
-    "07-Project/dma_ep_ss_top/run/9018v2.md",
-    "08 Ai辅助/Flow/01 Place/FC_Place_log_穿插式逐段详解版_全流程完善版.html",
+    "07-Project/dma_ep_ss_top/笔记/930.md",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930135800.png",
     "08 Ai辅助/command/ECO/01 add_buffer_on_route.md",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930112216.png",
+    "08 Ai辅助/command/ROUTE/01 ECO route.md",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930103202.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930103134.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930100946.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930100743.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930100704.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930095802.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930095650.png",
+    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930095150.png",
+    "07-Project/dma_ep_ss_top/笔记/929.md",
+    "08 Ai辅助/command/ECO/02 Eco_fix_timing.md",
+    "08 Ai辅助/command/ECO/03 noise.md",
+    "07-Project/dma_ep_ss_top/run/9018v2.md",
     "07-Project/dma_ep_ss_top/暂时.md",
-    "08 Ai辅助/command/ECO/add_buffer_on_route_中文详解.html",
+    "08 Ai辅助/command/ROUTE/FC_Routing_Remove_Set_ECO_完整版_v2_open_ECO详解.html",
+    "08 Ai辅助/command/ECO/FC_Routing_Remove_Set_ECO_完整版_v2_open_ECO详解.html",
+    "08 Ai辅助/command/ECO/PrimeTime_ECO_fix_eco_drc_fix_eco_timing_参数详解.html",
     "08 Ai辅助/Flow/01 Place/00.md",
+    "08 Ai辅助/Flow/01 Place/FC_Place_log_穿插式逐段详解版_全流程完善版.html",
+    "08 Ai辅助/command/ECO/add_buffer_on_route_中文详解.html",
     "08 Ai辅助/Flow/01 Place/FC_Place_log.html",
-    "07-Project/dma_ep_ss_top/附件/Pasted image 20260928140616.png",
     "07-Project/dma_ep_ss_top/笔记/920  921.md",
     "07-Project/dma_ep_ss_top/笔记/923.md",
     "08 Ai辅助/Flow/02 Cts/00.md",
@@ -221,34 +252,17 @@
     "08 Ai辅助/Flow/02 Cts",
     "08 Ai辅助/Flow/01 Place",
     "08 Ai辅助/command/ECO",
-    "08 Ai辅助/command/ROUTE",
-    "08 Ai辅助/command/CTS",
-    "08 Ai辅助/command",
-    "07-Project/dma_ep_ss_top/run/附件/Pasted image 20260928102341.png",
-    "07-Project/dma_ep_ss_top/run/附件/企业微信截图_17905617634542.png",
     "07-Project/dma_ep_ss_top/相关知识/03.CTS.log.md",
     "07-Project/dma_ep_ss_top/相关知识/ai辅助阅读.md",
     "07-Project/dma_ep_ss_top/笔记/920 1.md",
     "07-Project/dma_ep_ss_top/相关知识/02.PLACE.log.md",
     "07-Project/dma_ep_ss_top/相关知识/TSMC 标准单元库.md",
     "10-SDC/set_false_path.md",
-    "07-Project/dma_ep_ss_top/run/附件/Pasted image 20260924104325.png",
-    "07-Project/dma_ep_ss_top/run/附件/Pasted image 20260924104145.png",
-    "07-Project/dma_ep_ss_top/附件/Pasted image 20260924094637.png",
-    "07-Project/dma_ep_ss_top/run/附件/Pasted image 20260923125047.png",
-    "07-Project/dma_ep_ss_top/run/附件/Pasted image 20260923124638.png",
     "03-PT/ECO/fix_eco_timing.md",
-    "07-Project/dma_ep_ss_top/附件/Pasted image 20260923103517.png",
-    "07-Project/dma_ep_ss_top/附件/Pasted image 20260923103502.png",
     "07-Project/dma_ep_ss_top/笔记/918.md",
     "07-Project/dma_ep_ss_top/相关知识/ECC.md",
     "07-Project/dma_ep_ss_top/笔记/917.md",
     "07-Project/dma_ep_ss_top/qor分析/sum.md",
-    "07-Project/dma_ep_ss_top/qor分析/run4 ：8313_grouppath3.md",
-    "07-Project/dma_ep_ss_top/qor分析/run1：8313.md",
-    "07-Project/dma_ep_ss_top/qor分析/9018.md",
-    "07-项目经验/dma_ep_ss_top/相关知识/03.CTS.log.md",
-    "07-Project/dma_ep_ss_top/qor分析/run3：8313_grouppath2.md",
-    "07-Project/dma_ep_ss_top/qor分析/run2：8313grouppath1.md"
+    "07-Project/dma_ep_ss_top/qor分析/run4 ：8313_grouppath3.md"
   ]
 }
