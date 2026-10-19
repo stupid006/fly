@@ -4,52 +4,39 @@
     "type": "split",
     "children": [
       {
-        "id": "60c76562604526ae",
+        "id": "97e661806c9493c9",
         "type": "tabs",
         "children": [
           {
-            "id": "6e3eeeeacbab43c3",
+            "id": "c9e4760edcf2212b",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07-Project/dma_ep_ss_top/暂时.md",
+                "file": "05 笔记/202610/1019.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "暂时"
+              "title": "1019"
             }
           },
           {
-            "id": "92bdca845455a6fc",
+            "id": "ef0f141bd6ae715a",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07-Project/dma_ep_ss_top/笔记/929.md",
+                "file": "01-基础知识/数字后端/Flow/00 流程顺序.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "929"
-            }
-          },
-          {
-            "id": "d76efe8dd318e96b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "08 Ai辅助/command/ECO/01 add_buffer_on_route.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "01 add_buffer_on_route"
+              "title": "00 流程顺序"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -217,52 +204,53 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "6e3eeeeacbab43c3",
+  "active": "ef0f141bd6ae715a",
   "lastOpenFiles": [
-    "07-Project/dma_ep_ss_top/笔记/930.md",
-    "08 Ai辅助/command/ECO/01 add_buffer_on_route.md",
-    "07-Project/dma_ep_ss_top/run/9018v2.md",
-    "07-Project/dma_ep_ss_top/笔记/929.md",
-    "07-Project/dma_ep_ss_top/暂时.md",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930163454.png",
-    "07-Project/dma_ep_ss_top/笔记/923.md",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930135800.png",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930112216.png",
-    "08 Ai辅助/command/ROUTE/01 ECO route.md",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930103202.png",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930103134.png",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930100946.png",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930100743.png",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930100704.png",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930095802.png",
-    "07-Project/dma_ep_ss_top/笔记/附件/Pasted image 20260930095650.png",
-    "08 Ai辅助/command/ECO/02 Eco_fix_timing.md",
-    "08 Ai辅助/command/ECO/03 noise.md",
-    "08 Ai辅助/command/ROUTE/FC_Routing_Remove_Set_ECO_完整版_v2_open_ECO详解.html",
-    "08 Ai辅助/command/ECO/FC_Routing_Remove_Set_ECO_完整版_v2_open_ECO详解.html",
-    "08 Ai辅助/command/ECO/PrimeTime_ECO_fix_eco_drc_fix_eco_timing_参数详解.html",
-    "08 Ai辅助/Flow/01 Place/00.md",
-    "08 Ai辅助/Flow/01 Place/FC_Place_log_穿插式逐段详解版_全流程完善版.html",
-    "08 Ai辅助/command/ECO/add_buffer_on_route_中文详解.html",
-    "08 Ai辅助/Flow/01 Place/FC_Place_log.html",
-    "07-Project/dma_ep_ss_top/笔记/920  921.md",
-    "08 Ai辅助/Flow/02 Cts/00.md",
-    "08 Ai辅助/Flow/03 Route/00.md",
-    "08 Ai辅助/Flow/03 Route",
-    "08 Ai辅助/Flow/02 Cts",
-    "08 Ai辅助/Flow/01 Place",
-    "08 Ai辅助/command/ECO",
-    "07-Project/dma_ep_ss_top/相关知识/03.CTS.log.md",
-    "07-Project/dma_ep_ss_top/相关知识/ai辅助阅读.md",
-    "07-Project/dma_ep_ss_top/笔记/920 1.md",
-    "07-Project/dma_ep_ss_top/相关知识/02.PLACE.log.md",
-    "07-Project/dma_ep_ss_top/相关知识/TSMC 标准单元库.md",
-    "10-SDC/set_false_path.md",
+    "01-基础知识/数字后端/Flow/附件/Pasted image 20261019185251.png",
+    "01-基础知识/数字后端/Flow/附件/Pasted image 20261019184945.png",
+    "01-基础知识/数字后端/Flow/附件/Pasted image 20261019184755.png",
+    "04 -PV/DRC/违例.md",
+    "04 -PV/DRC/附件/Pasted image 20261019172214.png",
+    "04 -PV/DRC/附件/Pasted image 20261019172116.png",
+    "04 -PV/DRC/附件",
+    "05 笔记/202610/1019.md",
+    "04 -PV/DRC",
+    "04 -PV",
+    "05 笔记/202610/附件/Pasted image 20261019171022.png",
+    "07-Project/pcie_port_x8/相关知识/00 布局.md",
+    "05 笔记/202610/附件/Pasted image 20261019163552.png",
+    "01-基础知识/数字后端/Flow/00 流程顺序.md",
+    "07-Project/pcie_port_x8/相关知识/附件/Pasted image 20261019152239.png",
+    "01-基础知识/数字后端/Flow/附件/Pasted image 20261019150455.png",
+    "01-基础知识/数字后端/Flow/附件/Pasted image 20261019145522.png",
+    "01-基础知识/数字后端/Flow/附件/Pasted image 20261019145350.png",
+    "07-Project/pcie_port_x8/相关知识/附件",
+    "01-基础知识/数字后端/Flow/附件",
+    "05 笔记/202610/附件",
+    "05 笔记/202610",
+    "05 笔记",
     "03-PT/ECO/fix_eco_timing.md",
+    "01-基础知识/数字后端/未命名.md",
+    "01-基础知识/数字后端/Flow",
+    "01-基础知识/数字后端",
+    "07-Project/dma_ep_ss_top/笔记/108.md",
+    "07-Project/dma_ep_ss_top/笔记/109.md",
+    "07-Project/dma_ep_ss_top/相关知识/TSMC 标准单元库.md",
+    "07-Project/dma_ep_ss_top/run/9028.md",
+    "07-Project/pcie_port_x8/未命名.md",
+    "07-Project/dma_ep_ss_top/run/9018v2.md",
+    "07-Project/dma_ep_ss_top/笔记/1012.md",
+    "07-Project/dma_ep_ss_top/笔记/930.md",
+    "07-Project/dma_ep_ss_top/笔记/929.md",
+    "06-脚本/pr/04 pr_halo.md",
+    "06-脚本/pr/03 pr_space.md",
+    "06-脚本/pr/02 pr_split_blk.md",
+    "06-脚本/pr/01 pr_blk.md",
+    "06-脚本/pr/00 fun.tcl.md",
+    "07-Project/dma_ep_ss_top/笔记/920  921.md",
     "07-Project/dma_ep_ss_top/笔记/918.md",
-    "07-Project/dma_ep_ss_top/相关知识/ECC.md",
-    "07-Project/dma_ep_ss_top/笔记/917.md",
-    "07-Project/dma_ep_ss_top/qor分析/sum.md",
-    "07-Project/dma_ep_ss_top/qor分析/run4 ：8313_grouppath3.md"
+    "07-Project/dma_ep_ss_top/笔记/923.md",
+    "07-Project/dma_ep_ss_top/暂时.md",
+    "08 Ai辅助/command/ECO/01 add_buffer_on_route.md"
   ]
 }

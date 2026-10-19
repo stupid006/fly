@@ -1,0 +1,10 @@
+/* Hide common image files in Obsidian's File Explorer only. */
+.nav-file:has(> .nav-file-title[data-path$=".png" i]),
+.nav-file:has(> .nav-file-title[data-path$=".jpg" i]),
+.nav-file:has(> .nav-file-title[data-path$=".jpeg" i]),
+.nav-file:has(> .nav-file-title[data-path$=".gif" i]),
+.nav-file:has(> .nav-file-title[data-path$=".webp" i]),
+.nav-file:has(> .nav-file-title[data-path$=".svg" i]),
+.nav-file:has(> .nav-file-title[data-path$=".bmp" i]) {
+  display: none !important;
+}

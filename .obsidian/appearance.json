@@ -1,5 +1,6 @@
 {
   "enabledCssSnippets": [
-    "qor-wide-images"
+    "qor-wide-images",
+    "hide-images"
   ]
 }
