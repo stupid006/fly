@@ -1,15 +1,3 @@
----
-cssclasses:
-  - qor-native-images
-  - qor-wide-images
----
-
-
-
-
-
-
-
 
 
 ```tcl
@@ -44,6 +32,8 @@ cftag_prepend Ic2Place_strategy {
 
 current_sce func_ssgnp0p675v125c_rcworstT_setup
 
+
+###  set_case_analysis
 if {0} {
 puts "USER-INFO: tmp sdc"
 foreach sce [get_object_name [get_scenarios func*]] {
@@ -152,6 +142,9 @@ create_clock_skew_group  -name aux_clk_l3     -objects [get_pin -of [get_cells $
 
 #create_clock_skew_group  -name max_pclk_pipe1 -objects [get_pin -of [get_cells $max_pclk_sink]    -filter name==CK] -clock [get_clock max_pclk]
 #report_clock_skew_groups -nosplit > report_clock_skew_groups_FuncTT.rpt
+
+
+
 if {1} {
 set_app_options -name cts.common.enable_auto_exceptions -value false
 set_app_options -name cts.common.auto_exception_macro_balance_point -value false
@@ -166,7 +159,7 @@ set_app_options -name ccd.skew_opt_default_balance_point_macros -value true
 ##3 4两条实际上是在表达同一个目标，且 `skew_opt_default_balance_point_macros` 是旧选项。
 ##还有两个很关键的细节：
 ##- Seed Offset 即使 CCD 关闭也会生成；开启 CCD 时，后续可以逐个优化 Macro Offset，因此最终 Balance Point 不一定仍为 0。  
-##- 如果 Macro Clock Pin 在 `compile_fusion` 或 `place_opt` 开始前已有显式 Balance Point，这些设置不会覆盖它。
+##如果 Macro Clock Pin 在 `compile_fusion` 或 `place_opt` 开始前已有显式 Balance Point，这些设置不会覆盖它。
 
 
 
@@ -184,12 +177,18 @@ set_app_options -name place.coarse.congestion_driven_max_util -value 0.60
 set_app_options -name place.coarse.target_routing_density -value 0.80
 }
 
+
+
+###DTDP 的全称是 Direct Timing Driven Placement
+###让 DTDP 在优化时序时更重视拥塞影响
 puts "USER-INFO: APP OPTIONS -- DTDP"
 if {1} {
 set_app_options -name compile.het.dtdp_congestion -value true
 set_app_options -name compile.flow.enable_rde_post_DTDP -value true
 }
 
+
+###在 CTS 还没有真正构建时钟树之前，让 Placement 提前考虑 ICG 与下游寄存器的时钟延迟关系，减少 Place 到 CTS 的时序落差
 puts "USER-INFO: APP OPTIONS -- LAP"
 if {1} {
 set_app_options -name place_opt.flow.clock_aware_placement -value true
@@ -205,10 +204,14 @@ set_app_options -name place_opt.flow.estimate_clock_gate_latency -value false
 set_app_options -name refine_opt.flow.estimate_clock_gate_latency -value false
 }
 
+
+
 puts "USER-INFO: APP OPTIONS -- skip block estimate_clock_latency"
 if {0} {
 set_attribute [get_pin u_pcie_phy_wrapper/*] -name dont_estimate_clock_latency -value true
 }
+
+
 
 puts "USER-INFO: APP OPTIONS -- CCD"
 if {1} {
@@ -227,11 +230,15 @@ set_app_options -name ccd.skip_path_groups -value $ccd_skip_group
 set_app_options -name ccd.optimize_boundary_timing_upstream -value false
 }
 
+
+
 puts "USER-INFO: APP OPTIONS -- Timing effort"
 if {1} {
 set_app_options -name compile.final_place.effort -value high
 set_app_options -name compile.flow.high_effort_timing -value 1
 }
+
+
 
 puts "USER-INFO: APP OPTIONS -- andr"
 if {1} {
@@ -242,7 +249,10 @@ set_app_options -name flow.common.effort -value 12345
 #####new version  推荐设置
 set_app_options -name flow.common.wire_optimization_strategy  -value 3
 set_app_options  -name flow.common.wire_optimization_features -value {auto_ndr vlo}
-
+##控制 Wire Optimization（走线优化）启用哪些附加功能
+###auto_ndr  自动选择或应用非默认布线规则，改善关键网络的时序
+###vlo   Via Ladder Optimization  优化 Via 连接结构，改善走线质量和电气特性
+###power  在 `clock_opt` 中增加动态切换功耗优化
 
 
 puts "USER-INFO: APP OPTIONS -- buffering"
